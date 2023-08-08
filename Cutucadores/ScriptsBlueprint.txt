@@ -1,0 +1,14 @@
+Scripts:
+Controller do player
+-Unicos controles
+	-"W" e "S" andam pra frente e pra tras
+	-"A" e "D" rotacionam o personagem(NAO MOVE)
+-Collider do player com tag de "Player"
+-Movimentacao
+	-Variavel float de velocidade do personagem
+	-Variavel float de multiplicador de velocidade
+	-Variavel float de velocidade de rotacao do jogador
+
+Arma
+-Collider proprio
+-Se detectar colisao com um collider de tag "Player" 
