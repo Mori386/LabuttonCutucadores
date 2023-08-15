@@ -654,7 +654,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 5
   moveSpeedMultiplier: 1
-  rotationSpeed: 5
+  rotationSpeed: 2
 --- !u!50 &1368670718
 Rigidbody2D:
   serializedVersion: 4
@@ -791,7 +791,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1961099260}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -818,7 +818,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 5
   moveSpeedMultiplier: 1
-  rotationSpeed: 5
+  rotationSpeed: 2
 --- !u!114 &1961099265
 MonoBehaviour:
   m_ObjectHideFlags: 0

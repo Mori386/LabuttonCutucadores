@@ -20,14 +20,11 @@ public class PlayerControl : MonoBehaviour
     }
     public void OnMoving()
     {
-        animator.SetBool("isMoving", !moveDirection.Equals(0));
-    }
-    private void FixedUpdate()
-    {
-        rb.rotation = rb.rotation + rotationSpeed * rotationDirection * (-1);
+        animator.SetFloat("Speed", moveDirection);
     }
     private void Update()
     {
+        rb.angularVelocity = rotationSpeed * rotationDirection * (-100);
         rb.velocity = transform.up * moveSpeedMultiplier * moveSpeed * moveDirection;
     }
 }
