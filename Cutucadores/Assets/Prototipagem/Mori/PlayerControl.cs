@@ -18,6 +18,10 @@ public class PlayerControl : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponentInChildren<Animator>();
     }
+    public void TakeDamage()
+    {
+        Destroy(gameObject);
+    }
     public void OnMoving()
     {
         animator.SetFloat("Speed", moveDirection);
@@ -26,5 +30,12 @@ public class PlayerControl : MonoBehaviour
     {
         rb.angularVelocity = rotationSpeed * rotationDirection * (-100);
         rb.velocity = transform.up * moveSpeedMultiplier * moveSpeed * moveDirection;
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.collider.CompareTag("Drill"))
+        {
+            TakeDamage();
+        }
     }
 }
