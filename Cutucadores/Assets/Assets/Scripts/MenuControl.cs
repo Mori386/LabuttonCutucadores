@@ -7,11 +7,14 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Linq;
 using System.Text;
+using UnityEditor.PackageManager;
+using TMPro;
 
 
 public class MenuControl : MonoBehaviour
 {
     [SerializeField] private GameObject DefaultMenu, JoinMenu, HostMenu;
+    //Host Screen
 
 
     Thread ReceiveDataThread;
@@ -19,6 +22,15 @@ public class MenuControl : MonoBehaviour
     {
         ReceiveDataThread = new Thread(ReceiveData);
         ReceiveDataThread.Start();
+    }
+    private Coroutine addPlayersToMenu;
+    private IEnumerator AddPlayersToMenu()
+    {
+        while (true)
+        {
+
+            yield return new WaitForSeconds(0.5f);
+        }
     }
     void ReceiveData()
     {
@@ -47,6 +59,7 @@ public class MenuControl : MonoBehaviour
     public void OnHostMenuLeave()
     {
         ReceiveDataThread.Abort();
+        Multiplayer.clients.Clear();
     }
     public void OnJoinMenuEnter()
     {
