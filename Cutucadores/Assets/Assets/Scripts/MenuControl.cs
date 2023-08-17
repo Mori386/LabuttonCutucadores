@@ -33,12 +33,12 @@ public class MenuControl : MonoBehaviour
     {
         while (true)
         {
-            playersInSession.text = "";
             string playersConnectedList = "";
             for(int i =0;i<Multiplayer.clients.Count;i++)
             {
                 playersConnectedList += Multiplayer.clients.Keys.ElementAt(i) + " " + Multiplayer.clients.Values.ElementAt(i) + "\n";
             }
+            playersInSession.text = playersConnectedList;
             yield return new WaitForSeconds(0.5f);
         }
     }
@@ -63,6 +63,7 @@ public class MenuControl : MonoBehaviour
             {
                 if (InfoType.Equals("Enter"))
                 {
+                    Debug.Log(nickname);
                     Multiplayer.clients.Add(RemoteIpEndPoint.Address.ToString(), nickname);
                 }
                 else if (InfoType.Equals("Leave"))
@@ -87,17 +88,13 @@ public class MenuControl : MonoBehaviour
     {
 
     }
-    public void JoinSession(Button button)
+    public void JoinSession()
     {
-        IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Parse(ServerToJoinIPAdress.text), 11000);
-        Byte[] sendBytes = Encoding.ASCII.GetBytes("Enter"+nickname.text);
-        Multiplayer.udpClient.Send(sendBytes, sendBytes.Length, ipEndPoint);
+        Multiplayer.SendMessageToIP(ServerToJoinIPAdress.text, "Enter" + nickname.text);
     }
-    public void LeaveSession(Button button)
+    public void LeaveSession()
     {
-        IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Parse(ServerToJoinIPAdress.text), 11000);
-        Byte[] sendBytes = Encoding.ASCII.GetBytes("Leave");
-        Multiplayer.udpClient.Send(sendBytes, sendBytes.Length, ipEndPoint);
+        Multiplayer.SendMessageToIP(ServerToJoinIPAdress.text, "Leave");
     }
     public void OnJoinMenuLeave()
     {

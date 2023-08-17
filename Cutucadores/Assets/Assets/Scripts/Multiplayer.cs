@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Net;
 using System.Net.Sockets;
+using System;
+using System.Text;
 
 public class Multiplayer
 {
@@ -23,5 +25,11 @@ public class Multiplayer
             }
         }
         else return myIp;
+    }
+    public static void  SendMessageToIP(string ip, string message)
+    {
+        IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Parse(ip), 11000);
+        Byte[] sendBytes = Encoding.ASCII.GetBytes(message);
+        Multiplayer.udpClient.Send(sendBytes, sendBytes.Length, ipEndPoint);
     }
 }
