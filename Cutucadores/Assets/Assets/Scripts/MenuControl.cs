@@ -39,7 +39,7 @@ public class MenuControl : MonoBehaviour
     {
         while (true)
         {
-            string playersConnectedList = Multiplayer.GetMyIP() + ": " + nickname.text;
+            string playersConnectedList = Multiplayer.GetMyIP() + ": " + nickname.text + "\n";
             int playersLogged = 0;
 
             while (playersLogged < Multiplayer.clientsIndex.Count)
@@ -165,7 +165,7 @@ public class MenuControl : MonoBehaviour
                 }
                 else if (InfoType.Equals("Start"))
                 {
-                    SceneManager.LoadScene("MoriGameplayTest");
+                    this.StartCoroutine(LoadMatch());
                 }
 
             }
@@ -174,6 +174,11 @@ public class MenuControl : MonoBehaviour
                 Debug.LogException(e);
             }
         }
+    }
+    IEnumerator LoadMatch()
+    {
+        yield return null;
+        SceneManager.LoadScene("MoriGameplayTest");
     }
     public void LeaveSession()
     {
