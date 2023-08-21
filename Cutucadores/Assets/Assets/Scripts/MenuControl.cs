@@ -18,15 +18,17 @@ public class MenuControl : MonoBehaviour
     [SerializeField] private TMP_InputField nickname;
     [Header("Client"), SerializeField] private TMP_InputField ServerToJoinIPAdress;
     [Header("Host"), SerializeField] private TextMeshProUGUI playersInSession;
+    [SerializeField] private TextMeshProUGUI serverIP;
     //Host Screen
 
 
-    Thread ReceiveDataThread;
+    Thread ReceiveDataThreadHost;
     public void OnHostMenuEnter()
     {
+        serverIP.text = Multiplayer.GetMyIP();
         addPlayersToMenu = StartCoroutine(AddPlayersToMenu());
-        ReceiveDataThread = new Thread(ReceiveData);
-        ReceiveDataThread.Start();
+        ReceiveDataThreadHost = new Thread(ReceiveDataHost);
+        ReceiveDataThreadHost.Start();
     }
     private Coroutine addPlayersToMenu;
     private IEnumerator AddPlayersToMenu()
@@ -42,7 +44,7 @@ public class MenuControl : MonoBehaviour
             yield return new WaitForSeconds(0.5f);
         }
     }
-    void ReceiveData()
+    void ReceiveDataHost()
     {
         IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
         while (true)
@@ -50,21 +52,26 @@ public class MenuControl : MonoBehaviour
             Byte[] receiveBytes = Multiplayer.udpClient.Receive(ref RemoteIpEndPoint);
             string returnData = Encoding.ASCII.GetString(receiveBytes);
             string InfoType = "";
-            string nickname = "";
+            string nicknameReceived = "";
             for (int i =0;i<5;i++)
             {
                 InfoType += returnData[i];
             }
             for(int i = 5; i< returnData.Length;i++)
             {
-                nickname += returnData[i];
+                nicknameReceived += returnData[i];
             }
             try
             {
                 if (InfoType.Equals("Enter"))
                 {
-                    Debug.Log(nickname);
-                    Multiplayer.clients.Add(RemoteIpEndPoint.Address.ToString(), nickname);
+                    Multiplayer.SendMessageToIP(RemoteIpEndPoint.Address.ToString(), "Cnfrm" + Multiplayer.clients.Count);
+                    Multiplayer.SendMessageToIP(RemoteIpEndPoint.Address.ToString(), "Playr0" + nickname.text);
+                    for (int i = 0;i< Multiplayer.clients.Count;i++)
+                    {
+                        Multiplayer.SendMessageToIP(RemoteIpEndPoint.Address.ToString(), "Playr" + (i+1).ToString() + Multiplayer.clients.Values.ElementAt(i));
+                    }
+                    Multiplayer.clients.Add(RemoteIpEndPoint.Address.ToString(), nicknameReceived);
                 }
                 else if (InfoType.Equals("Leave"))
                 {
@@ -79,7 +86,7 @@ public class MenuControl : MonoBehaviour
     }
     public void OnHostMenuLeave()
     {
-        ReceiveDataThread.Abort();
+        ReceiveDataThreadHost.Abort();
         Multiplayer.clients.Clear();
         StopCoroutine(addPlayersToMenu);
         addPlayersToMenu = null;
@@ -90,7 +97,46 @@ public class MenuControl : MonoBehaviour
     }
     public void JoinSession()
     {
+        ReceiveDataThreadJoin = new Thread(ReceiveDataJoin);
+        ReceiveDataThreadJoin.Start();
         Multiplayer.SendMessageToIP(ServerToJoinIPAdress.text, "Enter" + nickname.text);
+        serverIP.text = Multiplayer.GetMyIP();
+    }
+    Thread ReceiveDataThreadJoin;
+    void ReceiveDataJoin()
+    {
+        IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
+        while (true)
+        {
+            Byte[] receiveBytes = Multiplayer.udpClient.Receive(ref RemoteIpEndPoint);
+            string returnData = Encoding.ASCII.GetString(receiveBytes);
+            string InfoType = "";
+            string playerCountID = "";
+            for (int i = 0; i < 5; i++)
+            {
+                InfoType += returnData[i];
+            }
+            for (int i = 5; i < returnData.Length; i++)
+            {
+                playerCountID += returnData[i];
+            }
+            try
+            {
+                if (InfoType.Equals("Cnfrm"))
+                {
+
+                }
+                else if (InfoType.Equals("Playr"))
+                {
+
+                }
+
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+            }
+        }
     }
     public void LeaveSession()
     {
