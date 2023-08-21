@@ -4,5 +4,11 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: 8edec353e2c988c41b35a81325b63e37
+  - enabled: 1
+    path: Assets/Prototipagem/Mori/MoriGameplayTest.unity
+    guid: 46e44ae9ca438b747afa4ae7c5323c76
   m_configObjects: {}

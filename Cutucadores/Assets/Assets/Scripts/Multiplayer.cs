@@ -8,9 +8,14 @@ using System.Text;
 
 public class Multiplayer
 {
-    public static Dictionary<string, string> clients = new Dictionary<string, string>(); // Ip to nickname
+    public static string HostNickname;
+    public static string HostIP;
+    public static Dictionary<string, string> clientsName = new Dictionary<string, string>(); // Ip to nickname
+    public static Dictionary<string, int> clientsIndex = new Dictionary<string, int>(); // Ip to index
     public static UdpClient udpClient = new UdpClient(11000);
     public static string myIp;
+
+    public static Dictionary<int, string> clientOnlyPlayersNames = new Dictionary<int, string>(); //Index to Name
 
     public static string GetMyIP()
     {
