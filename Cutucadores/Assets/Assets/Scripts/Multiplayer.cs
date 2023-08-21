@@ -16,6 +16,7 @@ public class Multiplayer
     public static string myIp;
 
     public static Dictionary<int, string> clientOnlyPlayersNames = new Dictionary<int, string>(); //Index to Name
+    public static int clientOnlyMyIndex; //Index to Name
 
     public static string GetMyIP()
     {

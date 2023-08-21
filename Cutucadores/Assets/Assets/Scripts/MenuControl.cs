@@ -19,23 +19,24 @@ public class MenuControl : MonoBehaviour
     [SerializeField] private TMP_InputField nickname;
     [Header("Client"), SerializeField] private TMP_InputField ServerToJoinIPAdress;
     [SerializeField] private TextMeshProUGUI clientPlayersInSession;
-    [Space,SerializeField] private GameObject onServerScreen;
+    [Space, SerializeField] private GameObject onServerScreen;
     [SerializeField] private GameObject onJoinScreen;
     [Header("Host"), SerializeField] private TextMeshProUGUI hostPlayersInSession;
     [SerializeField] private TextMeshProUGUI serverIP;
     //Host Screen
 
+    private bool matchStart;
 
     Thread ReceiveDataThreadHost;
     public void OnHostMenuEnter()
     {
         serverIP.text = Multiplayer.GetMyIP();
-        addPlayersToMenu = StartCoroutine(AddPlayersToMenu());
+        hostAddPlayersToMenu = StartCoroutine(HostAddPlayersToMenu());
         ReceiveDataThreadHost = new Thread(ReceiveDataHost);
         ReceiveDataThreadHost.Start();
     }
-    private Coroutine addPlayersToMenu;
-    private IEnumerator AddPlayersToMenu()
+    private Coroutine hostAddPlayersToMenu;
+    private IEnumerator HostAddPlayersToMenu()
     {
         while (true)
         {
@@ -110,7 +111,7 @@ public class MenuControl : MonoBehaviour
     }
     public void StartMatch()
     {
-        for(int i = 0;i<Multiplayer.clientsIndex.Count;i++)
+        for (int i = 0; i < Multiplayer.clientsIndex.Count; i++)
         {
             Multiplayer.SendMessageToIP(Multiplayer.clientsIndex.Keys.ElementAt(i), "Start");
         }
@@ -120,9 +121,10 @@ public class MenuControl : MonoBehaviour
         ReceiveDataThreadHost.Abort();
         Multiplayer.clientsIndex.Clear();
         Multiplayer.clientsName.Clear();
-        StopCoroutine(addPlayersToMenu);
-        addPlayersToMenu = null;
+        StopCoroutine(hostAddPlayersToMenu);
+        hostAddPlayersToMenu = null;
     }
+
     public void OnJoinMenuEnter()
     {
 
@@ -134,7 +136,41 @@ public class MenuControl : MonoBehaviour
         Multiplayer.SendMessageToIP(ServerToJoinIPAdress.text, "Enter" + nickname.text);
         onJoinScreen.SetActive(false);
         onServerScreen.SetActive(true);
+        clientAddPlayersToMenu = StartCoroutine(ClientAddPlayersToMenu());
+        checkForGameStart = StartCoroutine(CheckForGameStart());
     }
+    private Coroutine clientAddPlayersToMenu;
+    private IEnumerator ClientAddPlayersToMenu()
+    {
+        while (true)
+        {
+            string playersConnectedList = "";
+            for (int i = 0; i < Multiplayer.clientOnlyMyIndex; i++)
+            {
+                playersConnectedList += Multiplayer.clientsIndex.Keys.ElementAt(i) + ": " + Multiplayer.clientsName.Values.ElementAt(i) + "\n";
+            }
+            playersConnectedList += Multiplayer.GetMyIP() + ": " + nickname.text + "\n";
+            for (int i = Multiplayer.clientOnlyMyIndex; i < Multiplayer.clientsIndex.Count; i++)
+            {
+                playersConnectedList += Multiplayer.clientsIndex.Keys.ElementAt(i) + ": " + Multiplayer.clientsName.Values.ElementAt(i) + "\n";
+
+            }
+            yield return new WaitForFixedUpdate();
+            clientPlayersInSession.text = playersConnectedList;
+            yield return new WaitForSeconds(0.5f);
+        }
+    }
+
+    private Coroutine checkForGameStart;
+    private IEnumerator CheckForGameStart()
+    {
+        while (true)
+        {
+            if(matchStart) SceneManager.LoadScene("MoriGameplayTest");
+            yield return new WaitForFixedUpdate();
+        }
+    }
+
     Thread ReceiveDataThreadJoin;
     void ReceiveDataJoin()
     {
@@ -152,12 +188,13 @@ public class MenuControl : MonoBehaviour
             {
                 if (InfoType.Equals("Cnfrm"))
                 {
+                    Multiplayer.clientOnlyMyIndex = int.Parse(returnData[5].ToString());
                     Multiplayer.HostIP = RemoteIpEndPoint.Address.ToString();
                 }
                 else if (InfoType.Equals("PJoin"))
                 {
                     string pName = "";
-                    for(int i = 6; i < returnData.Length; i++)
+                    for (int i = 6; i < returnData.Length; i++)
                     {
                         pName += returnData[i];
                     }
@@ -165,7 +202,7 @@ public class MenuControl : MonoBehaviour
                 }
                 else if (InfoType.Equals("Start"))
                 {
-                    this.StartCoroutine(LoadMatch());
+                    matchStart = true;
                 }
 
             }
@@ -174,11 +211,6 @@ public class MenuControl : MonoBehaviour
                 Debug.LogException(e);
             }
         }
-    }
-    IEnumerator LoadMatch()
-    {
-        yield return null;
-        SceneManager.LoadScene("MoriGameplayTest");
     }
     public void LeaveSession()
     {
