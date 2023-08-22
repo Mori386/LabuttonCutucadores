@@ -11,14 +11,19 @@ public class GameManager : MonoBehaviour
     {
         if(Multiplayer.isHost)
         {
-            for(int i = 0; i < Multiplayer.clientsIndex.Count; i++)
+            SpawnPlayer(0);
+            for (int i = 0; i < Multiplayer.clientsIndex.Count; i++)
             {
-                SpawnPlayer(Multiplayer.clientsIndex.Values.ElementAt(i));
+                SpawnPlayer(Multiplayer.clientsIndex.Values.ElementAt(i+1));
             }
         }
         else
         {
-
+            SpawnPlayer(0);
+            for (int i = 0; i < Multiplayer.clientOnlyPlayersNames.Count; i++)
+            {
+                SpawnPlayer(Multiplayer.clientOnlyPlayersNames.Keys.ElementAt(i + 1));
+            }
         }
     }
     public GameObject SpawnPlayer(int posIndex)
