@@ -8,6 +8,7 @@ using System.Text;
 
 public class Multiplayer
 {
+    public static bool isHost;
     public static string HostNickname;
     public static string HostIP;
     public static Dictionary<string, string> clientsName = new Dictionary<string, string>(); // Ip to nickname

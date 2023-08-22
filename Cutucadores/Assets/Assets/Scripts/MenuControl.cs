@@ -30,6 +30,7 @@ public class MenuControl : MonoBehaviour
     Thread ReceiveDataThreadHost;
     public void OnHostMenuEnter()
     {
+        Multiplayer.isHost = true;
         serverIP.text = Multiplayer.GetMyIP();
         hostAddPlayersToMenu = StartCoroutine(HostAddPlayersToMenu());
         ReceiveDataThreadHost = new Thread(ReceiveDataHost);
@@ -120,6 +121,7 @@ public class MenuControl : MonoBehaviour
     }
     public void OnHostMenuLeave()
     {
+        Multiplayer.isHost = false;
         ReceiveDataThreadHost.Abort();
         Multiplayer.clientsIndex.Clear();
         Multiplayer.clientsName.Clear();
