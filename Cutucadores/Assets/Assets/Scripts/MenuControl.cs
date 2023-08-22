@@ -151,7 +151,7 @@ public class MenuControl : MonoBehaviour
             {
                 if(Multiplayer.clientOnlyPlayersNames.TryGetValue(i,out string playerName)) playersConnectedList += playerName + "\n";
             }
-            playersConnectedList += Multiplayer.GetMyIP() + ": " + nickname.text + "\n";
+            playersConnectedList += nickname.text + "\n";
             for (int i = Multiplayer.clientOnlyMyIndex + 1; i < Multiplayer.clientsIndex.Count; i++)
             {
                 if (Multiplayer.clientOnlyPlayersNames.TryGetValue(i, out string playerName)) playersConnectedList += playerName + "\n";
