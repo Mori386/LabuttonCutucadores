@@ -88,6 +88,7 @@ public class MenuControl : MonoBehaviour
                     }
                     Multiplayer.clientsName.Add(RemoteIpEndPoint.Address.ToString(), nicknameReceived);
                     Multiplayer.clientsIndex.Add(RemoteIpEndPoint.Address.ToString(), Multiplayer.clientsName.Keys.ToList().IndexOf(RemoteIpEndPoint.Address.ToString()));
+
                 }
                 else if (InfoType.Equals("Leave"))
                 {
@@ -115,6 +116,7 @@ public class MenuControl : MonoBehaviour
         {
             Multiplayer.SendMessageToIP(Multiplayer.clientsIndex.Keys.ElementAt(i), "Start");
         }
+        SceneManager.LoadScene("MoriGameplayTest");
     }
     public void OnHostMenuLeave()
     {
@@ -145,14 +147,14 @@ public class MenuControl : MonoBehaviour
         while (true)
         {
             string playersConnectedList = "";
-            for (int i = 0; i < Multiplayer.clientOnlyMyIndex; i++)
+            for (int i = 0; i < Multiplayer.clientOnlyMyIndex + 1; i++)
             {
-                playersConnectedList += Multiplayer.clientOnlyPlayersNames[i] + "\n";
+                if(Multiplayer.clientOnlyPlayersNames.TryGetValue(i,out string playerName)) playersConnectedList += playerName + "\n";
             }
             playersConnectedList += Multiplayer.GetMyIP() + ": " + nickname.text + "\n";
-            for (int i = Multiplayer.clientOnlyMyIndex; i < Multiplayer.clientsIndex.Count; i++)
+            for (int i = Multiplayer.clientOnlyMyIndex + 1; i < Multiplayer.clientsIndex.Count; i++)
             {
-                playersConnectedList += Multiplayer.clientOnlyPlayersNames[i] + "\n";
+                if (Multiplayer.clientOnlyPlayersNames.TryGetValue(i, out string playerName)) playersConnectedList += playerName + "\n";
             }
             yield return new WaitForFixedUpdate();
             clientPlayersInSession.text = playersConnectedList;
