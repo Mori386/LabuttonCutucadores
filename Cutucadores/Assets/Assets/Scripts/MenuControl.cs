@@ -147,13 +147,12 @@ public class MenuControl : MonoBehaviour
             string playersConnectedList = "";
             for (int i = 0; i < Multiplayer.clientOnlyMyIndex; i++)
             {
-                playersConnectedList += Multiplayer.clientsIndex.Keys.ElementAt(i) + ": " + Multiplayer.clientsName.Values.ElementAt(i) + "\n";
+                playersConnectedList += Multiplayer.clientOnlyPlayersNames[i] + "\n";
             }
             playersConnectedList += Multiplayer.GetMyIP() + ": " + nickname.text + "\n";
             for (int i = Multiplayer.clientOnlyMyIndex; i < Multiplayer.clientsIndex.Count; i++)
             {
-                playersConnectedList += Multiplayer.clientsIndex.Keys.ElementAt(i) + ": " + Multiplayer.clientsName.Values.ElementAt(i) + "\n";
-
+                playersConnectedList += Multiplayer.clientOnlyPlayersNames[i] + "\n";
             }
             yield return new WaitForFixedUpdate();
             clientPlayersInSession.text = playersConnectedList;

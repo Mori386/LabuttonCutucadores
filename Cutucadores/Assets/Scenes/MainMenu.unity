@@ -3798,7 +3798,7 @@ MonoBehaviour:
   HostMenu: {fileID: 814446927}
   nickname: {fileID: 1729637409}
   ServerToJoinIPAdress: {fileID: 2018497927}
-  clientPlayersInSession: {fileID: 0}
+  clientPlayersInSession: {fileID: 1814644669}
   onServerScreen: {fileID: 1303462416}
   onJoinScreen: {fileID: 2076337192}
   hostPlayersInSession: {fileID: 137584924}
