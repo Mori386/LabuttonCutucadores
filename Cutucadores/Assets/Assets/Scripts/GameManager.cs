@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
             SpawnPlayer(0);
             for (int i = 0; i < Multiplayer.clientsIndex.Count; i++)
             {
-                SpawnPlayer(Multiplayer.clientsIndex.Values.ElementAt(i+1));
+                SpawnPlayer(Multiplayer.clientsIndex.Values.ElementAt(i)+1);
             }
         }
         else
@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
             SpawnPlayer(0);
             for (int i = 0; i < Multiplayer.clientOnlyPlayersNames.Count; i++)
             {
-                SpawnPlayer(Multiplayer.clientOnlyPlayersNames.Keys.ElementAt(i + 1));
+                SpawnPlayer(Multiplayer.clientOnlyPlayersNames.Keys.ElementAt(i)+1);
             }
         }
     }
