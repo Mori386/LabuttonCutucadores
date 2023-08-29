@@ -5,19 +5,26 @@ using System.Net;
 using System.Net.Sockets;
 using System;
 using System.Text;
-
+public class Player
+{
+    public Player(int ID,string NAME)
+    {
+        id = ID;
+        name = NAME;
+    }
+    public int id;
+    public string name;
+    public Vector3 position;
+    public Vector3 rotation;
+}
 public class Multiplayer
 {
     public static bool isHost;
     public static string HostNickname;
     public static string HostIP;
-    public static Dictionary<string, string> clientsName = new Dictionary<string, string>(); // Ip to nickname
-    public static Dictionary<string, int> clientsIndex = new Dictionary<string, int>(); // Ip to index
+    public static Dictionary<string, Player> clients = new Dictionary<string, Player>(); // Ip to nickname
     public static UdpClient udpClient = new UdpClient(11000);
     public static string myIp;
-
-    public static Dictionary<int, string> clientOnlyPlayersNames = new Dictionary<int, string>(); //Index to Name
-    public static int clientOnlyMyIndex; //Index to Name
 
     public static string GetMyIP()
     {
