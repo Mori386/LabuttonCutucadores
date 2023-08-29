@@ -14,6 +14,7 @@ public class Player
     }
     public int id;
     public string name;
+    public Animator animator;
     public Vector3 position;
     public Vector3 rotation;
 }
@@ -22,9 +23,11 @@ public class Multiplayer
     public static bool isHost;
     public static string HostNickname;
     public static string HostIP;
-    public static Dictionary<string, Player> clients = new Dictionary<string, Player>(); // Ip to nickname
+    public static Dictionary<string, Player> hostClients = new Dictionary<string, Player>(); // Ip to nickname
+    public static Player client = new Dictionary<string, Player>(); // Ip to nickname
     public static UdpClient udpClient = new UdpClient(11000);
     public static string myIp;
+    public static Player selfPlayer;
 
     public static string GetMyIP()
     {

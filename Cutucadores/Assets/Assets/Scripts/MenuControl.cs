@@ -43,28 +43,20 @@ public class MenuControl : MonoBehaviour
         {
             string playersConnectedList = Multiplayer.GetMyIP() + ": " + nickname.text + "\n";
             int playersLogged = 0;
+
             for (int i = 0; i < Multiplayer.clients.Count; i++)
             {
-                if (Multiplayer.clients.Values.ElementAt(i).Equals(playersLogged))
+                for (int y = 0; y < Multiplayer.clients.Count; y++)
                 {
-                    playersConnectedList += Multiplayer.clientsName.Keys.ElementAt(i) + ": " + Multiplayer.clientsName.Values.ElementAt(i) + "\n";
-                    playersLogged++;
-                }
-            }
-            while (playersLogged < Multiplayer.clients.Count)
-            {
-                for (int i = 0; i < Multiplayer.clients.Count; i++)
-                {
-                    if (Multiplayer.clients.Values.ElementAt(i).Equals(playersLogged))
+                    if (Multiplayer.clients.Values.ElementAt(y).Equals(playersLogged))
                     {
-                        playersConnectedList += Multiplayer.clientsName.Keys.ElementAt(i) + ": " + Multiplayer.clientsName.Values.ElementAt(i) + "\n";
+                        playersConnectedList += Multiplayer.clients.Keys.ElementAt(y) + ": " + Multiplayer.clients.Values.ElementAt(y).name + "\n";
                         playersLogged++;
                     }
                 }
-                yield return new WaitForFixedUpdate();
             }
             hostPlayersInSession.text = playersConnectedList;
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.25f);
         }
     }
     void ReceiveDataHost()
@@ -158,16 +150,23 @@ public class MenuControl : MonoBehaviour
         while (true)
         {
             string playersConnectedList = "";
-            for (int i = 0; i < Multiplayer.clientOnlyMyIndex + 1; i++)
+            int playersLogged = 0;
+            for (int i = 0; i < Multiplayer.clients.Count; i++)
             {
-                if(Multiplayer.clientOnlyPlayersNames.TryGetValue(i,out string playerName)) playersConnectedList += playerName + "\n";
+                for (int y = 0; y < Multiplayer.clients.Count; y++)
+                {
+                    if (Multiplayer.clients.Values.ElementAt(y).Equals(playersLogged))
+                    {
+                        playersConnectedList += Multiplayer.clients.Keys.ElementAt(y) + ": " + Multiplayer.clients.Values.ElementAt(y).name + "\n";
+                        playersLogged++;
+                    }
+                    else if(Multiplayer.selfPlayer.id.Equals(playersLogged))
+                    {
+                        playersConnectedList += Multiplayer.GetMyIP() + ": " + Multiplayer.selfPlayer.name + "\n";
+                        playersLogged++;
+                    }
+                }
             }
-            playersConnectedList += nickname.text + "\n";
-            for (int i = Multiplayer.clientOnlyMyIndex + 1; i < Multiplayer.clientsIndex.Count; i++)
-            {
-                if (Multiplayer.clientOnlyPlayersNames.TryGetValue(i, out string playerName)) playersConnectedList += playerName + "\n";
-            }
-            yield return new WaitForFixedUpdate();
             clientPlayersInSession.text = playersConnectedList;
             yield return new WaitForSeconds(0.5f);
         }
@@ -200,8 +199,7 @@ public class MenuControl : MonoBehaviour
             {
                 if (InfoType.Equals("Cnfrm"))
                 {
-                    Multiplayer.clientOnlyMyIndex = int.Parse(returnData[5].ToString());
-                    Multiplayer.HostIP = RemoteIpEndPoint.Address.ToString();
+                    Multiplayer.selfPlayer = new Player(int.Parse(returnData[5].ToString()),nickname.text);
                 }
                 else if (InfoType.Equals("PJoin"))
                 {
@@ -210,7 +208,8 @@ public class MenuControl : MonoBehaviour
                     {
                         pName += returnData[i];
                     }
-                    Multiplayer.clientOnlyPlayersNames.Add(int.Parse(returnData[5].ToString()), pName);
+                    Multiplayer.clients.Add(,new Player(int.Parse(returnData[5].ToString()), pName));
+                    //Check se esta com o maximo de players
                 }
                 else if (InfoType.Equals("Start"))
                 {
