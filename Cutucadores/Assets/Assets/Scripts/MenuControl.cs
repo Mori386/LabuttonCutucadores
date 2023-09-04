@@ -53,7 +53,7 @@ public class MenuControl : MonoBehaviour
 {
     private void FixedUpdate()
     {
-        if(Multiplayer.isHost)Debug.Log(Multiplayer.Host.clients.Count);
+        if (Multiplayer.isHost) Debug.Log(Multiplayer.Host.clients.Count);
         else Debug.Log(Multiplayer.Client.players.Length);
     }
     [SerializeField] private GameObject DefaultMenu, JoinMenu, HostMenu;
@@ -83,9 +83,13 @@ public class MenuControl : MonoBehaviour
     private Coroutine hostAddPlayersToMenu;
     private IEnumerator HostAddPlayersToMenu()
     {
+        hostPlayersMenuCards[0].ChangeIPText(Multiplayer.GetMyIP());
+        hostPlayersMenuCards[0].nicknameText.text = nickname.text;
+        hostPlayersMenuCards[0].cardGameObject.SetActive(true);
         int clientCount = Multiplayer.Host.clients.Count;
         while (true)
         {
+            Debug.Log(Multiplayer.Host.clients.Count +"|"+ clientCount);
             if (Multiplayer.Host.clients.Count > clientCount)
             {
                 int playersLogged = 0;
@@ -96,9 +100,10 @@ public class MenuControl : MonoBehaviour
                         if (Multiplayer.Host.clients.Values.ElementAt(y).id.Equals(playersLogged))
                         {
                             Player player = Multiplayer.Host.clients.Values.ElementAt(y);
-                            hostPlayersMenuCards[playersLogged].ChangeIPText(Multiplayer.Host.clients.Keys.ElementAt(y));
-                            hostPlayersMenuCards[playersLogged].nicknameText.text = player.name;
-                            hostPlayersMenuCards[playersLogged].cardGameObject.SetActive(true);
+                            Debug.Log(player.name);
+                            hostPlayersMenuCards[playersLogged + 1].ChangeIPText(Multiplayer.Host.clients.Keys.ElementAt(y));
+                            hostPlayersMenuCards[playersLogged + 1].nicknameText.text = player.name;
+                            hostPlayersMenuCards[playersLogged + 1].cardGameObject.SetActive(true);
                             playersLogged++;
                         }
                     }
@@ -162,7 +167,7 @@ public class MenuControl : MonoBehaviour
                             Player player = Multiplayer.Host.clients.Values.ElementAt(i);
                             Multiplayer.SendMessageToIP(RemoteIpEndPoint.Address.ToString(), "PJoin" + player.id + player.name);
                         }
-                        Multiplayer.Host.clients.Add(RemoteIpEndPoint.Address.ToString(), new Player(Multiplayer.Host.clients.Count + 1, bonusInfoReceived));
+                        Multiplayer.Host.clients.Add(RemoteIpEndPoint.Address.ToString(), new Player(Multiplayer.Host.clients.Count, bonusInfoReceived));
                     }
                     else
                     {
@@ -242,8 +247,8 @@ public class MenuControl : MonoBehaviour
                         if (Multiplayer.Client.players[y].id.Equals(playersLogged))
                         {
                             Player player = Multiplayer.Client.players[y];
-                            hostPlayersMenuCards[playersLogged].nicknameText.text = player.name;
-                            hostPlayersMenuCards[playersLogged].cardGameObject.SetActive(true);
+                            clientPlayersMenuCards[playersLogged].nicknameText.text = player.name;
+                            clientPlayersMenuCards[playersLogged].cardGameObject.SetActive(true);
                             playersLogged++;
                         }
                     }
@@ -264,15 +269,15 @@ public class MenuControl : MonoBehaviour
                         if (Multiplayer.Client.players[y].id.Equals(playersLogged))
                         {
                             Player player = Multiplayer.Client.players[y];
-                            hostPlayersMenuCards[playersLogged].nicknameText.text = player.name;
-                            hostPlayersMenuCards[playersLogged].cardGameObject.SetActive(true);
+                            clientPlayersMenuCards[playersLogged].nicknameText.text = player.name;
+                            clientPlayersMenuCards[playersLogged].cardGameObject.SetActive(true);
                             playersLogged++;
                         }
                     }
                 }
                 clientCount = Multiplayer.Client.players.Length;
             }
-            if(matchStart) SceneManager.LoadScene("MoriGameplayTest");
+            if (matchStart) SceneManager.LoadScene("MoriGameplayTest");
             yield return new WaitForSeconds(0.25f);
         }
     }
