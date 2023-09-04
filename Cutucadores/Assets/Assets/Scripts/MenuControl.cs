@@ -12,20 +12,59 @@ using TMPro;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+[Serializable]
+public class PlayerMenuCard
+{
+    public GameObject cardGameObject;
+    public enum Visuals
+    {
+        Orange,
+        Green
+    }
+    public Visuals visualSelected;
+    public void ChangeVisual(int changeIndexDifference)
+    {
+        if ((int)visualSelected + changeIndexDifference > Enum.GetValues(typeof(Visuals)).Cast<int>().Max())
+        {
+            visualSelected = 0;
+        }
+        else if ((int)visualSelected + changeIndexDifference < 0)
+        {
+            visualSelected = (Visuals)Enum.GetValues(typeof(Visuals)).Cast<int>().Max();
+        }
+        else
+        {
+            visualSelected += changeIndexDifference;
+        }
 
+    }
+    public Image visualPreview;
+
+    public TextMeshProUGUI nicknameText;
+
+    [SerializeField] private TextMeshProUGUI ipText;
+    public void ChangeIPText(string newIP)
+    {
+        ipText.text = "IP:" + "\n" + newIP;
+    }
+
+}
 public class MenuControl : MonoBehaviour
 {
     [SerializeField] private GameObject DefaultMenu, JoinMenu, HostMenu;
     [SerializeField] private TMP_InputField nickname;
     [Header("Client"), SerializeField] private TMP_InputField ServerToJoinIPAdress;
-    [SerializeField] private TextMeshProUGUI clientPlayersInSession;
+
+    public PlayerMenuCard[] clientPlayersMenuCards = new PlayerMenuCard[4];
+
     [Space, SerializeField] private GameObject onServerScreen;
     [SerializeField] private GameObject onJoinScreen;
-    [Header("Host"), SerializeField] private TextMeshProUGUI hostPlayersInSession;
-    [SerializeField] private TextMeshProUGUI serverIP;
     //Host Screen
-
+    [Header("Host")] public PlayerMenuCard[] hostPlayersMenuCards = new PlayerMenuCard[4];
+    [Space, SerializeField] private TextMeshProUGUI serverIP;
     private bool matchStart;
+
+
 
     Thread ReceiveDataThreadHost;
     public void OnHostMenuEnter()
@@ -39,23 +78,51 @@ public class MenuControl : MonoBehaviour
     private Coroutine hostAddPlayersToMenu;
     private IEnumerator HostAddPlayersToMenu()
     {
+        int clientCount = Multiplayer.Host.clients.Count;
         while (true)
         {
-            string playersConnectedList = Multiplayer.GetMyIP() + ": " + nickname.text + "\n";
-            int playersLogged = 0;
-
-            for (int i = 0; i < Multiplayer.clients.Count; i++)
+            if (Multiplayer.Host.clients.Count > clientCount)
             {
-                for (int y = 0; y < Multiplayer.clients.Count; y++)
+                int playersLogged = 0;
+                for (int i = 0; i < Multiplayer.Host.clients.Count; i++)
                 {
-                    if (Multiplayer.clients.Values.ElementAt(y).Equals(playersLogged))
+                    for (int y = 0; y < Multiplayer.Host.clients.Count; y++)
                     {
-                        playersConnectedList += Multiplayer.clients.Keys.ElementAt(y) + ": " + Multiplayer.clients.Values.ElementAt(y).name + "\n";
-                        playersLogged++;
+                        if (Multiplayer.Host.clients.Values.ElementAt(y).id.Equals(playersLogged))
+                        {
+                            Player player = Multiplayer.Host.clients.Values.ElementAt(y);
+                            hostPlayersMenuCards[playersLogged].ChangeIPText(Multiplayer.Host.clients.Keys.ElementAt(y));
+                            hostPlayersMenuCards[playersLogged].nicknameText.text = player.name;
+                            hostPlayersMenuCards[playersLogged].cardGameObject.SetActive(true);
+                            playersLogged++;
+                        }
                     }
                 }
+                clientCount = Multiplayer.Host.clients.Count;
             }
-            hostPlayersInSession.text = playersConnectedList;
+            else if (Multiplayer.Host.clients.Count < clientCount)
+            {
+                for (int i = 0; i < Multiplayer.Host.clients.Count; i++)
+                {
+                    hostPlayersMenuCards[i].cardGameObject.SetActive(false);
+                }
+                int playersLogged = 0;
+                for (int i = 0; i < Multiplayer.Host.clients.Count; i++)
+                {
+                    for (int y = 0; y < Multiplayer.Host.clients.Count; y++)
+                    {
+                        if (Multiplayer.Host.clients.Values.ElementAt(y).id.Equals(playersLogged))
+                        {
+                            Player player = Multiplayer.Host.clients.Values.ElementAt(y);
+                            hostPlayersMenuCards[playersLogged].ChangeIPText(Multiplayer.Host.clients.Keys.ElementAt(y));
+                            hostPlayersMenuCards[playersLogged].nicknameText.text = player.name;
+                            hostPlayersMenuCards[playersLogged].cardGameObject.SetActive(true);
+                            playersLogged++;
+                        }
+                    }
+                }
+                clientCount = Multiplayer.Host.clients.Count;
+            }
             yield return new WaitForSeconds(0.25f);
         }
     }
@@ -67,44 +134,55 @@ public class MenuControl : MonoBehaviour
             Byte[] receiveBytes = Multiplayer.udpClient.Receive(ref RemoteIpEndPoint);
             string returnData = Encoding.ASCII.GetString(receiveBytes);
             string InfoType = "";
-            string nicknameReceived = "";
+            string bonusInfoReceived = "";
             for (int i = 0; i < 5; i++)
             {
                 InfoType += returnData[i];
             }
             for (int i = 5; i < returnData.Length; i++)
             {
-                nicknameReceived += returnData[i];
+                bonusInfoReceived += returnData[i];
             }
             try
             {
                 if (InfoType.Equals("Enter"))
                 {
-                    Multiplayer.SendMessageToIP(RemoteIpEndPoint.Address.ToString(), "Cnfrm" + Multiplayer.clients.Count);
-                    Multiplayer.SendMessageToIP(RemoteIpEndPoint.Address.ToString(), "PJoin0" + nickname.text);
-                    for (int i = 0; i < Multiplayer.clients.Count; i++)
+                    //In this case the bonus info received will be the player nickname
+                    if (Multiplayer.Host.clients.Count + 1 < Multiplayer.maxPlayerCount)
                     {
-                        Player player = Multiplayer.clients.Values.ElementAt(i);
-                        Multiplayer.SendMessageToIP(RemoteIpEndPoint.Address.ToString(), "PJoin" + player.id + player.name);
+                        Multiplayer.SendMessageToIP(RemoteIpEndPoint.Address.ToString(), "Cnfrm" + (Multiplayer.Host.clients.Count + 1));
+                        Multiplayer.SendMessageToIP(RemoteIpEndPoint.Address.ToString(), "PJoin0" + nickname.text);
+                        for (int i = 0; i < Multiplayer.Host.clients.Count; i++)
+                        {
+                            Player player = Multiplayer.Host.clients.Values.ElementAt(i);
+                            Multiplayer.SendMessageToIP(RemoteIpEndPoint.Address.ToString(), "PJoin" + player.id + player.name);
+                        }
+                        Multiplayer.Host.clients.Add(RemoteIpEndPoint.Address.ToString(), new Player(Multiplayer.Host.clients.Count + 1, bonusInfoReceived));
                     }
-                    Multiplayer.clients.Add(RemoteIpEndPoint.Address.ToString(), new Player(Multiplayer.clients.Count+ 1, nicknameReceived));
+                    else
+                    {
+                        Multiplayer.SendMessageToIP(RemoteIpEndPoint.Address.ToString(), "PCMax");
+                    }
 
                 }
                 else if (InfoType.Equals("Leave"))
                 {
-                    Player playerLeft = Multiplayer.clients[RemoteIpEndPoint.Address.ToString()];
-                    for (int i = 0; i < Multiplayer.clients.Count; i++)
+                    if (Multiplayer.Host.clients.TryGetValue(RemoteIpEndPoint.Address.ToString(), out Player playerLeft))
                     {
-                         Multiplayer.SendMessageToIP(RemoteIpEndPoint.Address.ToString(), "PLeft" + playerLeft.id);
-                    }
-                    for(int i =0;i< Multiplayer.clients.Count;i++)
-                    {
-                        if(Multiplayer.clients.Values.ElementAt(i).id> playerLeft.id)
+                        Multiplayer.Host.clients.Remove(RemoteIpEndPoint.Address.ToString());
+
+                        for (int i = 0; i < Multiplayer.Host.clients.Count; i++)
                         {
-                            Multiplayer.clients.Values.ElementAt(i).id -= 1;
+                            Multiplayer.SendMessageToIP(RemoteIpEndPoint.Address.ToString(), "PLeft" + playerLeft.id);
+                        }
+                        for (int i = 0; i < Multiplayer.Host.clients.Count; i++)
+                        {
+                            if (Multiplayer.Host.clients.Values.ElementAt(i).id > playerLeft.id)
+                            {
+                                Multiplayer.Host.clients.Values.ElementAt(i).id -= 1;
+                            }
                         }
                     }
-                    Multiplayer.clients.Remove(RemoteIpEndPoint.Address.ToString());
                 }
             }
             catch (Exception e)
@@ -115,9 +193,9 @@ public class MenuControl : MonoBehaviour
     }
     public void StartMatch()
     {
-        for (int i = 0; i < Multiplayer.clients.Count; i++)
+        for (int i = 0; i < Multiplayer.Host.clients.Count; i++)
         {
-            Multiplayer.SendMessageToIP(Multiplayer.clients.Keys.ElementAt(i), "Start");
+            Multiplayer.SendMessageToIP(Multiplayer.Host.clients.Keys.ElementAt(i), "Start");
         }
         SceneManager.LoadScene("MoriGameplayTest");
     }
@@ -125,7 +203,7 @@ public class MenuControl : MonoBehaviour
     {
         Multiplayer.isHost = false;
         ReceiveDataThreadHost.Abort();
-        Multiplayer.clients.Clear();
+        Multiplayer.Host.clients.Clear();
         StopCoroutine(hostAddPlayersToMenu);
         hostAddPlayersToMenu = null;
     }
@@ -142,43 +220,55 @@ public class MenuControl : MonoBehaviour
         onJoinScreen.SetActive(false);
         onServerScreen.SetActive(true);
         clientAddPlayersToMenu = StartCoroutine(ClientAddPlayersToMenu());
-        checkForGameStart = StartCoroutine(CheckForGameStart());
     }
     private Coroutine clientAddPlayersToMenu;
     private IEnumerator ClientAddPlayersToMenu()
     {
+        int clientCount = Multiplayer.Client.players.Length;
         while (true)
         {
-            string playersConnectedList = "";
-            int playersLogged = 0;
-            for (int i = 0; i < Multiplayer.clients.Count; i++)
+            if (Multiplayer.Client.players.Length > clientCount)
             {
-                for (int y = 0; y < Multiplayer.clients.Count; y++)
+                int playersLogged = 0;
+                for (int i = 0; i < Multiplayer.Client.players.Length; i++)
                 {
-                    if (Multiplayer.clients.Values.ElementAt(y).Equals(playersLogged))
+                    for (int y = 0; y < Multiplayer.Client.players.Length; y++)
                     {
-                        playersConnectedList += Multiplayer.clients.Keys.ElementAt(y) + ": " + Multiplayer.clients.Values.ElementAt(y).name + "\n";
-                        playersLogged++;
-                    }
-                    else if(Multiplayer.selfPlayer.id.Equals(playersLogged))
-                    {
-                        playersConnectedList += Multiplayer.GetMyIP() + ": " + Multiplayer.selfPlayer.name + "\n";
-                        playersLogged++;
+                        if (Multiplayer.Client.players[y].id.Equals(playersLogged))
+                        {
+                            Player player = Multiplayer.Client.players[y];
+                            hostPlayersMenuCards[playersLogged].nicknameText.text = player.name;
+                            hostPlayersMenuCards[playersLogged].cardGameObject.SetActive(true);
+                            playersLogged++;
+                        }
                     }
                 }
+                clientCount = Multiplayer.Client.players.Length;
             }
-            clientPlayersInSession.text = playersConnectedList;
-            yield return new WaitForSeconds(0.5f);
-        }
-    }
-
-    private Coroutine checkForGameStart;
-    private IEnumerator CheckForGameStart()
-    {
-        while (true)
-        {
+            else if (Multiplayer.Client.players.Length < clientCount)
+            {
+                for (int i = 0; i < Multiplayer.Client.players.Length; i++)
+                {
+                    hostPlayersMenuCards[i].cardGameObject.SetActive(false);
+                }
+                int playersLogged = 0;
+                for (int i = 0; i < Multiplayer.Client.players.Length; i++)
+                {
+                    for (int y = 0; y < Multiplayer.Client.players.Length; y++)
+                    {
+                        if (Multiplayer.Client.players[y].id.Equals(playersLogged))
+                        {
+                            Player player = Multiplayer.Client.players[y];
+                            hostPlayersMenuCards[playersLogged].nicknameText.text = player.name;
+                            hostPlayersMenuCards[playersLogged].cardGameObject.SetActive(true);
+                            playersLogged++;
+                        }
+                    }
+                }
+                clientCount = Multiplayer.Client.players.Length;
+            }
             if(matchStart) SceneManager.LoadScene("MoriGameplayTest");
-            yield return new WaitForFixedUpdate();
+            yield return new WaitForSeconds(0.25f);
         }
     }
 
@@ -199,17 +289,40 @@ public class MenuControl : MonoBehaviour
             {
                 if (InfoType.Equals("Cnfrm"))
                 {
-                    Multiplayer.selfPlayer = new Player(int.Parse(returnData[5].ToString()),nickname.text);
+                    int playerID = int.Parse(returnData[5].ToString());
+                    Multiplayer.Client.players[playerID] = new Player(playerID, nickname.text);
+                    Multiplayer.Client.myID = playerID;
+                    Multiplayer.Client.HostIP = RemoteIpEndPoint.Address.ToString();
+                }
+                else if (InfoType.Equals("PCMax"))
+                {
+                    onJoinScreen.SetActive(true);
+                    onServerScreen.SetActive(false);
+                    StopCoroutine(clientAddPlayersToMenu);
+                    clientAddPlayersToMenu = null; ;
+                    ReceiveDataThreadJoin = null;
+                    continue;
                 }
                 else if (InfoType.Equals("PJoin"))
                 {
+                    int playerID = int.Parse(returnData[5].ToString());
                     string pName = "";
                     for (int i = 6; i < returnData.Length; i++)
                     {
                         pName += returnData[i];
                     }
-                    Multiplayer.clients.Add(,new Player(int.Parse(returnData[5].ToString()), pName));
-                    //Check se esta com o maximo de players
+                    Multiplayer.Client.players[playerID] = new Player(playerID, pName);
+                }
+                else if (InfoType.Equals("PLeft"))
+                {
+                    int playerID = int.Parse(returnData[5].ToString());
+                    Multiplayer.Client.players[playerID] = null;
+                    for (int i = playerID + 1; i < Multiplayer.Client.players.Length; i++)
+                    {
+                        Multiplayer.Client.players[i - 1] = Multiplayer.Client.players[i];
+                        Multiplayer.Client.players[i - 1].id = Multiplayer.Client.players[i].id - 1;
+                        Multiplayer.Client.players[i] = null;
+                    }
                 }
                 else if (InfoType.Equals("Start"))
                 {
@@ -225,6 +338,12 @@ public class MenuControl : MonoBehaviour
     }
     public void LeaveSession()
     {
+        onJoinScreen.SetActive(true);
+        onServerScreen.SetActive(false);
+        ReceiveDataThreadJoin.Abort();
+        ReceiveDataThreadJoin = null;
+        StopCoroutine(clientAddPlayersToMenu);
+        clientAddPlayersToMenu = null;
         Multiplayer.SendMessageToIP(ServerToJoinIPAdress.text, "Leave");
     }
     public void OnJoinMenuLeave()

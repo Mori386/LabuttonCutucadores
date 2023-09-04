@@ -20,14 +20,10 @@ public class Player
 }
 public class Multiplayer
 {
+    public readonly static int maxPlayerCount = 2;
     public static bool isHost;
-    public static string HostNickname;
-    public static string HostIP;
-    public static Dictionary<string, Player> hostClients = new Dictionary<string, Player>(); // Ip to nickname
-    public static Player client = new Dictionary<string, Player>(); // Ip to nickname
     public static UdpClient udpClient = new UdpClient(11000);
     public static string myIp;
-    public static Player selfPlayer;
 
     public static string GetMyIP()
     {
@@ -42,6 +38,16 @@ public class Multiplayer
             }
         }
         else return myIp;
+    }
+    public class Host
+    {
+        public static Dictionary<string, Player> clients = new Dictionary<string, Player>(); // Ip to PlayerData
+    }
+    public class Client
+    {
+        public static string HostIP;
+        public static Player[] players = new Player[4];
+        public static int myID;
     }
     public static void  SendMessageToIP(string ip, string message)
     {
