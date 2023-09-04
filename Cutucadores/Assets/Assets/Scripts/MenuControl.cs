@@ -51,6 +51,11 @@ public class PlayerMenuCard
 }
 public class MenuControl : MonoBehaviour
 {
+    private void FixedUpdate()
+    {
+        if(Multiplayer.isHost)Debug.Log(Multiplayer.Host.clients.Count);
+        else Debug.Log(Multiplayer.Client.players.Length);
+    }
     [SerializeField] private GameObject DefaultMenu, JoinMenu, HostMenu;
     [SerializeField] private TMP_InputField nickname;
     [Header("Client"), SerializeField] private TMP_InputField ServerToJoinIPAdress;
