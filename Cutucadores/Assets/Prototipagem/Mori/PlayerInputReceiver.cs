@@ -12,7 +12,7 @@ public class PlayerInputReceiver : MonoBehaviour
     {
         float moveInput = context.ReadValue<float>();
         playerControl.moveDirection = moveInput;
-        playerControl.OnMoving();
+        playerControl.OnMoveInputReceive();
     }
     public void OnRotationInput(InputAction.CallbackContext context)
     {

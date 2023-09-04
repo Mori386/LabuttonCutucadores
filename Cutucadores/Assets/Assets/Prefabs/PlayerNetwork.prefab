@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7263698201692987224}
   - component: {fileID: 7263698201692987226}
   - component: {fileID: 7263698201692987227}
+  - component: {fileID: 7558498204264199968}
   m_Layer: 0
   m_Name: Drill
   m_TagString: Drill
@@ -98,9 +99,21 @@ FixedJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: -0}
   m_DampingRatio: 0
   m_Frequency: 0
+--- !u!114 &7558498204264199968
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7263698201692987230}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 444bcfc55d0ac3743aebd6ca37dda3ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7263698201766518260
 GameObject:
   m_ObjectHideFlags: 0
