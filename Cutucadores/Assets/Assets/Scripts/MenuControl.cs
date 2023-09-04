@@ -234,7 +234,7 @@ public class MenuControl : MonoBehaviour
     private Coroutine clientAddPlayersToMenu;
     private IEnumerator ClientAddPlayersToMenu()
     {
-        int clientCount = Multiplayer.Client.players.Length;
+        int clientCount = Multiplayer.Client.players.Count(s => s != null);
         while (true)
         {
             if (Multiplayer.Client.players.Length > clientCount)
@@ -253,7 +253,7 @@ public class MenuControl : MonoBehaviour
                         }
                     }
                 }
-                clientCount = Multiplayer.Client.players.Length;
+                clientCount = Multiplayer.Client.players.Count(s => s != null);
             }
             else if (Multiplayer.Client.players.Length < clientCount)
             {
@@ -275,7 +275,7 @@ public class MenuControl : MonoBehaviour
                         }
                     }
                 }
-                clientCount = Multiplayer.Client.players.Length;
+                clientCount = Multiplayer.Client.players.Count(s => s != null);
             }
             if (matchStart) SceneManager.LoadScene("MoriGameplayTest");
             yield return new WaitForSeconds(0.25f);
