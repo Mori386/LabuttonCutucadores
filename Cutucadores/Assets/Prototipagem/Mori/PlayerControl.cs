@@ -1,12 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.GridBrushBase;
-using static UnityEngine.RuleTile.TilingRuleOutput;
 using UnityEngine.EventSystems;
 
 public class PlayerControl : MonoBehaviour
 {
+    public int playerID;
     //Components
     [System.NonSerialized]public Rigidbody2D rb;
     [System.NonSerialized] public Animator animator;
@@ -57,7 +56,7 @@ public class PlayerControl : MonoBehaviour
     {
         if (collision.collider.CompareTag("Drill"))
         {
-            TakeDamage();
+            //TakeDamage();
         }
     }
 }

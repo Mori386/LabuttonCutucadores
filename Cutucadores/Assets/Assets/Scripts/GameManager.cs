@@ -13,11 +13,11 @@ public class GameManager : MonoBehaviour
     {
         if (Multiplayer.isHost)
         {
-            SpawnPlayer(playerInputPrefab, 0, Multiplayer.Host.myNickname);
+            SpawnPlayer(playerInputPrefab, 0, Multiplayer.Host.myNickname).GetComponent<PlayerControl>().playerID = 0;
             for (int i = 0; i < Multiplayer.Host.clients.Count; i++)
             {
                 Player player = Multiplayer.Host.clients.Values.ElementAt(i);
-                SpawnPlayer(playerNetworkPrefab, player.id + 1, player.name);
+                SpawnPlayer(playerNetworkPrefab, player.id + 1, player.name).GetComponent<PlayerControl>().playerID = player.id + 1;
             }
         }
         else
@@ -29,11 +29,11 @@ public class GameManager : MonoBehaviour
                 {
                     if(player.id != Multiplayer.Client.myID)
                     {
-                        SpawnPlayer(playerNetworkPrefab, player.id, player.name);
+                        SpawnPlayer(playerNetworkPrefab, player.id, player.name).GetComponent<PlayerControl>().playerID = player.id;
                     }
                     else
                     {
-                        SpawnPlayer(playerInputPrefab, player.id, player.name);
+                        SpawnPlayer(playerInputPrefab, player.id, player.name).GetComponent<PlayerControl>().playerID = player.id;
                     }
                 }
             }
