@@ -11,7 +11,7 @@ public class PlayerNetworkReceive : MonoBehaviour
 {
     public PlayerControl playerControl;
     public Vector3 position;
-    public Vector3 rotation;
+    public Quaternion rotation;
     private void Start()
     {
         playerControl = GetComponent<PlayerControl>();
@@ -20,10 +20,10 @@ public class PlayerNetworkReceive : MonoBehaviour
     }
     private void Update()
     {
-        float step = playerControl.moveSpeed* Time.deltaTime; // calculate distance to move
-        float rot = playerControl.rotationSpeed* Time.deltaTime; // calculate distance to move
+        float step = playerControl.moveSpeed* Time.deltaTime*10f; // calculate distance to move
+        float rot = playerControl.rotationSpeed*100f; // calculate distance to move
         transform.position = Vector3.MoveTowards(transform.position, position, step);
-        transform.rotation= Quaternion.Euler(Vector3.MoveTowards(transform.rotation.eulerAngles, rotation, rot));
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, rot);
     }
     Thread ReceiveDataNetworkThread;
     void ReceiveDataNetwork()
@@ -34,7 +34,7 @@ public class PlayerNetworkReceive : MonoBehaviour
             Byte[] receiveBytes = Multiplayer.udpClient.Receive(ref RemoteIpEndPoint);
             string returnData = Encoding.ASCII.GetString(receiveBytes);
             Vector3 newPos;
-            Vector3 newRot;
+            Quaternion newRot;
             if (returnData[0].ToString().Equals(playerControl.playerID.ToString()))
             {
                 string newXValue = "";
@@ -71,7 +71,7 @@ public class PlayerNetworkReceive : MonoBehaviour
                 {
                     newZValue += returnData[i];
                 }
-                newRot = new Vector3(0, 0, float.Parse(newZValue));
+                newRot = new Quaternion(0, 0, float.Parse(newZValue), 0);
 
                 position = newPos;
                 rotation = newRot;
