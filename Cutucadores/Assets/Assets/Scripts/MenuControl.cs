@@ -124,9 +124,10 @@ public class MenuControl : MonoBehaviour
                         if (Multiplayer.Host.clients.Values.ElementAt(y).id.Equals(playersLogged))
                         {
                             Player player = Multiplayer.Host.clients.Values.ElementAt(y);
-                            hostPlayersMenuCards[playersLogged].ChangeIPText(Multiplayer.Host.clients.Keys.ElementAt(y));
-                            hostPlayersMenuCards[playersLogged].nicknameText.text = player.name;
-                            hostPlayersMenuCards[playersLogged].cardGameObject.SetActive(true);
+                            Debug.Log(player.name);
+                            hostPlayersMenuCards[playersLogged + 1].ChangeIPText(Multiplayer.Host.clients.Keys.ElementAt(y));
+                            hostPlayersMenuCards[playersLogged + 1].nicknameText.text = player.name;
+                            hostPlayersMenuCards[playersLogged + 1].cardGameObject.SetActive(true);
                             playersLogged++;
                         }
                     }
@@ -311,6 +312,9 @@ public class MenuControl : MonoBehaviour
                     StopCoroutine(clientAddPlayersToMenu);
                     clientAddPlayersToMenu = null; ;
                     ReceiveDataThreadJoin = null;
+                    Multiplayer.Client.HostIP = null;
+                    Multiplayer.Client.myID = 0;
+                    Multiplayer.Client.players = new Player[Multiplayer.maxPlayerCount];
                     continue;
                 }
                 else if (InfoType.Equals("PJoin"))
@@ -355,6 +359,9 @@ public class MenuControl : MonoBehaviour
         StopCoroutine(clientAddPlayersToMenu);
         clientAddPlayersToMenu = null;
         Multiplayer.SendMessageToIP(ServerToJoinIPAdress.text, "Leave");
+        Multiplayer.Client.HostIP = null;
+        Multiplayer.Client.myID = 0;
+        Multiplayer.Client.players = new Player[Multiplayer.maxPlayerCount];
     }
     public void OnJoinMenuLeave()
     {

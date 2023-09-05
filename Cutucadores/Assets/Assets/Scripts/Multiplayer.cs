@@ -46,7 +46,7 @@ public class Multiplayer
     public class Client
     {
         public static string HostIP;
-        public static Player[] players = new Player[4];
+        public static Player[] players = new Player[maxPlayerCount];
         public static int myID;
     }
     public static void  SendMessageToIP(string ip, string message)
