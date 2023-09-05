@@ -33,7 +33,7 @@ public class PlayerNetworkReceive : MonoBehaviour
             string returnData = Encoding.ASCII.GetString(receiveBytes);
             Vector3 newPos;
             Vector3 newRot;
-            if (int.Parse(returnData[0].ToString()).Equals(playerControl.playerID))
+            if (returnData[0].ToString().Equals(playerControl.playerID.ToString()))
             {
                 string newXValue = "";
                 int charsRead = 1;
