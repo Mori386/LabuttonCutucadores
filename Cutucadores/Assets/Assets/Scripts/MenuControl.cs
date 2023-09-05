@@ -245,7 +245,7 @@ public class MenuControl : MonoBehaviour
                 {
                     for (int y = 0; y < Multiplayer.Client.players.Length; y++)
                     {
-                        if (Multiplayer.Client.players[y].id.Equals(playersLogged))
+                        if (Multiplayer.Client.players[y] != null && Multiplayer.Client.players[y].id.Equals(playersLogged))
                         {
                             Player player = Multiplayer.Client.players[y];
                             clientPlayersMenuCards[playersLogged].nicknameText.text = player.name;
@@ -267,7 +267,7 @@ public class MenuControl : MonoBehaviour
                 {
                     for (int y = 0; y < Multiplayer.Client.players.Length; y++)
                     {
-                        if (Multiplayer.Client.players[y].id.Equals(playersLogged))
+                        if (Multiplayer.Client.players[y] != null && Multiplayer.Client.players[y].id.Equals(playersLogged))
                         {
                             Player player = Multiplayer.Client.players[y];
                             clientPlayersMenuCards[playersLogged].nicknameText.text = player.name;
