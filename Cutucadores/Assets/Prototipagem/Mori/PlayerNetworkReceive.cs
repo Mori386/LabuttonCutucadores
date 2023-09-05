@@ -62,7 +62,7 @@ public class PlayerNetworkReceive : MonoBehaviour
                         break;
                     }
                 }
-                newPos = new Vector3(float.Parse(newYValue), float.Parse(newYValue), 0);
+                newPos = new Vector3(float.Parse(newXValue), float.Parse(newYValue), 0);
 
                 string newZValue = "";
                 for (int i = charsRead + 1; i < receiveBytes.Length; i++)
