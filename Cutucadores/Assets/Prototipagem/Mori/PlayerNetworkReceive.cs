@@ -20,10 +20,10 @@ public class PlayerNetworkReceive : MonoBehaviour
     }
     private void Update()
     {
-        float step = playerControl.moveSpeed* Time.deltaTime*10f; // calculate distance to move
-        float rot = playerControl.rotationSpeed*100f; // calculate distance to move
+        float step = playerControl.moveSpeed * Time.deltaTime * 10f; // calculate distance to move
+        float rot = playerControl.rotationSpeed * 100f; // calculate distance to move
         transform.position = Vector3.MoveTowards(transform.position, position, step);
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, rot);
+        transform.rotation = rotation;
     }
     Thread ReceiveDataNetworkThread;
     void ReceiveDataNetwork()
@@ -69,10 +69,23 @@ public class PlayerNetworkReceive : MonoBehaviour
                 string newZValue = "";
                 for (int i = charsRead + 1; i < receiveBytes.Length; i++)
                 {
-                    newZValue += returnData[i];
+                    if (returnData[i].ToString() != "W")
+                    {
+                        newZValue += returnData[i];
+                    }
+                    else
+                    {
+                        charsRead = i;
+                        break;
+                    }
                 }
-                newRot = new Quaternion(0, 0, float.Parse(newZValue), 0);
 
+                string newWValue = "";
+                for (int i = charsRead + 1; i < receiveBytes.Length; i++)
+                {
+                    newWValue += returnData[i];
+                }
+                newRot = new Quaternion(0, 0, float.Parse(newZValue), float.Parse(newWValue));
                 position = newPos;
                 rotation = newRot;
             }
