@@ -20,8 +20,10 @@ public class PlayerNetworkReceive : MonoBehaviour
     }
     private void Update()
     {
-        transform.position = position;
-        transform.rotation = Quaternion.Euler(rotation);
+        float step = playerControl.moveSpeed* Time.deltaTime; // calculate distance to move
+        float rot = playerControl.rotationSpeed* Time.deltaTime; // calculate distance to move
+        transform.position = Vector3.MoveTowards(transform.position, position, step);
+        transform.rotation= Quaternion.Euler(Vector3.MoveTowards(transform.rotation.eulerAngles, rotation, rot));
     }
     Thread ReceiveDataNetworkThread;
     void ReceiveDataNetwork()
@@ -33,8 +35,8 @@ public class PlayerNetworkReceive : MonoBehaviour
             string returnData = Encoding.ASCII.GetString(receiveBytes);
             Vector3 newPos;
             Vector3 newRot;
-            //if (returnData[0].ToString().Equals(playerControl.playerID.ToString()))
-            //{
+            if (returnData[0].ToString().Equals(playerControl.playerID.ToString()))
+            {
                 string newXValue = "";
                 int charsRead = 1;
                 for (int i = charsRead; i < receiveBytes.Length; i++)
@@ -74,6 +76,6 @@ public class PlayerNetworkReceive : MonoBehaviour
                 position = newPos;
                 rotation = newRot;
             }
-        //}
+        }
     }
 }
