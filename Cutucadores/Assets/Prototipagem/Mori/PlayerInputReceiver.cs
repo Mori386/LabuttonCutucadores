@@ -36,21 +36,21 @@ public class PlayerInputReceiver : MonoBehaviour
             for(int i = 0; i<Multiplayer.Host.clients.Count; i++)
             {
                 Player player = Multiplayer.Host.clients.Values.ElementAt(i);
-                StartCoroutine(SendTransformInfo(Multiplayer.Host.clients.Keys.ElementAt(i), 0, transform.position, transform.rotation.eulerAngles.z));
+                StartCoroutine(SendTransformInfo(Multiplayer.Host.clients.Keys.ElementAt(i), 0, transform));
             }
         }
         else
         {
-            StartCoroutine(SendTransformInfo(Multiplayer.Client.HostIP, Multiplayer.Client.myID, transform.position, transform.rotation.eulerAngles.z));
+            StartCoroutine(SendTransformInfo(Multiplayer.Client.HostIP, Multiplayer.Client.myID, transform));
         }
     }
 
-    public IEnumerator SendTransformInfo(string IPAdress, int playerID, Vector3 pos, float rot)
+    public IEnumerator SendTransformInfo(string IPAdress, int playerID, Transform transform)
     {
         while (true)
         {
-            pos = new Vector3(Mathf.Round(pos.x * 1000) / 1000, Mathf.Round(pos.y * 1000) / 1000,0);
-            Multiplayer.SendMessageToIP(IPAdress, playerID+ pos.x+"Y"+ pos.y+"Z"+ Mathf.Round(rot * 1000) / 1000);
+            Vector3 roundPos = new Vector3(Mathf.Round(transform.position.x * 1000) / 1000, Mathf.Round(transform.position.y * 1000) / 1000,0);
+            Multiplayer.SendMessageToIP(IPAdress, playerID+ roundPos.x+"Y"+ roundPos.y+"Z"+ Mathf.Round(transform.rotation.z * 1000) / 1000);
             yield return null;
         }
     }
