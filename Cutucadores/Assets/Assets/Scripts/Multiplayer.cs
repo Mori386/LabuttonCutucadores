@@ -41,6 +41,7 @@ public class Multiplayer
     }
     public class Host
     {
+        public static string myNickname;
         public static Dictionary<string, Player> clients = new Dictionary<string, Player>(); // Ip to PlayerData
     }
     public class Client

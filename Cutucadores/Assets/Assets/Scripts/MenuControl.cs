@@ -112,7 +112,7 @@ public class MenuControl : MonoBehaviour
             }
             else if (Multiplayer.Host.clients.Count < clientCount)
             {
-                for (int i = 0; i < Multiplayer.Host.clients.Count; i++)
+                for (int i = 1; i < hostPlayersMenuCards.Length; i++)
                 {
                     hostPlayersMenuCards[i].cardGameObject.SetActive(false);
                 }
@@ -204,6 +204,7 @@ public class MenuControl : MonoBehaviour
     }
     public void StartMatch()
     {
+        Multiplayer.Host.myNickname = nickname.text;
         for (int i = 0; i < Multiplayer.Host.clients.Count; i++)
         {
             Multiplayer.SendMessageToIP(Multiplayer.Host.clients.Keys.ElementAt(i), "Start");
@@ -258,9 +259,9 @@ public class MenuControl : MonoBehaviour
             }
             else if (Multiplayer.Client.players.Length < clientCount)
             {
-                for (int i = 0; i < Multiplayer.Client.players.Length; i++)
+                for (int i = 0; i < clientPlayersMenuCards.Length; i++)
                 {
-                    hostPlayersMenuCards[i].cardGameObject.SetActive(false);
+                    clientPlayersMenuCards[i].cardGameObject.SetActive(false);
                 }
                 int playersLogged = 0;
                 for (int i = 0; i < Multiplayer.Client.players.Length; i++)
