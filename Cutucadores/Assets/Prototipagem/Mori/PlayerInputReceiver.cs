@@ -50,7 +50,7 @@ public class PlayerInputReceiver : MonoBehaviour
         while (true)
         {
             Vector3 roundPos = new Vector3(Mathf.Round(transform.position.x * 1000) / 1000, Mathf.Round(transform.position.y * 1000) / 1000,0);
-            Multiplayer.SendMessageToIP(IPAdress, playerID+ roundPos.x+"Y"+ roundPos.y+"Z"+ Mathf.Round(transform.rotation.z * 1000) / 1000);
+            Multiplayer.SendMessageToIP(IPAdress, playerID.ToString()+ roundPos.x+"Y"+ roundPos.y+"Z"+ Mathf.Round(transform.rotation.eulerAngles.z * 1000) / 1000);
             yield return null;
         }
     }
