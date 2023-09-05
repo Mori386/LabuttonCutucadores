@@ -20,10 +20,10 @@ public class PlayerNetworkReceive : MonoBehaviour
     }
     private void Update()
     {
-        float step = playerControl.moveSpeed * Time.deltaTime * 10f; // calculate distance to move
-        float rot = playerControl.rotationSpeed * 100f; // calculate distance to move
+        float step = playerControl.moveSpeed * Time.deltaTime * 1f; // calculate distance to move
+        float rot = playerControl.rotationSpeed * Time.deltaTime * 100f; // calculate distance to move
         transform.position = Vector3.MoveTowards(transform.position, position, step);
-        transform.rotation = rotation;
+        transform.rotation = Quaternion.RotateTowards(transform.rotation,rotation,rot);
     }
     Thread ReceiveDataNetworkThread;
     void ReceiveDataNetwork()

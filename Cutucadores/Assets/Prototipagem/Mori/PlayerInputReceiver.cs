@@ -8,7 +8,6 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
-using static UnityEditor.PlayerSettings;
 
 public class PlayerInputReceiver : MonoBehaviour
 {
@@ -50,10 +49,9 @@ public class PlayerInputReceiver : MonoBehaviour
         while (true)
         {
             Vector3 roundPos = new Vector3(Mathf.Round(transform.position.x * 1000) / 1000, Mathf.Round(transform.position.y * 1000) / 1000,0);
-            Vector2 roundRot = new Vector2(Mathf.Round(transform.rotation.z * 1000) / 1000, Mathf.Round(transform.rotation.w * 1000) / 1000);
+            Vector2 roundRot = new Vector2(Mathf.Round(transform.rotation.z * 10000) / 10000, Mathf.Round(transform.rotation.w * 10000) / 10000);
             Multiplayer.SendMessageToIP(IPAdress, playerID.ToString()+ roundPos.x+"Y"+ roundPos.y+"Z"+ roundRot.x+"W"+ roundRot.y);
-            Debug.Log(transform.rotation);
-            yield return new WaitForFixedUpdate();
+            yield return new WaitForSeconds(0.01f);
         }
     }
 }
