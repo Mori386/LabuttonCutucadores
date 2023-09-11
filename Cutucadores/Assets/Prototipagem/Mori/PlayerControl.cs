@@ -20,15 +20,25 @@ public class PlayerControl : MonoBehaviour
     //State Machine
     IState currentState;
 
+    public DefaultState defaultState;
+    public StunnedState stunnedState;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        defaultState = new DefaultState();
+        stunnedState = new StunnedState();
     }
     private void Start()
     {
         animator = GetComponentInChildren<Animator>();
         drill = GetComponentInChildren<Drill>();
-        currentState = new DefaultState();
+        currentState = defaultState;
+    }
+    public void StunTarget(float stunDurationInSeconds)
+    {
+        stunnedState.stunDuration = stunDurationInSeconds;
+        ChangeState(stunnedState);
     }
     public void ChangeState(IState state)
     {
@@ -76,7 +86,8 @@ public class DefaultState : IState
     }
     public void OnDirectDrillHit(PlayerControl playerControl)
     {
-        playerControl.ChangeState(new StunnedState());
+        
+        playerControl.StunTarget(0.5f);
     }
     public void OnMovementInputReceive(PlayerControl playerControl)
     {
@@ -94,9 +105,11 @@ public class DefaultState : IState
 }
 public class StunnedState : IState
 {
+    public float stunDuration;
     public void OnEnter(PlayerControl playerControl)
     {
-
+        
+        playerControl.StartCoroutine(LeaveStunStateCooldown(playerControl));
     }
     public void OnDirectDrillHit(PlayerControl playerControl)
     {
@@ -113,5 +126,10 @@ public class StunnedState : IState
     public void OnExit(PlayerControl playerControl)
     {
 
+    }
+    private IEnumerator LeaveStunStateCooldown(PlayerControl playerControl)
+    {
+        yield return new WaitForSeconds(stunDuration);
+        playerControl.ChangeState(playerControl.defaultState);
     }
 }
