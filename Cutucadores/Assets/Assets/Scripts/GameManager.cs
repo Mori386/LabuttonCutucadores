@@ -9,15 +9,19 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject playerInputPrefab;
     [SerializeField] private GameObject playerNetworkPrefab;
     [Space, SerializeField] private Transform[] playerSpawnpoint;
+
+    private PlayerControl[] players;
     void Start()
     {
         if (Multiplayer.isHost)
         {
-            SpawnPlayer(playerInputPrefab, 0, Multiplayer.Host.myNickname).GetComponent<PlayerControl>().playerID = 0;
+            PlayerControl playerControl =  SpawnPlayer(playerInputPrefab, 0, Multiplayer.Host.myNickname).GetComponent<PlayerControl>();
+            playerControl.playerID = 0;
             for (int i = 0; i < Multiplayer.Host.clients.Count; i++)
             {
                 Player player = Multiplayer.Host.clients.Values.ElementAt(i);
-                SpawnPlayer(playerNetworkPrefab, player.id + 1, player.name).GetComponent<PlayerControl>().playerID = player.id + 1;
+                playerControl = SpawnPlayer(playerNetworkPrefab, player.id + 1, player.name).GetComponent<PlayerControl>();
+                playerControl.playerID = player.id + 1;
             }
         }
         else

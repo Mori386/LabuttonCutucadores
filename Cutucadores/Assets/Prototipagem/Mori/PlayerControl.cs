@@ -50,7 +50,7 @@ public class PlayerControl : MonoBehaviour
     {
         Destroy(gameObject);
     }
-    public void OnDirectDrillHit()
+    public void OnDrilltoDrillHit()
     {
         currentState.OnDirectDrillHit(this);
     }

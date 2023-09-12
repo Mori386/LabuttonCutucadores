@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Drill : MonoBehaviour
 {
-    private PlayerControl player;
+    [System.NonSerialized]public PlayerControl player;
     private void Start()
     {
         player = GetComponentInParent<PlayerControl>();
@@ -13,7 +13,7 @@ public class Drill : MonoBehaviour
     {
         if(collision.collider.CompareTag("Drill"))
         {
-
+            collision.collider.GetComponent<Drill>().player.OnDrilltoDrillHit();
         }
     }
 }
