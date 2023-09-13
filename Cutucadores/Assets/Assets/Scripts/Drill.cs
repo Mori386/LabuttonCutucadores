@@ -13,7 +13,12 @@ public class Drill : MonoBehaviour
     {
         if(collision.collider.CompareTag("Drill"))
         {
-            collision.collider.GetComponent<Drill>().player.OnDrilltoDrillHit();
+            Debug.Log("HitDrill");
+            //PlayerControl otherPlayer = GameManager.Instance.GetPlayerControl(collision.collider.transform.parent.gameObject);
+            //player.OnDrilltoDrillHit(otherPlayer.transform);
+            //otherPlayer.OnDrilltoDrillHit(player.transform);
+            collision.collider.transform.parent.GetComponent<PlayerControl>().OnDrilltoDrillHit(player.transform);
+            player.OnDrilltoDrillHit(collision.collider.transform.parent);
         }
     }
 }

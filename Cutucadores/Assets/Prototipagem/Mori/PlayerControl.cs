@@ -50,9 +50,9 @@ public class PlayerControl : MonoBehaviour
     {
         Destroy(gameObject);
     }
-    public void OnDrilltoDrillHit()
+    public void OnDrilltoDrillHit(Transform otherPlayer)
     {
-        currentState.OnDirectDrillHit(this);
+        currentState.OnDirectDrillHit(this,otherPlayer.position);
     }
     public void OnMoveInputReceive()
     {
@@ -73,7 +73,7 @@ public class PlayerControl : MonoBehaviour
 public interface IState
 {
     public void OnEnter(PlayerControl playerControl);
-    public void OnDirectDrillHit(PlayerControl playerControl);
+    public void OnDirectDrillHit(PlayerControl playerControl,Vector3 otherPosition);
     public void OnMovementInputReceive(PlayerControl playerControl);
     public void OnUpdate(PlayerControl playerControl);
     public void OnExit(PlayerControl playerControl);
@@ -84,10 +84,12 @@ public class DefaultState : IState
     {
 
     }
-    public void OnDirectDrillHit(PlayerControl playerControl)
+    public void OnDirectDrillHit(PlayerControl playerControl, Vector3 otherPosition)
     {
-        
-        playerControl.StunTarget(0.5f);
+        Vector2 forceApplied = otherPosition - playerControl.transform.position;
+        Debug.Log(forceApplied.normalized);
+        playerControl.rb.AddForce(forceApplied.normalized*500f);
+        playerControl.StunTarget(2.5f);
     }
     public void OnMovementInputReceive(PlayerControl playerControl)
     {
@@ -111,7 +113,7 @@ public class StunnedState : IState
         
         playerControl.StartCoroutine(LeaveStunStateCooldown(playerControl));
     }
-    public void OnDirectDrillHit(PlayerControl playerControl)
+    public void OnDirectDrillHit(PlayerControl playerControl, Vector3 otherPosition)
     {
        
     }
