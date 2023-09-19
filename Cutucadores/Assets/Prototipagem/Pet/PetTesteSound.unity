@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731715, g: 0.13414735, b: 0.121078536, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -766,7 +766,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1849534308
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -783,20 +783,26 @@ MonoBehaviour:
   - name: Repulsao
     clip: {fileID: 8300000, guid: 6f2a5f58cd404fa40a4ba676b1073ddd, type: 3}
     volume: 2
-    pitch: 0.7
+    pitch: 2
     loop: 0
     source: {fileID: 0}
   - name: Broca-Funcionando
     clip: {fileID: 8300000, guid: 16b772e430bf7584cbc195efa69068f2, type: 3}
-    volume: 0.44
+    volume: 0.25
     pitch: 2
     loop: 1
     source: {fileID: 0}
   - name: Broca-Parada
-    clip: {fileID: 8300000, guid: 05ed4006e58da794fa631bdf1f42384b, type: 3}
+    clip: {fileID: 8300000, guid: e2b823b98e90a984f8b591281add944f, type: 3}
     volume: 2
-    pitch: 3
+    pitch: 1.5
     loop: 0
+    source: {fileID: 0}
+  - name: Motor
+    clip: {fileID: 8300000, guid: 4fdd4234f94623348981739b8443d522, type: 3}
+    volume: 5
+    pitch: 1.5
+    loop: 1
     source: {fileID: 0}
 --- !u!4 &1849534309
 Transform:

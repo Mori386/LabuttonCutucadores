@@ -18,16 +18,20 @@ public class VariantePlayer: MonoBehaviour
         playerControl.moveDirection = moveInput;
         playerControl.OnMoveInputReceive();
 
-        if (moveInput > 0 || moveInput < 0)
+        //FindObjectOfType<AudioManager>().Play("Motor");
+
+        /*if (moveInput > 0 || moveInput < 0)
         {
             FindObjectOfType<AudioManager>().Play("Broca-Funcionando");
             FindObjectOfType<AudioManager>().Stop("Broca-Parada");
+            FindObjectOfType<AudioManager>().Stop("Motor");
         }
         else
         {
             FindObjectOfType<AudioManager>().Stop("Broca-Funcionando");
             FindObjectOfType<AudioManager>().Play("Broca-Parada");
-        }
+            FindObjectOfType<AudioManager>().Play("Motor");
+        }*/
 
         //FindObjectOfType<AudioManager>().Play("Repulsao");
     }
