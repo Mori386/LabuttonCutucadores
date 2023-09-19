@@ -7,7 +7,7 @@ public class PlayerControl : MonoBehaviour
 {
     public int playerID;
     //Components
-    [System.NonSerialized]public Rigidbody2D rb;
+    [System.NonSerialized] public Rigidbody2D rb;
     [System.NonSerialized] public Animator animator;
     [System.NonSerialized] public Drill drill;
     //Variables
@@ -15,6 +15,7 @@ public class PlayerControl : MonoBehaviour
     [System.NonSerialized] public float moveDirection;
     [System.NonSerialized] public float rotationDirection;
     public float moveSpeedMultiplier = 1f;
+    public float slowMultiplier = 1;
     [Space] public float rotationSpeed;
 
     //State Machine
@@ -52,7 +53,7 @@ public class PlayerControl : MonoBehaviour
     }
     public void OnDrilltoDrillHit(Transform otherPlayer)
     {
-        currentState.OnDirectDrillHit(this,otherPlayer.position);
+        currentState.OnDirectDrillHit(this, otherPlayer.position);
     }
     public void OnMoveInputReceive()
     {
@@ -73,7 +74,7 @@ public class PlayerControl : MonoBehaviour
 public interface IState
 {
     public void OnEnter(PlayerControl playerControl);
-    public void OnDirectDrillHit(PlayerControl playerControl,Vector3 otherPosition);
+    public void OnDirectDrillHit(PlayerControl playerControl, Vector3 otherPosition);
     public void OnMovementInputReceive(PlayerControl playerControl);
     public void OnUpdate(PlayerControl playerControl);
     public void OnExit(PlayerControl playerControl);
@@ -88,8 +89,8 @@ public class DefaultState : IState
     {
         Vector2 forceApplied = otherPosition - playerControl.transform.position;
         Debug.Log(forceApplied.normalized);
-        playerControl.rb.AddForce(forceApplied.normalized*500f);
-        playerControl.StunTarget(2.5f);
+        playerControl.rb.AddForce(forceApplied.normalized * (-10f), ForceMode2D.Impulse);
+        SlowApplied(playerControl, 3);
     }
     public void OnMovementInputReceive(PlayerControl playerControl)
     {
@@ -97,12 +98,17 @@ public class DefaultState : IState
     }
     public void OnUpdate(PlayerControl playerControl)
     {
-        playerControl.rb.angularVelocity = playerControl.rotationSpeed * playerControl.rotationDirection * (-100);
-        playerControl.rb.velocity = playerControl.transform.up * playerControl.moveSpeedMultiplier * playerControl.moveSpeed * playerControl.moveDirection;
+        playerControl.rb.angularVelocity = playerControl.rotationSpeed * playerControl.rotationDirection * (-100) * playerControl.slowMultiplier;
+        playerControl.rb.velocity = playerControl.transform.up * playerControl.moveSpeedMultiplier * playerControl.moveSpeed * playerControl.moveDirection * playerControl.slowMultiplier;
     }
     public void OnExit(PlayerControl playerControl)
     {
         playerControl.animator.SetFloat("Speed", 0);
+    }
+    private IEnumerator SlowApplied(PlayerControl playerControl,float slowDuration)
+    {
+        yield return new WaitForSeconds(slowDuration);
+        
     }
 }
 public class StunnedState : IState
@@ -110,12 +116,10 @@ public class StunnedState : IState
     public float stunDuration;
     public void OnEnter(PlayerControl playerControl)
     {
-        
-        playerControl.StartCoroutine(LeaveStunStateCooldown(playerControl));
     }
     public void OnDirectDrillHit(PlayerControl playerControl, Vector3 otherPosition)
     {
-       
+
     }
     public void OnMovementInputReceive(PlayerControl playerControl)
     {
@@ -128,10 +132,5 @@ public class StunnedState : IState
     public void OnExit(PlayerControl playerControl)
     {
 
-    }
-    private IEnumerator LeaveStunStateCooldown(PlayerControl playerControl)
-    {
-        yield return new WaitForSeconds(stunDuration);
-        playerControl.ChangeState(playerControl.defaultState);
     }
 }
