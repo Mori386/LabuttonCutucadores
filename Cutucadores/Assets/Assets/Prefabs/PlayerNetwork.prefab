@@ -468,8 +468,8 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0
+  m_LinearDrag: 0.15
+  m_AngularDrag: 0.1
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 2
@@ -488,8 +488,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3d63d7f242001f41a12c64cb048786c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerControl: {fileID: 0}
   position: {x: 0, y: 0, z: 0}
-  rotation: {x: 0, y: 0, z: 0}
+  rotation: {x: 0, y: 0, z: 0, w: 0}
 --- !u!114 &7263698202459810605
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -502,6 +503,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e94dcf54c58bcd041a2a72a873d0dde9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerID: 0
   moveSpeed: 5
   moveSpeedMultiplier: 1
+  slowMultiplier: 1
   rotationSpeed: 2

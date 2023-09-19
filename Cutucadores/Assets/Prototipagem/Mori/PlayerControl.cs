@@ -15,7 +15,7 @@ public class PlayerControl : MonoBehaviour
     [System.NonSerialized] public float moveDirection;
     [System.NonSerialized] public float rotationDirection;
     public float moveSpeedMultiplier = 1f;
-    public float slowMultiplier = 1;
+    public float InputMultiplier = 1;
     [Space] public float rotationSpeed;
 
     //State Machine
@@ -90,7 +90,7 @@ public class DefaultState : IState
         Vector2 forceApplied = otherPosition - playerControl.transform.position;
         Debug.Log(forceApplied.normalized);
         playerControl.rb.AddForce(forceApplied.normalized * (-10f), ForceMode2D.Impulse);
-        SlowApplied(playerControl, 3);
+        ApplyConcussion(playerControl, 0.5f);
     }
     public void OnMovementInputReceive(PlayerControl playerControl)
     {
@@ -98,18 +98,25 @@ public class DefaultState : IState
     }
     public void OnUpdate(PlayerControl playerControl)
     {
-        playerControl.rb.angularVelocity = playerControl.rotationSpeed * playerControl.rotationDirection * (-100) * playerControl.slowMultiplier;
-        playerControl.rb.velocity = playerControl.transform.up * playerControl.moveSpeedMultiplier * playerControl.moveSpeed * playerControl.moveDirection * playerControl.slowMultiplier;
+        playerControl.rb.angularVelocity = playerControl.rotationSpeed * playerControl.rotationDirection * (-100) * playerControl.InputMultiplier;
+        playerControl.rb.AddForce(playerControl.transform.up * playerControl.moveSpeedMultiplier * playerControl.moveSpeed * playerControl.moveDirection * playerControl.InputMultiplier, ForceMode2D.Force);
     }
     public void OnExit(PlayerControl playerControl)
     {
         playerControl.animator.SetFloat("Speed", 0);
     }
-    private IEnumerator SlowApplied(PlayerControl playerControl,float slowDuration)
+    private IEnumerator ApplyConcussion(PlayerControl playerControl, float concussionDuration)
     {
-        yield return new WaitForSeconds(slowDuration);
-        
+        float timer = 0;
+        while (timer < concussionDuration)
+        {
+            playerControl.InputMultiplier = (timer / concussionDuration);
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        playerControl.InputMultiplier = 1;
     }
+
 }
 public class StunnedState : IState
 {
