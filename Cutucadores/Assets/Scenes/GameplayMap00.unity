@@ -220,7 +220,7 @@ GameObject:
   - component: {fileID: 547962727}
   - component: {fileID: 547962726}
   m_Layer: 0
-  m_Name: PAREDE
+  m_Name: Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1532,7 +1532,7 @@ GameObject:
   - component: {fileID: 841222995}
   - component: {fileID: 841222994}
   m_Layer: 0
-  m_Name: "CH\xC3O"
+  m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9544,7 +9544,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1468796694}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 99a224fcf2e71d543b6ba195691d57fb, type: 3}
   m_Name: 

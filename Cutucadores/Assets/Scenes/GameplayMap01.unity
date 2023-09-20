@@ -220,7 +220,7 @@ GameObject:
   - component: {fileID: 816037282}
   - component: {fileID: 816037281}
   m_Layer: 0
-  m_Name: PAREDE
+  m_Name: Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1368,7 +1368,7 @@ GameObject:
   - component: {fileID: 841222995}
   - component: {fileID: 841222994}
   m_Layer: 0
-  m_Name: "CH\xC3O"
+  m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

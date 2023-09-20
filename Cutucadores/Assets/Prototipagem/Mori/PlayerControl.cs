@@ -15,7 +15,6 @@ public class PlayerControl : MonoBehaviour
     [System.NonSerialized] public float moveDirection;
     [System.NonSerialized] public float rotationDirection;
     public float moveSpeedMultiplier = 1f;
-    public float InputMultiplier = 1;
     [Space] public float rotationSpeed;
 
     //State Machine
@@ -89,8 +88,9 @@ public class DefaultState : IState
     {
         Vector2 forceApplied = otherPosition - playerControl.transform.position;
         Debug.Log(forceApplied.normalized);
+
+        playerControl.StunTarget(0.15f);
         playerControl.rb.AddForce(forceApplied.normalized * (-10f), ForceMode2D.Impulse);
-        ApplyConcussion(playerControl, 0.5f);
     }
     public void OnMovementInputReceive(PlayerControl playerControl)
     {
@@ -98,23 +98,12 @@ public class DefaultState : IState
     }
     public void OnUpdate(PlayerControl playerControl)
     {
-        playerControl.rb.angularVelocity = playerControl.rotationSpeed * playerControl.rotationDirection * (-100) * playerControl.InputMultiplier;
-        playerControl.rb.AddForce(playerControl.transform.up * playerControl.moveSpeedMultiplier * playerControl.moveSpeed * playerControl.moveDirection * playerControl.InputMultiplier, ForceMode2D.Force);
+        playerControl.rb.angularVelocity = playerControl.rotationSpeed * playerControl.rotationDirection * (-100);
+        playerControl.rb.velocity = playerControl.transform.up * playerControl.moveSpeedMultiplier * playerControl.moveSpeed * playerControl.moveDirection;
     }
     public void OnExit(PlayerControl playerControl)
     {
         playerControl.animator.SetFloat("Speed", 0);
-    }
-    private IEnumerator ApplyConcussion(PlayerControl playerControl, float concussionDuration)
-    {
-        float timer = 0;
-        while (timer < concussionDuration)
-        {
-            playerControl.InputMultiplier = (timer / concussionDuration);
-            timer += Time.deltaTime;
-            yield return null;
-        }
-        playerControl.InputMultiplier = 1;
     }
 
 }
@@ -123,6 +112,7 @@ public class StunnedState : IState
     public float stunDuration;
     public void OnEnter(PlayerControl playerControl)
     {
+        playerControl.StartCoroutine(ApplyStun(playerControl));
     }
     public void OnDirectDrillHit(PlayerControl playerControl, Vector3 otherPosition)
     {
@@ -139,5 +129,10 @@ public class StunnedState : IState
     public void OnExit(PlayerControl playerControl)
     {
 
+    }
+    private IEnumerator ApplyStun(PlayerControl playerControl)
+    {
+        yield return new WaitForSeconds(stunDuration);
+        playerControl.ChangeState(playerControl.defaultState);
     }
 }
