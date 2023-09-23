@@ -17,6 +17,8 @@ public class PlayerControl : MonoBehaviour
     public float moveSpeedMultiplier = 1f;
     [Space] public float rotationSpeed;
 
+    public int hp = 3;
+
     //State Machine
     IState currentState;
 
@@ -48,7 +50,15 @@ public class PlayerControl : MonoBehaviour
     }
     public void TakeDamage()
     {
-        Destroy(gameObject);
+        if(hp-1<0)
+        {
+            //Death
+            Destroy(gameObject);
+        }
+        else
+        {
+            hp--;
+        }
     }
     public void OnDrilltoDrillHit(Transform otherPlayer)
     {
@@ -66,7 +76,7 @@ public class PlayerControl : MonoBehaviour
     {
         if (collision.collider.CompareTag("Drill"))
         {
-            //TakeDamage();
+            TakeDamage();
         }
     }
 }
