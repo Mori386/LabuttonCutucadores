@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Drill
   - Fall
+  - Speed
   layers:
   - Default
   - TransparentFX

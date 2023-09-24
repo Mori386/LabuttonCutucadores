@@ -20,5 +20,10 @@ public class Drill : MonoBehaviour
             collision.collider.transform.parent.GetComponent<PlayerControl>().OnDrilltoDrillHit(player.transform);
             player.OnDrilltoDrillHit(collision.collider.transform.parent);
         }
+        else if (collision.collider.CompareTag("Player"))
+        {
+            Vector2 forceApplied = (collision.transform.position - transform.position).normalized;
+            player.RecoilOnHit(forceApplied);
+        }
     }
 }

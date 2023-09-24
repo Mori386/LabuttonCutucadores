@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -8,8 +9,12 @@ public class PlayerControl : MonoBehaviour
     public int playerID;
     //Components
     [System.NonSerialized] public Rigidbody2D rb;
+    [System.NonSerialized] public Collider2D[] colliders;
     [System.NonSerialized] public Animator animator;
+    [System.NonSerialized] public SpriteRenderer spriteRenderer;
     [System.NonSerialized] public Drill drill;
+    [System.NonSerialized] public SpriteRenderer hpSlots;
+    [System.NonSerialized] public ParticleSystem deathParticle;
     //Variables
     public float moveSpeed;
     [System.NonSerialized] public float moveDirection;
@@ -30,10 +35,36 @@ public class PlayerControl : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         defaultState = new DefaultState();
         stunnedState = new StunnedState();
+
+        Collider2D[] collidersInPlayer = GetComponentsInChildren<Collider2D>();
+        colliders = new Collider2D[collidersInPlayer.Length + 1];
+        colliders[0] = GetComponent<Collider2D>();
+        for (int i = 0; i < collidersInPlayer.Length; i++)
+        {
+            colliders[i + 1] = collidersInPlayer[i];
+        }
+
+        hpSlots = transform.Find("HP").GetChild(0).GetComponent<SpriteRenderer>();
+        if (hpSlots == null)
+        {
+            hpSlots = transform.GetChild(3).GetChild(0).GetComponent<SpriteRenderer>();
+        }
+        if (transform.Find("DeathExplosion").TryGetComponent<ParticleSystem>(out ParticleSystem ps))
+        {
+            deathParticle = ps;
+        }
+        else
+        {
+            if (transform.GetChild(4).TryGetComponent<ParticleSystem>(out ParticleSystem deathPs))
+            {
+                deathParticle = deathPs;
+            }
+        }
     }
     private void Start()
     {
         animator = GetComponentInChildren<Animator>();
+        spriteRenderer = animator.GetComponent<SpriteRenderer>();
         drill = GetComponentInChildren<Drill>();
         currentState = defaultState;
     }
@@ -48,16 +79,95 @@ public class PlayerControl : MonoBehaviour
         currentState = state;
         currentState.OnEnter(this);
     }
-    public void TakeDamage()
+    public void RecoilOnHit(Vector3 direction)
     {
-        if(hp-1<0)
+        StunTarget(0.125f);
+        rb.AddForce(direction * (-20f), ForceMode2D.Impulse);
+    }
+    public void TakeDamage(Collision2D collision)
+    {
+        if (hp - 1 <= 0)
         {
-            //Death
-            Destroy(gameObject);
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                colliders[i].enabled = false;
+            }
+            StartCoroutine(DeathAnimation());
         }
         else
         {
+            Vector2 forceApplied = (collision.transform.position - transform.position).normalized;
+            RecoilOnHit(forceApplied);
+
             hp--;
+            UpdateHPBar();
+            StartCoroutine(DamageTakenEffect());
+        }
+    }
+    public float frac(float value)
+    {
+        return value - Mathf.Floor(value);
+    }
+    public IEnumerator LowHpVisual()
+    {
+        while (true)
+        {
+            spriteRenderer.color = new Color(1, 0.52f + frac(Time.time) * 0.48f, 0.52f + frac(Time.time) * 0.48f, 1);
+            yield return null;
+        }
+    }
+    public IEnumerator DeathAnimation()
+    {
+        deathParticle.Play();
+        float timer = 0;
+        while (timer < 1)
+        {
+            transform.rotation = Quaternion.Euler(0, 0, frac(Time.time) * 360);
+            transform.localScale = new Vector3(1 - timer, 1 - timer, 1 - timer);
+            yield return null;
+            timer += Time.deltaTime;
+        }
+        gameObject.SetActive(false);
+    }
+    public IEnumerator FallAnimation(Vector3 holePos)
+    {
+        float timer = 0;
+        while (timer < 1)
+        {
+            spriteRenderer.color = new Color(1f-timer, 1f - timer, 1f - timer, 1);
+            transform.position = holePos;
+            transform.rotation = Quaternion.Euler(0, 0, frac(Time.time) * 360);
+            transform.localScale = new Vector3(1 - timer, 1 - timer, 1 - timer);
+            yield return null;
+            timer += Time.deltaTime;
+        }
+    }
+    public IEnumerator DamageTakenEffect()
+    {
+        Color color = spriteRenderer.color;
+        spriteRenderer.color = new Color(1, 133 / 255, 133 / 255, 1);
+        yield return new WaitForSeconds(0.1f);
+        spriteRenderer.color = color;
+        if (hp.Equals(1))
+        {
+            StartCoroutine(LowHpVisual());
+        }
+    }
+    public void UpdateHPBar()
+    {
+        hpSlots.transform.localScale = new Vector3(0.2f * hp, hpSlots.transform.localScale.y, hpSlots.transform.localScale.z);
+        switch (hp)
+        {
+            case 1:
+                hpSlots.color = Color.red;
+                break;
+            case 2:
+                hpSlots.color = Color.yellow;
+                break;
+            case 3:
+            default:
+                hpSlots.color = Color.green;
+                break;
         }
     }
     public void OnDrilltoDrillHit(Transform otherPlayer)
@@ -76,7 +186,14 @@ public class PlayerControl : MonoBehaviour
     {
         if (collision.collider.CompareTag("Drill"))
         {
-            TakeDamage();
+            TakeDamage(collision);
+        }
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Fall"))
+        {
+            StartCoroutine(FallAnimation(collision.transform.position));
         }
     }
 }
@@ -120,8 +237,10 @@ public class DefaultState : IState
 public class StunnedState : IState
 {
     public float stunDuration;
+    public Color color;
     public void OnEnter(PlayerControl playerControl)
     {
+        color = playerControl.spriteRenderer.color;
         playerControl.StartCoroutine(ApplyStun(playerControl));
     }
     public void OnDirectDrillHit(PlayerControl playerControl, Vector3 otherPosition)
@@ -138,11 +257,19 @@ public class StunnedState : IState
     }
     public void OnExit(PlayerControl playerControl)
     {
-
+        playerControl.spriteRenderer.color = color;
     }
     private IEnumerator ApplyStun(PlayerControl playerControl)
     {
-        yield return new WaitForSeconds(stunDuration);
+        float timer = 0;
+        float darkenAmount = 0.85f;
+        while (timer <= stunDuration)
+        {
+            float darkenApplied = darkenAmount + timer / stunDuration * (1 - darkenAmount);
+            playerControl.spriteRenderer.color = new Color(darkenApplied, darkenApplied, darkenApplied, 1);
+            yield return null;
+            timer += Time.deltaTime;
+        }
         playerControl.ChangeState(playerControl.defaultState);
     }
 }
