@@ -311,7 +311,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 533721071}
-  m_LocalRotation: {x: 0.0010640862, y: 0.03447852, z: -0.000036709967, w: 0.9994049}
+  m_LocalRotation: {x: 0.0010639237, y: 0.03864885, z: -0.000041150204, w: 0.9992523}
   m_LocalPosition: {x: -3, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -10942,10 +10942,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1313509748, guid: c1a74f4c78600454ba36e79c9658360e, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 2147308431542360236, guid: c1a74f4c78600454ba36e79c9658360e, type: 3}
       propertyPath: m_Name
       value: PlayerInput
@@ -10993,18 +10989,6 @@ PrefabInstance:
     - target: {fileID: 2147308431542360237, guid: c1a74f4c78600454ba36e79c9658360e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: -90
-      objectReference: {fileID: 0}
-    - target: {fileID: 2147308432324170123, guid: c1a74f4c78600454ba36e79c9658360e, type: 3}
-      propertyPath: m_Color.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2147308432324170123, guid: c1a74f4c78600454ba36e79c9658360e, type: 3}
-      propertyPath: m_Color.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2147308432324170123, guid: c1a74f4c78600454ba36e79c9658360e, type: 3}
-      propertyPath: m_Color.r
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c1a74f4c78600454ba36e79c9658360e, type: 3}
@@ -11189,7 +11173,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1640989670}
-  m_LocalRotation: {x: 0.0010640862, y: 0.03447852, z: -0.000036709967, w: 0.9994049}
+  m_LocalRotation: {x: 0.0010639237, y: 0.03864885, z: -0.000041150204, w: 0.9992523}
   m_LocalPosition: {x: -3, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0

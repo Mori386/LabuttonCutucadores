@@ -125,7 +125,7 @@ TrailRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1313509746}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -5333,6 +5333,7 @@ MonoBehaviour:
   playerID: 0
   moveSpeed: 5
   moveSpeedMultiplier: 1
+  rotationSpeedMultiplier: 1
   rotationSpeed: 2
   hp: 3
 --- !u!1 &2147308432324170121
