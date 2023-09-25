@@ -15,11 +15,13 @@ public class PlayerControl : MonoBehaviour
     [System.NonSerialized] public Drill drill;
     [System.NonSerialized] public SpriteRenderer hpSlots;
     [System.NonSerialized] public ParticleSystem deathParticle;
+    [System.NonSerialized] public TrailRenderer speedBoostTrail;
     //Variables
     public float moveSpeed;
     [System.NonSerialized] public float moveDirection;
     [System.NonSerialized] public float rotationDirection;
     public float moveSpeedMultiplier = 1f;
+    public float rotationSpeedMultiplier = 1f;
     [Space] public float rotationSpeed;
 
     public int hp = 3;
@@ -58,6 +60,17 @@ public class PlayerControl : MonoBehaviour
             if (transform.GetChild(4).TryGetComponent<ParticleSystem>(out ParticleSystem deathPs))
             {
                 deathParticle = deathPs;
+            }
+        }
+        if (transform.Find("SpeedTrail").TryGetComponent<TrailRenderer>(out TrailRenderer tr))
+        {
+            speedBoostTrail = tr;
+        }
+        else
+        {
+            if (transform.GetChild(5).TryGetComponent<TrailRenderer>(out TrailRenderer speedTr))
+            {
+                speedBoostTrail = speedTr;
             }
         }
     }
@@ -108,6 +121,44 @@ public class PlayerControl : MonoBehaviour
     {
         return value - Mathf.Floor(value);
     }
+
+
+    Coroutine SpeedBoostCoroutine;
+    public IEnumerator SpeedBoost(float duration)
+    {
+        float trailDuration = speedBoostTrail.time;
+        float defaultMovespeedMultiplier = moveSpeedMultiplier;
+        float defaultRotationSpeedMultiplier = rotationSpeedMultiplier;
+        float timer = 0;
+        speedBoostTrail.time = 0;
+        speedBoostTrail.enabled = true;
+
+        while (timer < duration / 20f)
+        {
+            speedBoostTrail.time = trailDuration * (timer / (duration / 20f));
+            moveSpeedMultiplier = defaultMovespeedMultiplier + 0.5f * (timer / (duration / 20f));
+            rotationSpeedMultiplier = defaultRotationSpeedMultiplier + 0.25f * (timer / (duration / 20f));
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        speedBoostTrail.time = trailDuration;
+        moveSpeedMultiplier = 1.5f;
+        rotationSpeedMultiplier = 1.25f;
+        yield return new WaitForSeconds(duration / 20 * 18f);
+        timer = 0;
+        while (timer < duration / 20f)
+        {
+            speedBoostTrail.time = trailDuration * (1 - (timer / (duration / 20f)));
+            moveSpeedMultiplier = defaultMovespeedMultiplier + 0.5f * (1 - (timer / (duration / 20f)));
+            rotationSpeedMultiplier = defaultRotationSpeedMultiplier + 0.25f * (1 - (timer / (duration / 20f)));
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        moveSpeedMultiplier = defaultMovespeedMultiplier;
+        rotationSpeedMultiplier = defaultRotationSpeedMultiplier;
+        speedBoostTrail.enabled = false;
+        SpeedBoostCoroutine = null;
+    }
     public IEnumerator LowHpVisual()
     {
         while (true)
@@ -139,30 +190,39 @@ public class PlayerControl : MonoBehaviour
         }
         while (timer < 1)
         {
-            spriteRenderer.color = new Color(1f-timer, 1f - timer, 1f - timer, 1);
+            spriteRenderer.color = new Color(1f - timer, 1f - timer, 1f - timer, 1);
             transform.position = holePos;
             transform.rotation = Quaternion.Euler(0, 0, frac(Time.time) * 360);
             transform.localScale = new Vector3(1 - timer, 1 - timer, 1 - timer);
             yield return null;
             timer += Time.deltaTime;
         }
-        yield return new WaitForSeconds(0.25f);
-        transform.localScale = Vector3.zero;
-        transform.position = GameManager.Instance.playerSpawnpoint[GameManager.Instance.myID].position;
-        transform.rotation = Quaternion.Euler(0, 0, 0);
-        transform.localScale = scale;
-        timer = 0;
-        while (timer < 0.75f)
+        hp--;
+        if (hp < 0)
         {
-            transform.position = GameManager.Instance.playerSpawnpoint[GameManager.Instance.myID].position;
-            spriteRenderer.color = new Color(1, 1, 1,Mathf.Abs(Mathf.Sin(timer*10f)));
-            yield return null;
-            timer += Time.deltaTime;
+            gameObject.SetActive(false);
         }
-        spriteRenderer.color = Color.white;
-        for (int i = 0; i < colliders.Length; i++)
+        else
         {
-            colliders[i].enabled = true;
+            UpdateHPBar();
+            yield return new WaitForSeconds(0.25f);
+            transform.localScale = Vector3.zero;
+            transform.position = GameManager.Instance.playerSpawnpoint[GameManager.Instance.myID].position;
+            transform.rotation = Quaternion.Euler(0, 0, 0);
+            transform.localScale = scale;
+            timer = 0;
+            while (timer < 0.75f)
+            {
+                transform.position = GameManager.Instance.playerSpawnpoint[GameManager.Instance.myID].position;
+                spriteRenderer.color = new Color(1, 1, 1, Mathf.Abs(Mathf.Sin(timer * 10f)));
+                yield return null;
+                timer += Time.deltaTime;
+            }
+            spriteRenderer.color = Color.white;
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                colliders[i].enabled = true;
+            }
         }
     }
     public IEnumerator DamageTakenEffect()
@@ -218,6 +278,14 @@ public class PlayerControl : MonoBehaviour
         {
             StartCoroutine(FallAnimation(collision.transform.position));
         }
+        else if (collision.CompareTag("Speed"))
+        {
+            if (SpeedBoostCoroutine == null)
+            {
+                SpeedBoostCoroutine = StartCoroutine(SpeedBoost(5f));
+                collision.gameObject.SetActive(false);
+            }
+        }
     }
 }
 public interface IState
@@ -248,7 +316,7 @@ public class DefaultState : IState
     }
     public void OnUpdate(PlayerControl playerControl)
     {
-        playerControl.rb.angularVelocity = playerControl.rotationSpeed * playerControl.rotationDirection * (-100);
+        playerControl.rb.angularVelocity = playerControl.rotationSpeed * playerControl.rotationDirection * (-100) * playerControl.rotationSpeedMultiplier;
         playerControl.rb.velocity = playerControl.transform.up * playerControl.moveSpeedMultiplier * playerControl.moveSpeed * playerControl.moveDirection;
     }
     public void OnExit(PlayerControl playerControl)
