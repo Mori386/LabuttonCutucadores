@@ -10,9 +10,10 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private GameObject playerInputPrefab;
     [SerializeField] private GameObject playerNetworkPrefab;
-    [Space, SerializeField] private Transform[] playerSpawnpoint;
+    [Space] public Transform[] playerSpawnpoint;
 
     [System.NonSerialized] public PlayerControl[] players;
+    [System.NonSerialized] public int myID;
     private void Awake()
     {
         Instance = this;
@@ -24,6 +25,7 @@ public class GameManager : MonoBehaviour
             players = new PlayerControl[Multiplayer.Host.clients.Count + 1];
             PlayerControl playerControl = SpawnPlayer(playerInputPrefab, 0, Multiplayer.Host.myNickname).GetComponent<PlayerControl>();
             playerControl.playerID = 0;
+            myID = 0;
             players[0] = playerControl;
             for (int i = 0; i < Multiplayer.Host.clients.Count; i++)
             {
@@ -58,6 +60,7 @@ public class GameManager : MonoBehaviour
                         PlayerControl playerControl = SpawnPlayer(playerInputPrefab, player.id, player.name).GetComponent<PlayerControl>();
                         playerControl.playerID = player.id;
                         players[player.id] = playerControl;
+                        myID = player.id;
                     }
                 }
             }

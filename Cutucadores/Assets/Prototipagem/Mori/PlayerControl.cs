@@ -132,6 +132,11 @@ public class PlayerControl : MonoBehaviour
     public IEnumerator FallAnimation(Vector3 holePos)
     {
         float timer = 0;
+        Vector3 scale = transform.localScale;
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            colliders[i].enabled = false;
+        }
         while (timer < 1)
         {
             spriteRenderer.color = new Color(1f-timer, 1f - timer, 1f - timer, 1);
@@ -140,6 +145,24 @@ public class PlayerControl : MonoBehaviour
             transform.localScale = new Vector3(1 - timer, 1 - timer, 1 - timer);
             yield return null;
             timer += Time.deltaTime;
+        }
+        yield return new WaitForSeconds(0.25f);
+        transform.localScale = Vector3.zero;
+        transform.position = GameManager.Instance.playerSpawnpoint[GameManager.Instance.myID].position;
+        transform.rotation = Quaternion.Euler(0, 0, 0);
+        transform.localScale = scale;
+        timer = 0;
+        while (timer < 0.75f)
+        {
+            transform.position = GameManager.Instance.playerSpawnpoint[GameManager.Instance.myID].position;
+            spriteRenderer.color = new Color(1, 1, 1,Mathf.Abs(Mathf.Sin(timer*10f)));
+            yield return null;
+            timer += Time.deltaTime;
+        }
+        spriteRenderer.color = Color.white;
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            colliders[i].enabled = true;
         }
     }
     public IEnumerator DamageTakenEffect()
