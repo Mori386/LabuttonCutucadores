@@ -19,6 +19,7 @@ public class Sound // - É daqui que vem a letra S do foreach
 
 
 
+
     [HideInInspector] // é publico mas não deve aparecer 
     public AudioSource source; // vamos chamar o Som em outros codigos através da vairiavel Source
 }

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731715, g: 0.13414735, b: 0.121078536, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -685,7 +685,9 @@ MonoBehaviour:
   playerID: 0
   moveSpeed: 5
   moveSpeedMultiplier: 1
+  rotationSpeedMultiplier: 1
   rotationSpeed: 2
+  hp: 3
 --- !u!50 &1368670718
 Rigidbody2D:
   serializedVersion: 4
@@ -766,7 +768,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1849534308
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -780,7 +782,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sounds:
-  - name: Repulsao
+  - name: Repulsion
     clip: {fileID: 8300000, guid: 6f2a5f58cd404fa40a4ba676b1073ddd, type: 3}
     volume: 2
     pitch: 2
@@ -799,10 +801,34 @@ MonoBehaviour:
     loop: 0
     source: {fileID: 0}
   - name: Motor
-    clip: {fileID: 8300000, guid: 4fdd4234f94623348981739b8443d522, type: 3}
+    clip: {fileID: 8300000, guid: 16b67f96ed9568942a0eea97250ba697, type: 3}
     volume: 5
     pitch: 1.5
     loop: 1
+    source: {fileID: 0}
+  - name: Botao
+    clip: {fileID: 8300000, guid: e2b823b98e90a984f8b591281add944f, type: 3}
+    volume: 5
+    pitch: 3
+    loop: 0
+    source: {fileID: 0}
+  - name: Start
+    clip: {fileID: 8300000, guid: 194db9c030c178b43babe756957f1899, type: 3}
+    volume: 5
+    pitch: 3
+    loop: 0
+    source: {fileID: 0}
+  - name: Ganho Energia
+    clip: {fileID: 8300000, guid: 194db9c030c178b43babe756957f1899, type: 3}
+    volume: 5
+    pitch: 1.5
+    loop: 0
+    source: {fileID: 0}
+  - name: Queda buraco
+    clip: {fileID: 8300000, guid: 16b67f96ed9568942a0eea97250ba697, type: 3}
+    volume: 5
+    pitch: 1.5
+    loop: 0
     source: {fileID: 0}
 --- !u!4 &1849534309
 Transform:
@@ -919,7 +945,9 @@ MonoBehaviour:
   playerID: 0
   moveSpeed: 5
   moveSpeedMultiplier: 1
+  rotationSpeedMultiplier: 1
   rotationSpeed: 2
+  hp: 3
 --- !u!114 &1961099265
 MonoBehaviour:
   m_ObjectHideFlags: 0
