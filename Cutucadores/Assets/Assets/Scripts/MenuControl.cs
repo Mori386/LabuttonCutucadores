@@ -224,8 +224,8 @@ public class MenuControl : MonoBehaviour
         ReceiveDataThreadJoin = new Thread(ReceiveDataJoin);
         ReceiveDataThreadJoin.Start();
         Multiplayer.SendMessageToIP(ServerToJoinIPAdress.text, "Enter" + nickname.text);
-        onJoinScreen.SetActive(false);
-        onServerScreen.SetActive(true);
+        //onJoinScreen.SetActive(false);
+        //onServerScreen.SetActive(true);
         clientAddPlayersToMenu = StartCoroutine(ClientAddPlayersToMenu());
     }
     private Coroutine clientAddPlayersToMenu;
