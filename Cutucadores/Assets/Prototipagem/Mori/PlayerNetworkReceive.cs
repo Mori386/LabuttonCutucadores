@@ -56,7 +56,7 @@ public class PlayerNetworkReceive : MonoBehaviour
             Byte[] receiveBytes = Multiplayer.udpClient.Receive(ref RemoteIpEndPoint);
             string returnData = Encoding.ASCII.GetString(receiveBytes);
             string infoType = returnData.Substring(0, 5);
-            Debug.Log(infoType);
+            Debug.Log(infoType == "HFall");
             if (infoType == "PosPl")
             {
                 if (returnData[5].ToString().Equals(playerControl.playerID.ToString()))
