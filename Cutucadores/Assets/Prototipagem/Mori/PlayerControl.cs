@@ -241,6 +241,7 @@ public class PlayerControl : MonoBehaviour
                 timer += Time.deltaTime;
             }
             hp--;
+            Debug.Log("New Hp="+hp);
             if (hp <= 0)
             {
                 gameObject.SetActive(false);

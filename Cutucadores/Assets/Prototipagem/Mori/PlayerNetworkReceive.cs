@@ -33,6 +33,7 @@ public class PlayerNetworkReceive : MonoBehaviour
         else playerControl.animator.SetFloat("Speed", 0f);
         if(fall)
         {
+            Debug.Log("Fall in hole");
             playerControl.StartCoroutine(playerControl.FallAnimation(fallHole));
             fall = false;
         }
