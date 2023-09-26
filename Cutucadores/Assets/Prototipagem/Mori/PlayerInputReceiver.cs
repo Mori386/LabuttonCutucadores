@@ -31,10 +31,19 @@ public class PlayerInputReceiver : MonoBehaviour
         playerInputActions.PlayerGameplayInputMap.RotationInput.performed += OnRotationInput;
         playerControl = GetComponent<PlayerControl>();
 
-        for (int i = 0; i < Multiplayer.Host.clients.Count; i++)
+        if (Multiplayer.isHost)
         {
-            StartCoroutine(playerControl.SendTransformInfo(Multiplayer.Host.clients.Keys.ElementAt(i), 0, playerControl.transform));
+            for (int i = 0; i < Multiplayer.Host.clients.Count; i++)
+            {
+                Player player = Multiplayer.Host.clients.Values.ElementAt(i);
+                StartCoroutine(playerControl.SendTransformInfo(Multiplayer.Host.clients.Keys.ElementAt(i), 0, transform));
+            }
+        }
+        else
+        {
+            StartCoroutine(playerControl.SendTransformInfo(Multiplayer.Client.HostIP, Multiplayer.Client.myID, transform));
         }
     }
 }
+
 
