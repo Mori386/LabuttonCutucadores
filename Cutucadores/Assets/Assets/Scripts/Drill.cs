@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static PlayerControl;
 
 public class Drill : MonoBehaviour
 {
@@ -24,7 +25,10 @@ public class Drill : MonoBehaviour
         {
             Vector2 forceApplied = (collision.transform.position - transform.position).normalized;
             player.RecoilOnHit(forceApplied);
-
+            if(player.playerType.Equals(PlayerTypes.Input))
+            {
+                player.SendInfo(InfoType.PlHit, Mathf.Abs(player.playerID - 1).ToString() + forceApplied.x + "Y" + forceApplied.y);
+            }
         }
     }
 }

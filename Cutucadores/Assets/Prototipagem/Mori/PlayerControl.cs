@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 public class PlayerControl : MonoBehaviour
 {
@@ -99,6 +101,8 @@ public class PlayerControl : MonoBehaviour
     }
     private void Start()
     {
+        ReceiverPlayerHitDetectThread = new Thread(ReceiverPlayerHitDetect);
+        ReceiverPlayerHitDetectThread.Start();
         spriteRenderer = animator.GetComponent<SpriteRenderer>();
         drill = GetComponentInChildren<Drill>();
         currentState = defaultState;
@@ -136,7 +140,7 @@ public class PlayerControl : MonoBehaviour
             StartCoroutine(DamageTakenEffect());
         }
     }
-    public void TakeDamage(Collision2D collision)
+    public void TakeDamage(Vector3 direction)
     {
         if (hp - 1 <= 0)
         {
@@ -148,8 +152,7 @@ public class PlayerControl : MonoBehaviour
         }
         else
         {
-            Vector2 forceApplied = (collision.transform.position - transform.position).normalized;
-            RecoilOnHit(forceApplied);
+            RecoilOnHit(direction);
 
             hp--;
             UpdateHPBar();
@@ -327,7 +330,7 @@ public class PlayerControl : MonoBehaviour
     {
         if (collision.collider.CompareTag("Drill"))
         {
-            TakeDamage(collision);
+            //TakeDamage(collision);
         }
     }
     private void OnTriggerEnter2D(Collider2D collision)
@@ -394,8 +397,9 @@ public class PlayerControl : MonoBehaviour
         HFall,
     }
     InfoType infoToSend = InfoType.PosPl;
-    [System.NonSerialized]public string positionToGo;
+    [System.NonSerialized] public string positionToGo;
     string infoSendParameter;
+    int PlayerHitRepeatTimes = 5;
     public IEnumerator SendInfoLoop()
     {
         while (true)
@@ -409,8 +413,14 @@ public class PlayerControl : MonoBehaviour
                     Multiplayer.SendMessageToIP(connectedAdress, "PosPl" + positionToGo);
                     break;
                 case InfoType.PlHit:
-                    Multiplayer.SendMessageToIP(connectedAdress, "PlHit" + infoSendParameter);
-                    infoToSend = InfoType.None;
+                    int otherPlayerHP = GameManager.Instance.players[Mathf.Abs(playerID-1)].hp;
+                    Multiplayer.SendMessageToIP(connectedAdress, otherPlayerHP.ToString() + "PlHit" + infoSendParameter);
+                    if (PlayerHitRepeatTimes > 0) PlayerHitRepeatTimes--;
+                    else
+                    {
+                        infoToSend = InfoType.PosPl;
+                        PlayerHitRepeatTimes = 5;
+                    }
                     break;
                 case InfoType.HFall:
                     Multiplayer.SendMessageToIP(connectedAdress, "HFall" + infoSendParameter);
@@ -419,9 +429,47 @@ public class PlayerControl : MonoBehaviour
             yield return new WaitForFixedUpdate();
         }
     }
-    public void SendHitInfo()
+    Thread ReceiverPlayerHitDetectThread;
+    public void ReceiverPlayerHitDetect()
     {
+        IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
+        char doubleHitVef = Char.Parse("0");
+        while (true)
+        {
+            Byte[] receiveBytes = Multiplayer.udpClient.Receive(ref RemoteIpEndPoint);
+            string returnData = Encoding.ASCII.GetString(receiveBytes);
+            string infoType = returnData.Substring(1, 5);
+            if (infoType == "PlHit")
+            {
+                if (returnData[6].ToString().Equals(playerID.ToString()) && doubleHitVef.Equals(returnData[0]))
+                {
+                    doubleHitVef = returnData[0];
+                    Vector3 directionHit;
+                    string newXValue = "";
+                    int charsRead = 6;
+                    for (int i = charsRead; i < receiveBytes.Length; i++)
+                    {
+                        if (returnData[i].ToString() != "Y")
+                        {
+                            newXValue += returnData[i];
+                        }
+                        else
+                        {
+                            charsRead = i;
+                            break;
+                        }
+                    }
+                    string newYValue = "";
+                    for (int i = charsRead + 1; i < receiveBytes.Length; i++)
+                    {
+                        newYValue += returnData[i];
+                    }
+                    directionHit = new Vector3(float.Parse(newXValue), float.Parse(newYValue), 0);
+                    TakeDamage(directionHit);
 
+                }
+            }
+        }
     }
     public interface IState
     {
