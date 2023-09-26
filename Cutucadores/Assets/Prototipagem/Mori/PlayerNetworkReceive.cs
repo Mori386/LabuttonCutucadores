@@ -31,7 +31,14 @@ public class PlayerNetworkReceive : MonoBehaviour
             playerControl.animator.SetFloat("Speed", 1f);
         }
         else playerControl.animator.SetFloat("Speed", 0f);
+        if(fall)
+        {
+            playerControl.StartCoroutine(playerControl.FallAnimation(fallHole));
+            fall = false;
+        }
     }
+    private bool fall;
+    private Vector3 fallHole;
     public void ReceiveDataNetwork()
     {
         IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
@@ -125,7 +132,8 @@ public class PlayerNetworkReceive : MonoBehaviour
                         newYValue += returnData[i];
                     }
                     holePos = new Vector3(float.Parse(newXValue), float.Parse(newYValue), 0);
-                    playerControl.StartCoroutine(playerControl.FallAnimation(holePos));
+                    fallHole = holePos;
+                    fall = true;
                 }
             }
         }
