@@ -84,7 +84,6 @@ public class MenuControl : MonoBehaviour
         int clientCount = Multiplayer.Host.clients.Count;
         while (true)
         {
-            Debug.Log(Multiplayer.Host.clients.Count +"|"+ clientCount);
             if (Multiplayer.Host.clients.Count > clientCount)
             {
                 int playersLogged = 0;
@@ -208,11 +207,23 @@ public class MenuControl : MonoBehaviour
     }
     public void OnHostMenuLeave()
     {
+        ResetCards(hostPlayersMenuCards);
         Multiplayer.isHost = false;
         ReceiveDataThreadHost.Abort();
         Multiplayer.Host.clients.Clear();
         StopCoroutine(hostAddPlayersToMenu);
         hostAddPlayersToMenu = null;
+
+    }
+
+    public void ResetCards(PlayerMenuCard[] playerMenuCards)
+    {
+        for(int i =0;i< playerMenuCards.Length;i++)
+        {
+            playerMenuCards[i].cardGameObject.SetActive(false);
+            playerMenuCards[i].nicknameText.text = "";
+            
+        }
     }
 
     public void OnJoinMenuEnter()
