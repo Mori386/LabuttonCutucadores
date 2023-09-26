@@ -28,6 +28,7 @@ public class Drill : MonoBehaviour
             if(player.playerType.Equals(PlayerTypes.Input))
             {
                 player.SendInfo(InfoType.PlHit, Mathf.Abs(player.playerID - 1).ToString());
+                GameManager.Instance.players[Mathf.Abs(player.playerID - 1)].TakeDamage(forceApplied);
             }
 
         }

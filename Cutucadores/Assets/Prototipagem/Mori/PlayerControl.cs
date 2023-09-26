@@ -200,6 +200,7 @@ public class PlayerControl : MonoBehaviour
             timer += Time.deltaTime;
             yield return null;
         }
+        speedBoostTrail.time = trailDuration;
         moveSpeedMultiplier = defaultMovespeedMultiplier;
         rotationSpeedMultiplier = defaultRotationSpeedMultiplier;
         speedBoostTrail.enabled = false;
