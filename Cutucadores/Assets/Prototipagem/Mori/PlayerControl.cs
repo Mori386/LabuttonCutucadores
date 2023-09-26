@@ -413,7 +413,6 @@ public class PlayerControl : MonoBehaviour
                     break;
                 case InfoType.HFall:
                     Multiplayer.SendMessageToIP(connectedAdress, "HFall" + infoSendParameter);
-                    infoToSend = InfoType.None;
                     break;
             }
             yield return new WaitForFixedUpdate();

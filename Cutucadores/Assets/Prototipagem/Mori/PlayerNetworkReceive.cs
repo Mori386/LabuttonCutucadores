@@ -141,11 +141,11 @@ public class PlayerNetworkReceive : MonoBehaviour
                         newYValue += returnData[i];
                     }
                     holePos = new Vector3(float.Parse(newXValue), float.Parse(newYValue), 0);
+                    Debug.Log("Hole pos=" + holePos);
                     fallHole = holePos;
                     fall = true;
                 }
             }
-            else Debug.Log("NonOfTheOthers|" + infoType);
         }
     }
 }
