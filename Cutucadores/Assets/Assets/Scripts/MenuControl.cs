@@ -204,7 +204,7 @@ public class MenuControl : MonoBehaviour
         {
             Multiplayer.SendMessageToIP(Multiplayer.Host.clients.Keys.ElementAt(i), "Start");
         }
-        SceneManager.LoadScene("MoriGameplayTest");
+        SceneManager.LoadScene("GameplayMap00");
     }
     public void OnHostMenuLeave()
     {
