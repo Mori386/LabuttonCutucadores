@@ -391,7 +391,7 @@ public class PlayerControl : MonoBehaviour
         PlHit,
         HFall,
     }
-    InfoType infoToSend = InfoType.None;
+    InfoType infoToSend = InfoType.PosPl;
     [System.NonSerialized]public string positionToGo;
     string infoSendParameter;
     public IEnumerator SendInfoLoop()
