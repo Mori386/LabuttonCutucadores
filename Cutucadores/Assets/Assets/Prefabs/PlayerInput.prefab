@@ -5330,6 +5330,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e94dcf54c58bcd041a2a72a873d0dde9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerType: 0
   playerID: 0
   moveSpeed: 5
   moveSpeedMultiplier: 1
@@ -5540,7 +5541,7 @@ FixedJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: -0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
   m_DampingRatio: 0
   m_Frequency: 0
 --- !u!114 &5313504630047179410
