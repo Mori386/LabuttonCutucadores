@@ -140,7 +140,7 @@ public class PlayerControl : MonoBehaviour
             StartCoroutine(DamageTakenEffect());
         }
     }
-    bool canTakeDamage;
+    bool canTakeDamage = true;
     public void TakeDamage(Vector3 direction)
     {
         if (canTakeDamage)
@@ -405,7 +405,7 @@ public class PlayerControl : MonoBehaviour
     InfoType infoToSend = InfoType.PosPl;
     [System.NonSerialized] public string positionToGo;
     string infoSendParameter;
-    int PlayerHitRepeatTimes = 5;
+    int PlayerHitRepeatTimes = 3;
     public IEnumerator SendInfoLoop()
     {
         while (true)
@@ -425,7 +425,7 @@ public class PlayerControl : MonoBehaviour
                     else
                     {
                         infoToSend = InfoType.PosPl;
-                        PlayerHitRepeatTimes = 5;
+                        PlayerHitRepeatTimes = 3;
                     }
                     break;
                 case InfoType.HFall:
@@ -486,7 +486,11 @@ public class PlayerControl : MonoBehaviour
         {
             playerControl.rb.angularVelocity = playerControl.rotationSpeed * playerControl.rotationDirection * (-100) * playerControl.rotationSpeedMultiplier;
             playerControl.rb.velocity = playerControl.transform.up * playerControl.moveSpeedMultiplier * playerControl.moveSpeed * playerControl.moveDirection;
-            if (playerControl.takeHit) playerControl.TakeDamage(playerControl.hitDirection);
+            if (playerControl.takeHit)
+            {
+                playerControl.TakeDamage(playerControl.hitDirection);
+                playerControl.takeHit = false;
+            }
         }
         public void OnExit(PlayerControl playerControl)
         {
