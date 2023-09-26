@@ -344,6 +344,17 @@ public class PlayerControl : MonoBehaviour
 
 
     }
+
+    public IEnumerator SendTransformInfo(string IPAdress, int playerID, Transform transform)
+    {
+        while (true)
+        {
+            Vector3 roundPos = new Vector3(Mathf.Round(transform.position.x * 10000) / 10000, Mathf.Round(transform.position.y * 10000) / 10000, 0);
+            Vector2 roundRot = new Vector2(Mathf.Round(transform.rotation.z * 10000) / 10000, Mathf.Round(transform.rotation.w * 10000) / 10000);
+            Multiplayer.SendMessageToIP(IPAdress, "PosPl" + playerID.ToString() + roundPos.x + "Y" + roundPos.y + "Z" + roundRot.x + "W" + roundRot.y);
+            yield return new WaitForSeconds(0.01f);
+        }
+    }
     public void SendHitInfo()
     {
 

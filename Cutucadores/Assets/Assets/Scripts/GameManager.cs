@@ -50,14 +50,6 @@ public class GameManager : MonoBehaviour
                 players[i + 1] = playerControl;
                 playerControl.playerType = PlayerControl.PlayerTypes.Network;
                 playerControl.animator.runtimeAnimatorController = GetAnimatorBasedOnID(playerControl.playerID);
-
-                PlayerNetworkReceive playerNetworkReceive = playerControl.GetComponent<PlayerNetworkReceive>();
-                playerNetworkReceive.ReceiveDataNetworkThread = new Thread(playerNetworkReceive.ReceiveDataNetwork);
-            }
-
-            for (int i = 0; i < Multiplayer.Host.clients.Count; i++)
-            {
-                StartCoroutine(SendTransformInfo(Multiplayer.Host.clients.Keys.ElementAt(i), 0, players[0].transform));
             }
         }
         else
@@ -81,9 +73,6 @@ public class GameManager : MonoBehaviour
                         players[player.id] = playerControl;
                         playerControl.animator.runtimeAnimatorController = GetAnimatorBasedOnID(playerControl.playerID);
                         playerControl.playerType = PlayerControl.PlayerTypes.Network;
-
-                        PlayerNetworkReceive playerNetworkReceive = playerControl.GetComponent<PlayerNetworkReceive>();
-                        playerNetworkReceive.ReceiveDataNetworkThread = new Thread(playerNetworkReceive.ReceiveDataNetwork);
                     }
                     else
                     {
@@ -95,9 +84,6 @@ public class GameManager : MonoBehaviour
                         VirtualCamera.LookAt = playerControl.transform;
                         VirtualCamera.Follow = playerControl.transform;
                         playerControl.playerType = PlayerControl.PlayerTypes.Input;
-
-
-                        StartCoroutine(SendTransformInfo(Multiplayer.Client.HostIP, Multiplayer.Client.myID, playerControl.transform));
                     }
                 }
             }
@@ -133,19 +119,6 @@ public class GameManager : MonoBehaviour
         playerSpawned.GetComponentInChildren<TextMeshPro>().text = nickname;
         return playerSpawned;
     }
-
-
-    public IEnumerator SendTransformInfo(string IPAdress, int playerID, Transform transform)
-    {
-        while (true)
-        {
-            Vector3 roundPos = new Vector3(Mathf.Round(transform.position.x * 10000) / 10000, Mathf.Round(transform.position.y * 10000) / 10000, 0);
-            Vector2 roundRot = new Vector2(Mathf.Round(transform.rotation.z * 10000) / 10000, Mathf.Round(transform.rotation.w * 10000) / 10000);
-            Multiplayer.SendMessageToIP(IPAdress, "PosPl" + playerID.ToString() + roundPos.x + "Y" + roundPos.y + "Z" + roundRot.x + "W" + roundRot.y);
-            yield return new WaitForSeconds(0.01f);
-        }
-    }
-
 
     public  void ReturnToMenu(float delay)
     {
