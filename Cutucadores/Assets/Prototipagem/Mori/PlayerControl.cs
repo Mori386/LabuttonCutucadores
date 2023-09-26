@@ -35,6 +35,7 @@ public class PlayerControl : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponentInChildren<Animator>();
         defaultState = new DefaultState();
         stunnedState = new StunnedState();
 
@@ -76,7 +77,6 @@ public class PlayerControl : MonoBehaviour
     }
     private void Start()
     {
-        animator = GetComponentInChildren<Animator>();
         spriteRenderer = animator.GetComponent<SpriteRenderer>();
         drill = GetComponentInChildren<Drill>();
         currentState = defaultState;
