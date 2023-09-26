@@ -140,23 +140,27 @@ public class PlayerControl : MonoBehaviour
             StartCoroutine(DamageTakenEffect());
         }
     }
+    bool canTakeDamage;
     public void TakeDamage(Vector3 direction)
     {
-        if (hp - 1 <= 0)
+        if (canTakeDamage)
         {
-            for (int i = 0; i < colliders.Length; i++)
+            if (hp - 1 <= 0)
             {
-                colliders[i].enabled = false;
+                for (int i = 0; i < colliders.Length; i++)
+                {
+                    colliders[i].enabled = false;
+                }
+                StartCoroutine(DeathAnimation());
             }
-            StartCoroutine(DeathAnimation());
-        }
-        else
-        {
-            RecoilOnHit(direction);
+            else
+            {
+                canTakeDamage = false;
 
-            hp--;
-            UpdateHPBar();
-            StartCoroutine(DamageTakenEffect());
+                hp--;
+                UpdateHPBar();
+                StartCoroutine(DamageTakenEffect());
+            }
         }
     }
     public float frac(float value)
@@ -296,6 +300,8 @@ public class PlayerControl : MonoBehaviour
         {
             StartCoroutine(LowHpVisual());
         }
+        yield return new WaitForSeconds(0.9f);
+        canTakeDamage = true;
     }
     public void UpdateHPBar()
     {
@@ -413,8 +419,8 @@ public class PlayerControl : MonoBehaviour
                     Multiplayer.SendMessageToIP(connectedAdress, "PosPl" + positionToGo);
                     break;
                 case InfoType.PlHit:
-                    int otherPlayerHP = GameManager.Instance.players[Mathf.Abs(playerID-1)].hp;
-                    Multiplayer.SendMessageToIP(connectedAdress, otherPlayerHP.ToString() + "PlHit" + infoSendParameter);
+                    int otherPlayerHP = GameManager.Instance.players[Mathf.Abs(playerID - 1)].hp;
+                    Multiplayer.SendMessageToIP(connectedAdress, otherPlayerHP.ToString() + "PlHit");
                     if (PlayerHitRepeatTimes > 0) PlayerHitRepeatTimes--;
                     else
                     {
@@ -443,36 +449,12 @@ public class PlayerControl : MonoBehaviour
             {
                 if (returnData[6].ToString().Equals(playerID.ToString()) && !doubleHitVef.Equals(returnData[0]))
                 {
-                    doubleHitVef = returnData[0];
-                    Vector3 directionHit;
-                    string newXValue = "";
-                    int charsRead = 6;
-                    for (int i = charsRead; i < receiveBytes.Length; i++)
-                    {
-                        if (returnData[i].ToString() != "Y")
-                        {
-                            newXValue += returnData[i];
-                        }
-                        else
-                        {
-                            charsRead = i;
-                            break;
-                        }
-                    }
-                    string newYValue = "";
-                    for (int i = charsRead + 1; i < receiveBytes.Length; i++)
-                    {
-                        newYValue += returnData[i];
-                    }
-                    directionHit = new Vector3(float.Parse(newXValue), float.Parse(newYValue), 0);
-                    hitDirection = directionHit;
                     takeHit = true;
-
                 }
             }
         }
     }
-    [System.NonSerialized]bool takeHit=false;
+    [System.NonSerialized] bool takeHit = false;
     [System.NonSerialized] Vector3 hitDirection;
     public interface IState
     {
@@ -504,7 +486,7 @@ public class PlayerControl : MonoBehaviour
         {
             playerControl.rb.angularVelocity = playerControl.rotationSpeed * playerControl.rotationDirection * (-100) * playerControl.rotationSpeedMultiplier;
             playerControl.rb.velocity = playerControl.transform.up * playerControl.moveSpeedMultiplier * playerControl.moveSpeed * playerControl.moveDirection;
-            if(playerControl.takeHit) playerControl.TakeDamage(playerControl.hitDirection);
+            if (playerControl.takeHit) playerControl.TakeDamage(playerControl.hitDirection);
         }
         public void OnExit(PlayerControl playerControl)
         {

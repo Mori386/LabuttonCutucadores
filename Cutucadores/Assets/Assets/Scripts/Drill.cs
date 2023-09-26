@@ -23,12 +23,13 @@ public class Drill : MonoBehaviour
         }
         else if (collision.collider.CompareTag("Player"))
         {
-            Vector2 forceApplied = (collision.transform.position - transform.position).normalized;
+            Vector2 forceApplied = (transform.position- collision.transform.position).normalized;
             player.RecoilOnHit(forceApplied);
             if(player.playerType.Equals(PlayerTypes.Input))
             {
                 player.SendInfo(InfoType.PlHit, Mathf.Abs(player.playerID - 1).ToString() + forceApplied.x + "Y" + forceApplied.y);
             }
+
         }
     }
 }
