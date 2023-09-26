@@ -24,6 +24,7 @@ public class Drill : MonoBehaviour
         {
             Vector2 forceApplied = (collision.transform.position - transform.position).normalized;
             player.RecoilOnHit(forceApplied);
+
         }
     }
 }

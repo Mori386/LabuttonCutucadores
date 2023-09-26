@@ -5,6 +5,12 @@ using TMPro;
 using UnityEditor.Animations;
 using UnityEngine;
 using Cinemachine;
+using UnityEngine.SceneManagement;
+using System.Net;
+using System.Text;
+using System.Threading;
+using System;
+using UnityEngine.UIElements;
 
 public class GameManager : MonoBehaviour
 {
@@ -34,6 +40,7 @@ public class GameManager : MonoBehaviour
             players[0] = playerControl;
             VirtualCamera.LookAt = playerControl.transform;
             VirtualCamera.Follow = playerControl.transform;
+            playerControl.playerType = PlayerControl.PlayerTypes.Input;
             playerControl.animator.runtimeAnimatorController = GetAnimatorBasedOnID(playerControl.playerID);
             for (int i = 0; i < Multiplayer.Host.clients.Count; i++)
             {
@@ -41,7 +48,16 @@ public class GameManager : MonoBehaviour
                 playerControl = SpawnPlayer(playerNetworkPrefab, player.id + 1, player.name).GetComponent<PlayerControl>();
                 playerControl.playerID = player.id + 1;
                 players[i + 1] = playerControl;
+                playerControl.playerType = PlayerControl.PlayerTypes.Network;
                 playerControl.animator.runtimeAnimatorController = GetAnimatorBasedOnID(playerControl.playerID);
+
+                PlayerNetworkReceive playerNetworkReceive = playerControl.GetComponent<PlayerNetworkReceive>();
+                playerNetworkReceive.ReceiveDataNetworkThread = new Thread(playerNetworkReceive.ReceiveDataNetwork);
+            }
+
+            for (int i = 0; i < Multiplayer.Host.clients.Count; i++)
+            {
+                StartCoroutine(SendTransformInfo(Multiplayer.Host.clients.Keys.ElementAt(i), 0, players[0].transform));
             }
         }
         else
@@ -64,6 +80,10 @@ public class GameManager : MonoBehaviour
                         playerControl.playerID = player.id;
                         players[player.id] = playerControl;
                         playerControl.animator.runtimeAnimatorController = GetAnimatorBasedOnID(playerControl.playerID);
+                        playerControl.playerType = PlayerControl.PlayerTypes.Network;
+
+                        PlayerNetworkReceive playerNetworkReceive = playerControl.GetComponent<PlayerNetworkReceive>();
+                        playerNetworkReceive.ReceiveDataNetworkThread = new Thread(playerNetworkReceive.ReceiveDataNetwork);
                     }
                     else
                     {
@@ -74,6 +94,10 @@ public class GameManager : MonoBehaviour
                         playerControl.animator.runtimeAnimatorController = GetAnimatorBasedOnID(playerControl.playerID);
                         VirtualCamera.LookAt = playerControl.transform;
                         VirtualCamera.Follow = playerControl.transform;
+                        playerControl.playerType = PlayerControl.PlayerTypes.Input;
+
+
+                        StartCoroutine(SendTransformInfo(Multiplayer.Client.HostIP, Multiplayer.Client.myID, playerControl.transform));
                     }
                 }
             }
@@ -88,10 +112,8 @@ public class GameManager : MonoBehaviour
             case 2:
             case 3:
                 return orangeAnim;
-                break;
             case 1:
                 return greenAnim;
-                break;
         }
     }
     public PlayerControl GetPlayerControl(GameObject playerObject)
@@ -110,5 +132,28 @@ public class GameManager : MonoBehaviour
         GameObject playerSpawned = Instantiate(playerTypePrefab, playerSpawnpoint[posIndex].position, playerTypePrefab.transform.rotation);
         playerSpawned.GetComponentInChildren<TextMeshPro>().text = nickname;
         return playerSpawned;
+    }
+
+
+    public IEnumerator SendTransformInfo(string IPAdress, int playerID, Transform transform)
+    {
+        while (true)
+        {
+            Vector3 roundPos = new Vector3(Mathf.Round(transform.position.x * 10000) / 10000, Mathf.Round(transform.position.y * 10000) / 10000, 0);
+            Vector2 roundRot = new Vector2(Mathf.Round(transform.rotation.z * 10000) / 10000, Mathf.Round(transform.rotation.w * 10000) / 10000);
+            Multiplayer.SendMessageToIP(IPAdress, "PosPl" + playerID.ToString() + roundPos.x + "Y" + roundPos.y + "Z" + roundRot.x + "W" + roundRot.y);
+            yield return new WaitForSeconds(0.01f);
+        }
+    }
+
+
+    public  void ReturnToMenu(float delay)
+    {
+        StartCoroutine(WaitDelayForReturnToMenu(delay));
+    }
+    public  IEnumerator WaitDelayForReturnToMenu(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        SceneManager.LoadScene("Menu");
     }
 }

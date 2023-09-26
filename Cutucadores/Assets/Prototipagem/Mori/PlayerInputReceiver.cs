@@ -30,28 +30,6 @@ public class PlayerInputReceiver : MonoBehaviour
         playerInputActions.PlayerGameplayInputMap.MovementInput.performed += OnMovementInput;
         playerInputActions.PlayerGameplayInputMap.RotationInput.performed += OnRotationInput;
         playerControl = GetComponent<PlayerControl>();
-        if (Multiplayer.isHost)
-        {
-            for(int i = 0; i<Multiplayer.Host.clients.Count; i++)
-            {
-                Player player = Multiplayer.Host.clients.Values.ElementAt(i);
-                StartCoroutine(SendTransformInfo(Multiplayer.Host.clients.Keys.ElementAt(i), 0, transform));
-            }
-        }
-        else
-        {
-            StartCoroutine(SendTransformInfo(Multiplayer.Client.HostIP, Multiplayer.Client.myID, transform));
-        }
-    }
-
-    public IEnumerator SendTransformInfo(string IPAdress, int playerID, Transform transform)
-    {
-        while (true)
-        {
-            Vector3 roundPos = new Vector3(Mathf.Round(transform.position.x * 1000) / 1000, Mathf.Round(transform.position.y * 1000) / 1000,0);
-            Vector2 roundRot = new Vector2(Mathf.Round(transform.rotation.z * 10000) / 10000, Mathf.Round(transform.rotation.w * 10000) / 10000);
-            Multiplayer.SendMessageToIP(IPAdress, playerID.ToString()+ roundPos.x+"Y"+ roundPos.y+"Z"+ roundRot.x+"W"+ roundRot.y);
-            yield return new WaitForSeconds(0.01f);
-        }
     }
 }
+

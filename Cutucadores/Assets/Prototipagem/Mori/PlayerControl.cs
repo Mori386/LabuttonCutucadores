@@ -1,11 +1,22 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Text;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class PlayerControl : MonoBehaviour
 {
+    public enum PlayerTypes
+    {
+        Input,
+        Network
+    }
+    public PlayerTypes playerType;
     public int playerID;
     //Components
     [System.NonSerialized] public Rigidbody2D rb;
@@ -96,6 +107,23 @@ public class PlayerControl : MonoBehaviour
     {
         StunTarget(0.125f);
         rb.AddForce(direction * (-20f), ForceMode2D.Impulse);
+    }
+    public void ModifyHP(int newAmount)
+    {
+        if (newAmount <= 0)
+        {
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                colliders[i].enabled = false;
+            }
+            StartCoroutine(DeathAnimation());
+        }
+        else
+        {
+            hp = newAmount;
+            UpdateHPBar();
+            StartCoroutine(DamageTakenEffect());
+        }
     }
     public void TakeDamage(Collision2D collision)
     {
@@ -198,7 +226,7 @@ public class PlayerControl : MonoBehaviour
             timer += Time.deltaTime;
         }
         hp--;
-        if (hp < 0)
+        if (hp <= 0)
         {
             gameObject.SetActive(false);
         }
@@ -274,9 +302,10 @@ public class PlayerControl : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Fall"))
+        if (playerType.Equals(PlayerTypes.Input) && collision.CompareTag("Fall"))
         {
             StartCoroutine(FallAnimation(collision.transform.position));
+            SendHoleFallInfo(collision.transform.position);
         }
         else if (collision.CompareTag("Speed"))
         {
@@ -287,80 +316,120 @@ public class PlayerControl : MonoBehaviour
             }
         }
     }
-}
-public interface IState
-{
-    public void OnEnter(PlayerControl playerControl);
-    public void OnDirectDrillHit(PlayerControl playerControl, Vector3 otherPosition);
-    public void OnMovementInputReceive(PlayerControl playerControl);
-    public void OnUpdate(PlayerControl playerControl);
-    public void OnExit(PlayerControl playerControl);
-}
-public class DefaultState : IState
-{
-    public void OnEnter(PlayerControl playerControl)
+    private void OnDisable()
     {
-
-    }
-    public void OnDirectDrillHit(PlayerControl playerControl, Vector3 otherPosition)
-    {
-        Vector2 forceApplied = otherPosition - playerControl.transform.position;
-        Debug.Log(forceApplied.normalized);
-
-        playerControl.StunTarget(0.15f);
-        playerControl.rb.AddForce(forceApplied.normalized * (-10f), ForceMode2D.Impulse);
-    }
-    public void OnMovementInputReceive(PlayerControl playerControl)
-    {
-        playerControl.animator.SetFloat("Speed", playerControl.moveDirection);
-    }
-    public void OnUpdate(PlayerControl playerControl)
-    {
-        playerControl.rb.angularVelocity = playerControl.rotationSpeed * playerControl.rotationDirection * (-100) * playerControl.rotationSpeedMultiplier;
-        playerControl.rb.velocity = playerControl.transform.up * playerControl.moveSpeedMultiplier * playerControl.moveSpeed * playerControl.moveDirection;
-    }
-    public void OnExit(PlayerControl playerControl)
-    {
-        playerControl.animator.SetFloat("Speed", 0);
+        GameManager.Instance.VirtualCamera.Follow = GameManager.Instance.players[Mathf.Abs(playerID - 1)].transform;
+        GameManager.Instance.VirtualCamera.LookAt = GameManager.Instance.players[Mathf.Abs(playerID - 1)].transform;
+        GameManager.Instance.ReturnToMenu(2f);
     }
 
-}
-public class StunnedState : IState
-{
-    public float stunDuration;
-    public Color color;
-    public void OnEnter(PlayerControl playerControl)
+    public void ReceiveOtherPlayerInteractionInfo()
     {
-        color = playerControl.spriteRenderer.color;
-        playerControl.StartCoroutine(ApplyStun(playerControl));
-    }
-    public void OnDirectDrillHit(PlayerControl playerControl, Vector3 otherPosition)
-    {
-
-    }
-    public void OnMovementInputReceive(PlayerControl playerControl)
-    {
-
-    }
-    public void OnUpdate(PlayerControl playerControl)
-    {
-
-    }
-    public void OnExit(PlayerControl playerControl)
-    {
-        playerControl.spriteRenderer.color = color;
-    }
-    private IEnumerator ApplyStun(PlayerControl playerControl)
-    {
-        float timer = 0;
-        float darkenAmount = 0.85f;
-        while (timer <= stunDuration)
+        IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
+        while (true)
         {
-            float darkenApplied = darkenAmount + timer / stunDuration * (1 - darkenAmount);
-            playerControl.spriteRenderer.color = new Color(darkenApplied, darkenApplied, darkenApplied, 1);
-            yield return null;
-            timer += Time.deltaTime;
+            Byte[] receiveBytes = Multiplayer.udpClient.Receive(ref RemoteIpEndPoint);
+            string returnData = Encoding.ASCII.GetString(receiveBytes);
+            string infoType = returnData.Substring(0, 5);
+            Debug.Log(infoType);
+
+            if (infoType == "PosPl")
+            {
+                if (returnData[5].ToString().Equals(playerID.ToString()))
+                {
+
+                }
+            }
         }
-        playerControl.ChangeState(playerControl.defaultState);
+
+
+    }
+    public void SendHitInfo()
+    {
+
+    }
+    public void SendHoleFallInfo(Vector3 holePos)
+    {
+        string IPAdress;
+        if (Multiplayer.isHost) IPAdress = Multiplayer.Host.clients.Keys.ElementAt(0);
+        else IPAdress = Multiplayer.Client.HostIP;
+        Vector3 roundPos = new Vector3(Mathf.Round(holePos.x * 1000) / 1000, Mathf.Round(holePos.y * 1000) / 1000, 0);
+        Multiplayer.SendMessageToIP(IPAdress, "HFall" + playerID.ToString() + roundPos.x + "Y" + roundPos.y);
+    }
+    public interface IState
+    {
+        public void OnEnter(PlayerControl playerControl);
+        public void OnDirectDrillHit(PlayerControl playerControl, Vector3 otherPosition);
+        public void OnMovementInputReceive(PlayerControl playerControl);
+        public void OnUpdate(PlayerControl playerControl);
+        public void OnExit(PlayerControl playerControl);
+    }
+    public class DefaultState : IState
+    {
+        public void OnEnter(PlayerControl playerControl)
+        {
+
+        }
+        public void OnDirectDrillHit(PlayerControl playerControl, Vector3 otherPosition)
+        {
+            Vector2 forceApplied = otherPosition - playerControl.transform.position;
+            Debug.Log(forceApplied.normalized);
+
+            playerControl.StunTarget(0.15f);
+            playerControl.rb.AddForce(forceApplied.normalized * (-10f), ForceMode2D.Impulse);
+        }
+        public void OnMovementInputReceive(PlayerControl playerControl)
+        {
+            playerControl.animator.SetFloat("Speed", playerControl.moveDirection);
+        }
+        public void OnUpdate(PlayerControl playerControl)
+        {
+            playerControl.rb.angularVelocity = playerControl.rotationSpeed * playerControl.rotationDirection * (-100) * playerControl.rotationSpeedMultiplier;
+            playerControl.rb.velocity = playerControl.transform.up * playerControl.moveSpeedMultiplier * playerControl.moveSpeed * playerControl.moveDirection;
+        }
+        public void OnExit(PlayerControl playerControl)
+        {
+            playerControl.animator.SetFloat("Speed", 0);
+        }
+
+    }
+    public class StunnedState : IState
+    {
+        public float stunDuration;
+        public Color color;
+        public void OnEnter(PlayerControl playerControl)
+        {
+            color = playerControl.spriteRenderer.color;
+            playerControl.StartCoroutine(ApplyStun(playerControl));
+        }
+        public void OnDirectDrillHit(PlayerControl playerControl, Vector3 otherPosition)
+        {
+
+        }
+        public void OnMovementInputReceive(PlayerControl playerControl)
+        {
+
+        }
+        public void OnUpdate(PlayerControl playerControl)
+        {
+
+        }
+        public void OnExit(PlayerControl playerControl)
+        {
+            playerControl.spriteRenderer.color = color;
+        }
+        private IEnumerator ApplyStun(PlayerControl playerControl)
+        {
+            float timer = 0;
+            float darkenAmount = 0.85f;
+            while (timer <= stunDuration)
+            {
+                float darkenApplied = darkenAmount + timer / stunDuration * (1 - darkenAmount);
+                playerControl.spriteRenderer.color = new Color(darkenApplied, darkenApplied, darkenApplied, 1);
+                yield return null;
+                timer += Time.deltaTime;
+            }
+            playerControl.ChangeState(playerControl.defaultState);
+        }
     }
 }
