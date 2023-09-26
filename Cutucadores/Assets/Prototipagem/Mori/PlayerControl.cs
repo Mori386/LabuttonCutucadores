@@ -304,8 +304,8 @@ public class PlayerControl : MonoBehaviour
     {
         if (playerType.Equals(PlayerTypes.Input) && collision.CompareTag("Fall"))
         {
-            StartCoroutine(FallAnimation(collision.transform.position));
             SendHoleFallInfo(collision.transform.position);
+            StartCoroutine(FallAnimation(collision.transform.position));
         }
         else if (collision.CompareTag("Speed"))
         {
@@ -350,8 +350,8 @@ public class PlayerControl : MonoBehaviour
     {
         while (true)
         {
-            Vector3 roundPos = new Vector3(Mathf.Round(transform.position.x * 10000) / 10000, Mathf.Round(transform.position.y * 10000) / 10000, 0);
-            Vector2 roundRot = new Vector2(Mathf.Round(transform.rotation.z * 10000) / 10000, Mathf.Round(transform.rotation.w * 10000) / 10000);
+            Vector3 roundPos = new Vector3(Mathf.Round(transform.position.x * 1000) / 1000, Mathf.Round(transform.position.y * 1000) / 1000, 0);
+            Vector2 roundRot = new Vector2(Mathf.Round(transform.rotation.z * 1000) / 1000, Mathf.Round(transform.rotation.w * 1000) / 1000);
             Multiplayer.SendMessageToIP(connectedAdress, "PosPl" + playerID.ToString() + roundPos.x + "Y" + roundPos.y + "Z" + roundRot.x + "W" + roundRot.y);
             yield return new WaitForFixedUpdate();
         }
