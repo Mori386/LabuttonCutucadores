@@ -224,6 +224,7 @@ public class PlayerControl : MonoBehaviour
     {
         if (!falling)
         {
+            playerNetworkReceive.interpolate = false;
             falling = true;
             float timer = 0;
             Vector3 scale = transform.localScale;
@@ -241,7 +242,6 @@ public class PlayerControl : MonoBehaviour
                 timer += Time.deltaTime;
             }
             hp--;
-            Debug.Log("New Hp="+hp);
             if (hp <= 0)
             {
                 gameObject.SetActive(false);
@@ -280,6 +280,7 @@ public class PlayerControl : MonoBehaviour
             {
                 SendInfo(InfoType.PosPl);
             }
+            playerNetworkReceive.interpolate = true;
         }
     }
     public IEnumerator DamageTakenEffect()
@@ -334,7 +335,7 @@ public class PlayerControl : MonoBehaviour
         if (playerType.Equals(PlayerTypes.Input) && collision.CompareTag("Fall"))
         {
             Vector3 roundPos = new Vector3(Mathf.Round(collision.transform.position.x * 1000) / 1000, Mathf.Round(collision.transform.position.y * 1000) / 1000, 0);
-            SendInfo(InfoType.HFall, "HFall" + playerID.ToString() + roundPos.x + "Y" + roundPos.y);
+            SendInfo(InfoType.HFall, playerID.ToString() + roundPos.x + "Y" + roundPos.y);
 
             StartCoroutine(FallAnimation(collision.transform.position));
         }
