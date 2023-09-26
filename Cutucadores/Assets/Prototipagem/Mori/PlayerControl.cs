@@ -11,6 +11,9 @@ using UnityEngine.SceneManagement;
 
 public class PlayerControl : MonoBehaviour
 {
+    PlayerNetworkReceive playerNetworkReceive;
+    PlayerInputReceiver playerInputReceiver;
+
     public enum PlayerTypes
     {
         Input,
@@ -84,6 +87,14 @@ public class PlayerControl : MonoBehaviour
             {
                 speedBoostTrail = speedTr;
             }
+        }
+        if (TryGetComponent<PlayerNetworkReceive>(out PlayerNetworkReceive pNR))
+        {
+            playerNetworkReceive = pNR;
+        }
+        else if (TryGetComponent<PlayerInputReceiver>(out PlayerInputReceiver pIR))
+        {
+            playerInputReceiver = pIR;
         }
     }
     private void Start()
@@ -239,8 +250,15 @@ public class PlayerControl : MonoBehaviour
                 UpdateHPBar();
                 yield return new WaitForSeconds(0.25f);
                 transform.localScale = Vector3.zero;
-                transform.position = GameManager.Instance.playerSpawnpoint[GameManager.Instance.myID].position;
-                transform.rotation = Quaternion.Euler(0, 0, 0);
+                if (playerType.Equals(PlayerTypes.Network))
+                {
+                    playerNetworkReceive.Teleport(GameManager.Instance.playerSpawnpoint[GameManager.Instance.myID].position, Quaternion.Euler(0, 0, 0));
+                }
+                else
+                {
+                    transform.position = GameManager.Instance.playerSpawnpoint[GameManager.Instance.myID].position;
+                    transform.rotation = Quaternion.Euler(0, 0, 0);
+                }
                 transform.localScale = scale;
                 timer = 0;
                 while (timer < 0.75f)
@@ -257,6 +275,10 @@ public class PlayerControl : MonoBehaviour
                 }
             }
             falling = false;
+            if (playerType.Equals(PlayerTypes.Input))
+            {
+                SendInfo(InfoType.PosPl);
+            }
         }
     }
     public IEnumerator DamageTakenEffect()
@@ -310,7 +332,9 @@ public class PlayerControl : MonoBehaviour
     {
         if (playerType.Equals(PlayerTypes.Input) && collision.CompareTag("Fall"))
         {
-            SendHoleFallInfo(collision.transform.position);
+            Vector3 roundPos = new Vector3(Mathf.Round(collision.transform.position.x * 1000) / 1000, Mathf.Round(collision.transform.position.y * 1000) / 1000, 0);
+            SendInfo(InfoType.HFall, "HFall" + playerID.ToString() + roundPos.x + "Y" + roundPos.y);
+
             StartCoroutine(FallAnimation(collision.transform.position));
         }
         else if (collision.CompareTag("Speed"))
@@ -351,28 +375,52 @@ public class PlayerControl : MonoBehaviour
 
     }
     [System.NonSerialized] public string connectedAdress;
-
-    public IEnumerator SendTransformInfo()
+    public void SendInfo(InfoType infoType, string iSP)
+    {
+        infoSendParameter = iSP;
+        infoToSend = infoType;
+    }
+    public void SendInfo(InfoType infoType)
+    {
+        infoToSend = infoType;
+    }
+    public enum InfoType
+    {
+        None = 0,
+        PosPl,
+        PlHit,
+        HFall,
+    }
+    InfoType infoToSend = InfoType.None;
+    [System.NonSerialized]public string positionToGo;
+    string infoSendParameter;
+    public IEnumerator SendInfoLoop()
     {
         while (true)
         {
-            Vector3 roundPos = new Vector3(Mathf.Round(transform.position.x * 1000) / 1000, Mathf.Round(transform.position.y * 1000) / 1000, 0);
-            Vector2 roundRot = new Vector2(Mathf.Round(transform.rotation.z * 1000) / 1000, Mathf.Round(transform.rotation.w * 1000) / 1000);
-            Multiplayer.SendMessageToIP(connectedAdress, "PosPl" + playerID.ToString() + roundPos.x + "Y" + roundPos.y + "Z" + roundRot.x + "W" + roundRot.y);
+            switch (infoToSend)
+            {
+                case InfoType.None:
+                default:
+                    break;
+                case InfoType.PosPl:
+                    Multiplayer.SendMessageToIP(connectedAdress, "PosPl" + positionToGo);
+                    break;
+                case InfoType.PlHit:
+                    Multiplayer.SendMessageToIP(connectedAdress, "PlHit" + infoSendParameter);
+                    infoToSend = InfoType.None;
+                    break;
+                case InfoType.HFall:
+                    Multiplayer.SendMessageToIP(connectedAdress, "HFall" + infoSendParameter);
+                    infoToSend = InfoType.None;
+                    break;
+            }
             yield return new WaitForFixedUpdate();
         }
     }
     public void SendHitInfo()
     {
 
-    }
-    public void SendHoleFallInfo(Vector3 holePos)
-    {
-        Vector3 roundPos = new Vector3(Mathf.Round(holePos.x * 1000) / 1000, Mathf.Round(holePos.y * 1000) / 1000, 0);
-        for (int i = 0; i < 10; i++)
-        {
-            Multiplayer.SendMessageToIP(connectedAdress, "HFall" + playerID.ToString() + roundPos.x + "Y" + roundPos.y);
-        }
     }
     public interface IState
     {

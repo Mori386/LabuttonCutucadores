@@ -37,6 +37,14 @@ public class PlayerNetworkReceive : MonoBehaviour
             fall = false;
         }
     }
+    public void Teleport(Vector3 pos,Quaternion rot)
+    {
+        position = pos;
+        rotation = rot;
+
+        transform.position = position;
+        transform.rotation = rotation;
+    }
     private bool fall;
     private Vector3 fallHole;
     public void ReceiveDataNetwork()
