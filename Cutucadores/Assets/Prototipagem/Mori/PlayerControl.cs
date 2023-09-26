@@ -330,6 +330,11 @@ public class PlayerControl : MonoBehaviour
     }
     private void Update()
     {
+        if (takeHit)
+        {
+            TakeDamage(hitDirection);
+            takeHit = false;
+        }
         currentState.OnUpdate(this);
     }
     private void OnCollisionEnter2D(Collision2D collision)
@@ -421,12 +426,9 @@ public class PlayerControl : MonoBehaviour
                 case InfoType.PlHit:
                     int otherPlayerHP = GameManager.Instance.players[Mathf.Abs(playerID - 1)].hp;
                     Multiplayer.SendMessageToIP(connectedAdress, otherPlayerHP.ToString() + "PlHit" + infoSendParameter);
-                    if (PlayerHitRepeatTimes > 0) PlayerHitRepeatTimes--;
-                    else
-                    {
-                        infoToSend = InfoType.PosPl;
-                        PlayerHitRepeatTimes = 3;
-                    }
+                    Multiplayer.SendMessageToIP(connectedAdress, otherPlayerHP.ToString() + "PlHit" + infoSendParameter);
+                    Multiplayer.SendMessageToIP(connectedAdress, otherPlayerHP.ToString() + "PlHit" + infoSendParameter);
+                    infoToSend = InfoType.PosPl;
                     break;
                 case InfoType.HFall:
                     Multiplayer.SendMessageToIP(connectedAdress, "HFall" + infoSendParameter);
@@ -486,11 +488,6 @@ public class PlayerControl : MonoBehaviour
         {
             playerControl.rb.angularVelocity = playerControl.rotationSpeed * playerControl.rotationDirection * (-100) * playerControl.rotationSpeedMultiplier;
             playerControl.rb.velocity = playerControl.transform.up * playerControl.moveSpeedMultiplier * playerControl.moveSpeed * playerControl.moveDirection;
-            if (playerControl.takeHit)
-            {
-                playerControl.TakeDamage(playerControl.hitDirection);
-                playerControl.takeHit = false;
-            }
         }
         public void OnExit(PlayerControl playerControl)
         {
