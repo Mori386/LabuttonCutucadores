@@ -17,6 +17,7 @@ public class PlayerNetworkReceive : MonoBehaviour
     {
         playerControl = GetComponent<PlayerControl>();
         ReceiveDataNetworkThread = new Thread(ReceiveDataNetwork);
+        ReceiveDataNetworkThread.Start();
     }
     private void Update()
     {
