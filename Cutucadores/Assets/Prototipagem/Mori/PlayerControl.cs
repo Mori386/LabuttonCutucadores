@@ -224,7 +224,7 @@ public class PlayerControl : MonoBehaviour
     {
         if (!falling)
         {
-            playerNetworkReceive.interpolate = false;
+            if (playerType.Equals(PlayerTypes.Network)) playerNetworkReceive.interpolate = false;
             falling = true;
             float timer = 0;
             Vector3 scale = transform.localScale;
@@ -280,7 +280,7 @@ public class PlayerControl : MonoBehaviour
             {
                 SendInfo(InfoType.PosPl);
             }
-            playerNetworkReceive.interpolate = true;
+            if (playerType.Equals(PlayerTypes.Network)) playerNetworkReceive.interpolate = true;
         }
     }
     public IEnumerator DamageTakenEffect()
