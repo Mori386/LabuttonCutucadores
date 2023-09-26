@@ -274,7 +274,7 @@ public class MenuControl : MonoBehaviour
                 }
                 clientCount = Multiplayer.Client.players.Count(s => s != null);
             }
-            if (matchStart) SceneManager.LoadScene("MoriGameplayTest");
+            if (matchStart) SceneManager.LoadScene("GameplayMap00");
             yield return new WaitForSeconds(0.25f);
         }
     }
