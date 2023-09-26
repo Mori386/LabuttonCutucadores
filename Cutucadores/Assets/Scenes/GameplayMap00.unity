@@ -11558,7 +11558,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   orangeAnim: {fileID: 9100000, guid: e9431d3be4541f546bad6acaa934e481, type: 2}
   greenAnim: {fileID: 9100000, guid: 8e4d8b5ed061c2642a245c1e8727af89, type: 2}
-  VirtualCamera: {fileID: 0}
+  VirtualCamera: {fileID: 1640989671}
   playerInputPrefab: {fileID: 2147308431542360236, guid: c1a74f4c78600454ba36e79c9658360e, type: 3}
   playerNetworkPrefab: {fileID: 7263698202459985105, guid: c4fc74d7b99a8b84d97e7a23be2a9fba, type: 3}
   playerSpawnpoint:
