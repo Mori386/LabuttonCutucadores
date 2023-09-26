@@ -362,10 +362,8 @@ public class PlayerControl : MonoBehaviour
     }
     public void SendHoleFallInfo(Vector3 holePos)
     {
-        StopCoroutine(SendTransformInfoCoroutine);
         Vector3 roundPos = new Vector3(Mathf.Round(holePos.x * 1000) / 1000, Mathf.Round(holePos.y * 1000) / 1000, 0);
         Multiplayer.SendMessageToIP(connectedAdress, "HFall" + playerID.ToString() + roundPos.x + "Y" + roundPos.y);
-        StartCoroutine(SendTransformInfo());
     }
     public interface IState
     {
