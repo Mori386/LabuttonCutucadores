@@ -51,12 +51,7 @@ public class PlayerMenuCard
 }
 public class MenuControl : MonoBehaviour
 {
-    private void FixedUpdate()
-    {
-        if (Multiplayer.isHost) Debug.Log(Multiplayer.Host.clients.Count);
-        else Debug.Log(Multiplayer.Client.players.Length);
-    }
-    [SerializeField] private GameObject DefaultMenu, JoinMenu, HostMenu;
+    //[SerializeField] private GameObject DefaultMenu, JoinMenu, HostMenu;
     [SerializeField] private TMP_InputField nickname;
     [Header("Client"), SerializeField] private TMP_InputField ServerToJoinIPAdress;
 
@@ -75,7 +70,7 @@ public class MenuControl : MonoBehaviour
     public void OnHostMenuEnter()
     {
         Multiplayer.isHost = true;
-        serverIP.text = Multiplayer.GetMyIP();
+        serverIP.text = "IP:"+Multiplayer.GetMyIP();
         hostAddPlayersToMenu = StartCoroutine(HostAddPlayersToMenu());
         ReceiveDataThreadHost = new Thread(ReceiveDataHost);
         ReceiveDataThreadHost.Start();
@@ -83,7 +78,7 @@ public class MenuControl : MonoBehaviour
     private Coroutine hostAddPlayersToMenu;
     private IEnumerator HostAddPlayersToMenu()
     {
-        hostPlayersMenuCards[0].ChangeIPText(Multiplayer.GetMyIP());
+        //hostPlayersMenuCards[0].ChangeIPText(Multiplayer.GetMyIP());
         hostPlayersMenuCards[0].nicknameText.text = nickname.text;
         hostPlayersMenuCards[0].cardGameObject.SetActive(true);
         int clientCount = Multiplayer.Host.clients.Count;
@@ -101,7 +96,7 @@ public class MenuControl : MonoBehaviour
                         {
                             Player player = Multiplayer.Host.clients.Values.ElementAt(y);
                             Debug.Log(player.name);
-                            hostPlayersMenuCards[playersLogged + 1].ChangeIPText(Multiplayer.Host.clients.Keys.ElementAt(y));
+                            //hostPlayersMenuCards[playersLogged + 1].ChangeIPText(Multiplayer.Host.clients.Keys.ElementAt(y));
                             hostPlayersMenuCards[playersLogged + 1].nicknameText.text = player.name;
                             hostPlayersMenuCards[playersLogged + 1].cardGameObject.SetActive(true);
                             playersLogged++;
@@ -125,7 +120,7 @@ public class MenuControl : MonoBehaviour
                         {
                             Player player = Multiplayer.Host.clients.Values.ElementAt(y);
                             Debug.Log(player.name);
-                            hostPlayersMenuCards[playersLogged + 1].ChangeIPText(Multiplayer.Host.clients.Keys.ElementAt(y));
+                            //hostPlayersMenuCards[playersLogged + 1].ChangeIPText(Multiplayer.Host.clients.Keys.ElementAt(y));
                             hostPlayersMenuCards[playersLogged + 1].nicknameText.text = player.name;
                             hostPlayersMenuCards[playersLogged + 1].cardGameObject.SetActive(true);
                             playersLogged++;
@@ -367,5 +362,9 @@ public class MenuControl : MonoBehaviour
     public void OnJoinMenuLeave()
     {
 
+    }
+    public void ExitGame()
+    {
+        Application.Quit();
     }
 }

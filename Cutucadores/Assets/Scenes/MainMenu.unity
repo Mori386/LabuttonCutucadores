@@ -4109,9 +4109,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7deee7d5264de5e4c9bcbc2e8ce981ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DefaultMenu: {fileID: 210352479}
-  JoinMenu: {fileID: 1337405750}
-  HostMenu: {fileID: 814446927}
   nickname: {fileID: 1729637409}
   ServerToJoinIPAdress: {fileID: 2018497927}
   clientPlayersMenuCards:
