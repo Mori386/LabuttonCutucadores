@@ -37,13 +37,13 @@ public class PlayerInputReceiver : MonoBehaviour
             {
                 Player player = Multiplayer.Host.clients.Values.ElementAt(i);
                 playerControl.connectedAdress = Multiplayer.Host.clients.Keys.ElementAt(i);
-                playerControl.SendTransformInfoCoroutine = playerControl.StartCoroutine(playerControl.SendTransformInfo());
+                playerControl.StartCoroutine(playerControl.SendTransformInfo());
             }
         }
         else
         {
             playerControl.connectedAdress = Multiplayer.Client.HostIP;
-            playerControl.SendTransformInfoCoroutine = playerControl.StartCoroutine(playerControl.SendTransformInfo());
+            playerControl.StartCoroutine(playerControl.SendTransformInfo());
         }
     }
 }

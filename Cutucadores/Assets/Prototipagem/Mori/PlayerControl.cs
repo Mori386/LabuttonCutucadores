@@ -208,49 +208,55 @@ public class PlayerControl : MonoBehaviour
         }
         gameObject.SetActive(false);
     }
+    [System.NonSerialized] public bool falling;
     public IEnumerator FallAnimation(Vector3 holePos)
     {
-        float timer = 0;
-        Vector3 scale = transform.localScale;
-        for (int i = 0; i < colliders.Length; i++)
+        if (!falling)
         {
-            colliders[i].enabled = false;
-        }
-        while (timer < 1)
-        {
-            spriteRenderer.color = new Color(1f - timer, 1f - timer, 1f - timer, 1);
-            transform.position = holePos;
-            transform.rotation = Quaternion.Euler(0, 0, frac(Time.time) * 360);
-            transform.localScale = new Vector3(1 - timer, 1 - timer, 1 - timer);
-            yield return null;
-            timer += Time.deltaTime;
-        }
-        hp--;
-        if (hp <= 0)
-        {
-            gameObject.SetActive(false);
-        }
-        else
-        {
-            UpdateHPBar();
-            yield return new WaitForSeconds(0.25f);
-            transform.localScale = Vector3.zero;
-            transform.position = GameManager.Instance.playerSpawnpoint[GameManager.Instance.myID].position;
-            transform.rotation = Quaternion.Euler(0, 0, 0);
-            transform.localScale = scale;
-            timer = 0;
-            while (timer < 0.75f)
+            falling = true;
+            float timer = 0;
+            Vector3 scale = transform.localScale;
+            for (int i = 0; i < colliders.Length; i++)
             {
-                transform.position = GameManager.Instance.playerSpawnpoint[GameManager.Instance.myID].position;
-                spriteRenderer.color = new Color(1, 1, 1, Mathf.Abs(Mathf.Sin(timer * 10f)));
+                colliders[i].enabled = false;
+            }
+            while (timer < 1)
+            {
+                spriteRenderer.color = new Color(1f - timer, 1f - timer, 1f - timer, 1);
+                transform.position = holePos;
+                transform.rotation = Quaternion.Euler(0, 0, frac(Time.time) * 360);
+                transform.localScale = new Vector3(1 - timer, 1 - timer, 1 - timer);
                 yield return null;
                 timer += Time.deltaTime;
             }
-            spriteRenderer.color = Color.white;
-            for (int i = 0; i < colliders.Length; i++)
+            hp--;
+            if (hp <= 0)
             {
-                colliders[i].enabled = true;
+                gameObject.SetActive(false);
             }
+            else
+            {
+                UpdateHPBar();
+                yield return new WaitForSeconds(0.25f);
+                transform.localScale = Vector3.zero;
+                transform.position = GameManager.Instance.playerSpawnpoint[GameManager.Instance.myID].position;
+                transform.rotation = Quaternion.Euler(0, 0, 0);
+                transform.localScale = scale;
+                timer = 0;
+                while (timer < 0.75f)
+                {
+                    transform.position = GameManager.Instance.playerSpawnpoint[GameManager.Instance.myID].position;
+                    spriteRenderer.color = new Color(1, 1, 1, Mathf.Abs(Mathf.Sin(timer * 10f)));
+                    yield return null;
+                    timer += Time.deltaTime;
+                }
+                spriteRenderer.color = Color.white;
+                for (int i = 0; i < colliders.Length; i++)
+                {
+                    colliders[i].enabled = true;
+                }
+            }
+            falling = false;
         }
     }
     public IEnumerator DamageTakenEffect()
@@ -344,8 +350,8 @@ public class PlayerControl : MonoBehaviour
 
 
     }
-    public Coroutine SendTransformInfoCoroutine;
-    [System.NonSerialized]public string connectedAdress;
+    [System.NonSerialized] public string connectedAdress;
+
     public IEnumerator SendTransformInfo()
     {
         while (true)
@@ -363,7 +369,10 @@ public class PlayerControl : MonoBehaviour
     public void SendHoleFallInfo(Vector3 holePos)
     {
         Vector3 roundPos = new Vector3(Mathf.Round(holePos.x * 1000) / 1000, Mathf.Round(holePos.y * 1000) / 1000, 0);
-        Multiplayer.SendMessageToIP(connectedAdress, "HFall" + playerID.ToString() + roundPos.x + "Y" + roundPos.y);
+        for (int i = 0; i < 10; i++)
+        {
+            Multiplayer.SendMessageToIP(connectedAdress, "HFall" + playerID.ToString() + roundPos.x + "Y" + roundPos.y);
+        }
     }
     public interface IState
     {

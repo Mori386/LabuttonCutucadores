@@ -125,7 +125,7 @@ public class PlayerNetworkReceive : MonoBehaviour
                         newYValue += returnData[i];
                     }
                     holePos = new Vector3(float.Parse(newXValue), float.Parse(newYValue), 0);
-                    playerControl.FallAnimation(holePos);
+                    playerControl.StartCoroutine(playerControl.FallAnimation(holePos));
                 }
             }
         }
