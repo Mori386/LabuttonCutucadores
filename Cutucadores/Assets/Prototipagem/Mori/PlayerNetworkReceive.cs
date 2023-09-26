@@ -145,6 +145,7 @@ public class PlayerNetworkReceive : MonoBehaviour
                     fall = true;
                 }
             }
+            else Debug.Log("NonOfTheOthers|" + infoType);
         }
     }
 }
