@@ -253,18 +253,18 @@ public class PlayerControl : MonoBehaviour
                 transform.localScale = Vector3.zero;
                 if (playerType.Equals(PlayerTypes.Network))
                 {
-                    playerNetworkReceive.Teleport(GameManager.Instance.playerSpawnpoint[GameManager.Instance.myID].position, Quaternion.Euler(0, 0, 0));
+                    playerNetworkReceive.Teleport(GameManager.Instance.playerSpawnpoint[playerID].position, Quaternion.Euler(0, 0, 0));
                 }
                 else
                 {
-                    transform.position = GameManager.Instance.playerSpawnpoint[GameManager.Instance.myID].position;
+                    transform.position = GameManager.Instance.playerSpawnpoint[playerID].position;
                     transform.rotation = Quaternion.Euler(0, 0, 0);
                 }
                 transform.localScale = scale;
                 timer = 0;
                 while (timer < 0.75f)
                 {
-                    transform.position = GameManager.Instance.playerSpawnpoint[GameManager.Instance.myID].position;
+                    transform.position = GameManager.Instance.playerSpawnpoint[playerID].position;
                     spriteRenderer.color = new Color(1, 1, 1, Mathf.Abs(Mathf.Sin(timer * 10f)));
                     yield return null;
                     timer += Time.deltaTime;
