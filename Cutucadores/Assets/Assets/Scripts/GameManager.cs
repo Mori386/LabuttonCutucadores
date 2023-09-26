@@ -2,11 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using UnityEditor.Animations;
 using UnityEngine;
+using Cinemachine;
 
 public class GameManager : MonoBehaviour
 {
+    public AnimatorController orangeAnim, greenAnim;
     public static GameManager Instance { private set; get; }
+
+    public CinemachineVirtualCamera VirtualCamera;
 
     [SerializeField] private GameObject playerInputPrefab;
     [SerializeField] private GameObject playerNetworkPrefab;
@@ -27,12 +32,16 @@ public class GameManager : MonoBehaviour
             playerControl.playerID = 0;
             myID = 0;
             players[0] = playerControl;
+            VirtualCamera.LookAt = playerControl.transform;
+            VirtualCamera.Follow = playerControl.transform;
+            playerControl.animator.runtimeAnimatorController = GetAnimatorBasedOnID(playerControl.playerID);
             for (int i = 0; i < Multiplayer.Host.clients.Count; i++)
             {
                 Player player = Multiplayer.Host.clients.Values.ElementAt(i);
                 playerControl = SpawnPlayer(playerNetworkPrefab, player.id + 1, player.name).GetComponent<PlayerControl>();
                 playerControl.playerID = player.id + 1;
-                players[i+1] = playerControl;
+                players[i + 1] = playerControl;
+                playerControl.animator.runtimeAnimatorController = GetAnimatorBasedOnID(playerControl.playerID);
             }
         }
         else
@@ -54,6 +63,7 @@ public class GameManager : MonoBehaviour
                         PlayerControl playerControl = SpawnPlayer(playerNetworkPrefab, player.id, player.name).GetComponent<PlayerControl>();
                         playerControl.playerID = player.id;
                         players[player.id] = playerControl;
+                        playerControl.animator.runtimeAnimatorController = GetAnimatorBasedOnID(playerControl.playerID);
                     }
                     else
                     {
@@ -61,17 +71,34 @@ public class GameManager : MonoBehaviour
                         playerControl.playerID = player.id;
                         players[player.id] = playerControl;
                         myID = player.id;
+                        playerControl.animator.runtimeAnimatorController = GetAnimatorBasedOnID(playerControl.playerID);
+                        VirtualCamera.LookAt = playerControl.transform;
+                        VirtualCamera.Follow = playerControl.transform;
                     }
                 }
             }
         }
     }
-
+    public AnimatorController GetAnimatorBasedOnID(int id)
+    {
+        switch (id)
+        {
+            default:
+            case 0:
+            case 2:
+            case 3:
+                return orangeAnim;
+                break;
+            case 1:
+                return greenAnim;
+                break;
+        }
+    }
     public PlayerControl GetPlayerControl(GameObject playerObject)
     {
-        for(int i = 0; i< players.Length;i++)
+        for (int i = 0; i < players.Length; i++)
         {
-            if(playerObject.GetInstanceID().Equals(players[i].gameObject.GetInstanceID()))
+            if (playerObject.GetInstanceID().Equals(players[i].gameObject.GetInstanceID()))
             {
                 return players[i];
             }
