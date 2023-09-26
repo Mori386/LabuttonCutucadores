@@ -27,7 +27,7 @@ public class Drill : MonoBehaviour
             player.RecoilOnHit(forceApplied);
             if(player.playerType.Equals(PlayerTypes.Input))
             {
-                player.SendInfo(InfoType.PlHit, Mathf.Abs(player.playerID - 1).ToString() + forceApplied.x + "Y" + forceApplied.y);
+                player.SendInfo(InfoType.PlHit, Mathf.Abs(player.playerID - 1).ToString());
             }
 
         }

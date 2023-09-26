@@ -420,7 +420,7 @@ public class PlayerControl : MonoBehaviour
                     break;
                 case InfoType.PlHit:
                     int otherPlayerHP = GameManager.Instance.players[Mathf.Abs(playerID - 1)].hp;
-                    Multiplayer.SendMessageToIP(connectedAdress, otherPlayerHP.ToString() + "PlHit");
+                    Multiplayer.SendMessageToIP(connectedAdress, otherPlayerHP.ToString() + "PlHit" + infoSendParameter);
                     if (PlayerHitRepeatTimes > 0) PlayerHitRepeatTimes--;
                     else
                     {
