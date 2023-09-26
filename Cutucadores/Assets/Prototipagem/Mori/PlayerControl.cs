@@ -344,15 +344,16 @@ public class PlayerControl : MonoBehaviour
 
 
     }
-
-    public IEnumerator SendTransformInfo(string IPAdress, int playerID, Transform transform)
+    public Coroutine SendTransformInfoCoroutine;
+    [System.NonSerialized]public string connectedAdress;
+    public IEnumerator SendTransformInfo()
     {
         while (true)
         {
             Vector3 roundPos = new Vector3(Mathf.Round(transform.position.x * 10000) / 10000, Mathf.Round(transform.position.y * 10000) / 10000, 0);
             Vector2 roundRot = new Vector2(Mathf.Round(transform.rotation.z * 10000) / 10000, Mathf.Round(transform.rotation.w * 10000) / 10000);
-            Multiplayer.SendMessageToIP(IPAdress, "PosPl" + playerID.ToString() + roundPos.x + "Y" + roundPos.y + "Z" + roundRot.x + "W" + roundRot.y);
-            yield return new WaitForSeconds(0.01f);
+            Multiplayer.SendMessageToIP(connectedAdress, "PosPl" + playerID.ToString() + roundPos.x + "Y" + roundPos.y + "Z" + roundRot.x + "W" + roundRot.y);
+            yield return new WaitForFixedUpdate();
         }
     }
     public void SendHitInfo()
@@ -361,11 +362,10 @@ public class PlayerControl : MonoBehaviour
     }
     public void SendHoleFallInfo(Vector3 holePos)
     {
-        string IPAdress;
-        if (Multiplayer.isHost) IPAdress = Multiplayer.Host.clients.Keys.ElementAt(0);
-        else IPAdress = Multiplayer.Client.HostIP;
+        StopCoroutine(SendTransformInfoCoroutine);
         Vector3 roundPos = new Vector3(Mathf.Round(holePos.x * 1000) / 1000, Mathf.Round(holePos.y * 1000) / 1000, 0);
-        Multiplayer.SendMessageToIP(IPAdress, "HFall" + playerID.ToString() + roundPos.x + "Y" + roundPos.y);
+        Multiplayer.SendMessageToIP(connectedAdress, "HFall" + playerID.ToString() + roundPos.x + "Y" + roundPos.y);
+        StartCoroutine(SendTransformInfo());
     }
     public interface IState
     {
