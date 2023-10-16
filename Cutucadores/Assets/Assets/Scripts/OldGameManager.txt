@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
-using UnityEditor.Animations;
 using UnityEngine;
 using Cinemachine;
 using UnityEngine.SceneManagement;
@@ -12,10 +11,10 @@ using System.Threading;
 using System;
 using UnityEngine.UIElements;
 
-public class GameManager : MonoBehaviour
+public class OldGameManager : MonoBehaviour
 {
-    public AnimatorController orangeAnim, greenAnim;
-    public static GameManager Instance { private set; get; }
+    public RuntimeAnimatorController orangeAnim, greenAnim;
+    public static OldGameManager Instance { private set; get; }
 
     public CinemachineVirtualCamera VirtualCamera;
 
@@ -89,7 +88,7 @@ public class GameManager : MonoBehaviour
             }
         }
     }
-    public AnimatorController GetAnimatorBasedOnID(int id)
+    public RuntimeAnimatorController GetAnimatorBasedOnID(int id)
     {
         switch (id)
         {
