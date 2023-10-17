@@ -8,6 +8,8 @@ using System;
 public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
 {
     public NetworkPlayer playerPrefab;
+
+    CharacterInputHandler characterInputHandler;
     void Start()
     {
         
@@ -24,7 +26,14 @@ public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
     }
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
-        
+        if(characterInputHandler == null)
+        {
+            if(NetworkPlayer.Local != null) characterInputHandler = NetworkPlayer.Local.GetComponent<CharacterInputHandler>();
+        }
+        else
+        {
+            input.Set(characterInputHandler.GetNetworkInput());
+        }
     }
     public void OnConnectedToServer(NetworkRunner runner)
     {

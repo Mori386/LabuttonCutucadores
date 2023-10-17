@@ -12,7 +12,7 @@ public class NetworkCharacterControllerPrototypeCustom : NetworkTransform
     public float gravity = -20.0f;
     public float jumpImpulse = 8.0f;
     public float acceleration = 10.0f;
-    public float braking = 10.0f;
+    public float braking = 1.0f;
     public float maxSpeed = 2.0f;
     public float rotationSpeed = 15.0f;
 
@@ -104,8 +104,6 @@ public class NetworkCharacterControllerPrototypeCustom : NetworkTransform
             moveVelocity.y = 0f;
         }
 
-        moveVelocity.y += gravity * Runner.DeltaTime;
-
         var horizontalVel = default(Vector3);
         horizontalVel.x = moveVelocity.x;
         horizontalVel.z = moveVelocity.z;
@@ -117,7 +115,7 @@ public class NetworkCharacterControllerPrototypeCustom : NetworkTransform
         else
         {
             horizontalVel = Vector3.ClampMagnitude(horizontalVel + direction * acceleration * deltaTime, maxSpeed);
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), rotationSpeed * Runner.DeltaTime);
+            //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), rotationSpeed * Runner.DeltaTime);
         }
 
         moveVelocity.x = horizontalVel.x;
@@ -127,5 +125,10 @@ public class NetworkCharacterControllerPrototypeCustom : NetworkTransform
 
         Velocity = (transform.position - previousPos) * Runner.Simulation.Config.TickRate;
         IsGrounded = Controller.isGrounded;
+    }
+
+    public virtual void Rotate(float direction)
+    {
+        transform.Rotate(0,direction*Runner.DeltaTime*rotationSpeed, 0);
     }
 }

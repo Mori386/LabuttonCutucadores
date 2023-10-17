@@ -6,8 +6,8 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Tests/PhotonTestScene.unity
-    guid: b3920098b2e82ee4a99df7aaa5b3965e
+    path: Assets/Prototipagem/Mori/Fusion/MoriPhotonTest.unity
+    guid: 72a6702e5ade81d4f828b387b0a10e3a
   - enabled: 1
     path: Assets/Scenes/2D/Menu.unity
     guid: a455de46d55139a48a46086d8633d442
