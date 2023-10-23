@@ -16,6 +16,8 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         if(Object.HasInputAuthority)
         {
             Local = this;
+            GameManager.Instance.VirtualCamera.Follow = transform;
+            GameManager.Instance.VirtualCamera.LookAt = transform;
             Debug.Log("Spawned local player");
         }
         else Debug.Log("Spawned remote player");

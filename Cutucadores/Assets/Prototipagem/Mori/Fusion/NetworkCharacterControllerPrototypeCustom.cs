@@ -9,16 +9,10 @@ using UnityEngine;
 public class NetworkCharacterControllerPrototypeCustom : NetworkTransform
 {
     [Header("Character Controller Settings")]
-    public float gravity = -20.0f;
-    public float jumpImpulse = 8.0f;
     public float acceleration = 10.0f;
     public float braking = 1.0f;
     public float maxSpeed = 2.0f;
     public float rotationSpeed = 15.0f;
-
-    [Networked]
-    [HideInInspector]
-    public bool IsGrounded { get; set; }
 
     [Networked]
     [HideInInspector]
@@ -73,42 +67,22 @@ public class NetworkCharacterControllerPrototypeCustom : NetworkTransform
     }
 
     /// <summary>
-    /// Basic implementation of a jump impulse (immediately integrates a vertical component to Velocity).
-    /// <param name="ignoreGrounded">Jump even if not in a grounded state.</param>
-    /// <param name="overrideImpulse">Optional field to override the jump impulse. If null, <see cref="jumpImpulse"/> is used.</param>
-    /// </summary>
-    public virtual void Jump(bool ignoreGrounded = false, float? overrideImpulse = null)
-    {
-        if (IsGrounded || ignoreGrounded)
-        {
-            var newVel = Velocity;
-            newVel.y += overrideImpulse ?? jumpImpulse;
-            Velocity = newVel;
-        }
-    }
-
-    /// <summary>
     /// Basic implementation of a character controller's movement function based on an intended direction.
     /// <param name="direction">Intended movement direction, subject to movement query, acceleration and max speed values.</param>
     /// </summary>
     public virtual void Move(Vector3 direction)
     {
-        var deltaTime = Runner.DeltaTime;
-        var previousPos = transform.position;
-        var moveVelocity = Velocity;
-
+        float deltaTime = Runner.DeltaTime;
+        Vector3 previousPos = transform.position;
+        Vector3 moveVelocity = Velocity;
+        moveVelocity.y = 0f;
         direction = direction.normalized;
 
-        if (IsGrounded && moveVelocity.y < 0)
-        {
-            moveVelocity.y = 0f;
-        }
-
-        var horizontalVel = default(Vector3);
+        Vector3 horizontalVel = Vector3.zero;
         horizontalVel.x = moveVelocity.x;
         horizontalVel.z = moveVelocity.z;
 
-        if (direction == default)
+        if (direction == Vector3.zero)
         {
             horizontalVel = Vector3.Lerp(horizontalVel, default, braking * deltaTime);
         }
@@ -124,7 +98,6 @@ public class NetworkCharacterControllerPrototypeCustom : NetworkTransform
         Controller.Move(moveVelocity * deltaTime);
 
         Velocity = (transform.position - previousPos) * Runner.Simulation.Config.TickRate;
-        IsGrounded = Controller.isGrounded;
     }
 
     public virtual void Rotate(float direction)

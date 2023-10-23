@@ -5,10 +5,10 @@ using Fusion;
 
 public class CharacterMovementHandler : NetworkBehaviour
 {
-    NetworkCharacterControllerPrototypeCustom networkCharacterControllerPrototypeCustom;
+    NetworkCharacterDrillController networkCharacterDrillController;
     private void Awake()
     {
-        networkCharacterControllerPrototypeCustom = GetComponent<NetworkCharacterControllerPrototypeCustom>();
+        networkCharacterDrillController = GetComponent<NetworkCharacterDrillController>();
     }
     void Start()
     {
@@ -21,8 +21,8 @@ public class CharacterMovementHandler : NetworkBehaviour
             Vector3 moveDirection = transform.forward * networkInputData.movementInput.y;
             moveDirection.Normalize();
 
-            networkCharacterControllerPrototypeCustom.Move(moveDirection);
-            networkCharacterControllerPrototypeCustom.Rotate(networkInputData.movementInput.x);
+            networkCharacterDrillController.Move(moveDirection);
+            networkCharacterDrillController.Rotate(networkInputData.movementInput.x);
         }
     }
 }
