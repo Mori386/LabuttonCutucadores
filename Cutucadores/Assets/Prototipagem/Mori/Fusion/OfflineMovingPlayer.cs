@@ -14,25 +14,33 @@ public class OfflineMovingPlayer : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
     }
+    private void Start()
+    {
+        rb.inertiaTensor = rb.inertiaTensor;
+
+        rb.inertiaTensorRotation = rb.inertiaTensorRotation;
+    }
     private void Update()
     {
         movementInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
     }
     private void FixedUpdate()
     {
-        
         Move(movementInput.y);
         Rotate(movementInput.x);
+
     }
     private void Move(float YDirection)
     {
-        float deltaTime = Time.deltaTime;
-        rb.velocity = transform.forward * YDirection*10;
+        float fixedDeltaTime = Time.fixedDeltaTime;
+        rb.AddForce(transform.forward * YDirection * 100 * fixedDeltaTime * characterData.maxSpeed,ForceMode.Force);
 
 
     }
     private void Rotate(float XDirection)
     {
-        transform.Rotate(0, XDirection * Time.deltaTime * characterData.rotationSpeed*10, 0);
+        rb.AddTorque(0, XDirection * Time.fixedDeltaTime * characterData.rotationSpeed * 10, 0,ForceMode.Force);
+        //rb.MoveRotation(Quaternion.Euler(rb.rotation.eulerAngles + new Vector3(0, XDirection * Time.fixedDeltaTime * characterData.rotationSpeed * 10, 0)));
+        //transform.Rotate(0, XDirection * Time.fixedDeltaTime * characterData.rotationSpeed*10, 0);
     }
 }
