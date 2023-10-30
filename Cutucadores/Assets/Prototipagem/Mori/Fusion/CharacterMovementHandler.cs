@@ -16,12 +16,10 @@ public class CharacterMovementHandler : NetworkBehaviour
     }
     public override void FixedUpdateNetwork()
     {
+        networkCharacterDrillController.CalculateVelocity();
         if(GetInput(out NetworkInputData networkInputData))
         {
-            Vector3 moveDirection = transform.forward * networkInputData.movementInput.y;
-            moveDirection.Normalize();
-
-            networkCharacterDrillController.Move(moveDirection);
+            networkCharacterDrillController.Move(networkInputData.movementInput.y);
             networkCharacterDrillController.Rotate(networkInputData.movementInput.x);
         }
     }

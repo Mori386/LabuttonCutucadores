@@ -5,6 +5,11 @@ using UnityEngine;
 public class CharacterInputHandler : MonoBehaviour
 {
     Vector2 moveInputVector;
+    CharacterMovementHandler characterMovementHandler;
+    private void Awake()
+    {
+        characterMovementHandler = GetComponent<CharacterMovementHandler>();
+    }
     void Start()
     {
         
@@ -13,6 +18,7 @@ public class CharacterInputHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(!characterMovementHandler.Object.HasInputAuthority) return;
         moveInputVector.x = Input.GetAxis("Horizontal");
         moveInputVector.y = Input.GetAxis("Vertical");
     }

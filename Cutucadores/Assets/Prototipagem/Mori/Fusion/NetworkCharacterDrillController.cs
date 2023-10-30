@@ -1,18 +1,17 @@
 using Fusion;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.InputSystem.XR;
+using TMPro;
+using Unity.VisualScripting;
 
 [OrderBefore(typeof(NetworkTransform))]
 [DisallowMultipleComponent]
 public class NetworkCharacterDrillController : NetworkTransform
 {
-    [Header("Character Controller Settings")]
-    public float acceleration = 10.0f;
-    public float braking = 1.0f;
-    public float maxSpeed = 2.0f;
-    public float rotationSpeed = 15.0f;
+    public InGameCharacterData characterData;
 
     [Networked]
     [HideInInspector]
@@ -28,7 +27,7 @@ public class NetworkCharacterDrillController : NetworkTransform
     /// Sets the default teleport interpolation angular velocity to be the CC's rotation speed on the Z axis.
     /// For more details on how this field is used, see <see cref="NetworkTransform.TeleportToRotation"/>.
     /// </summary>
-    protected override Vector3 DefaultTeleportInterpolationAngularVelocity => new Vector3(0f, 0f, rotationSpeed);
+    protected override Vector3 DefaultTeleportInterpolationAngularVelocity => new Vector3(0f, 0f, characterData.rotationSpeed);
 
     public Rigidbody rb { get; private set; }
 
@@ -50,28 +49,20 @@ public class NetworkCharacterDrillController : NetworkTransform
             rb = GetComponent<Rigidbody>();
         }
     }
-    public virtual void Move(Vector3 direction)
+    public void CalculateVelocity()
+    {
+        Velocity = new Vector2(rb.velocity.x,rb.velocity.z);
+    }
+    public virtual void Move(float direction)
     {
         float deltaTime = Runner.DeltaTime;
-        Vector3 previousPos = transform.position;
-        Vector3 moveVelocity = Velocity;
-
-        direction = direction.normalized;
-        if(direction == Vector3.zero)
-        {
-            rb.velocity = Vector3.zero;
-        }
-        else
-        {
-            rb.AddForce(direction * maxSpeed * 100f * deltaTime, ForceMode.Force);
-        }
-
-        Velocity = (transform.position - previousPos) * Runner.Simulation.Config.TickRate;
+        Vector3 moveForce = transform.forward * direction * 50 * characterData.maxSpeed * deltaTime;
+        rb.AddForce(moveForce, ForceMode.Acceleration);
     }
 
     public virtual void Rotate(float direction)
     {
         //rb.AddTorque(transform.up * direction * rotationSpeed * Runner.DeltaTime, ForceMode.Force);
-        transform.Rotate(0, direction * Runner.DeltaTime * rotationSpeed*10f, 0);
+        transform.Rotate(0, direction * Runner.DeltaTime * characterData.rotationSpeed * 10f, 0);
     }
 }

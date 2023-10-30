@@ -8,7 +8,7 @@ public class OfflineMovingPlayer : MonoBehaviour
     private Vector2 movementInput;
     private Rigidbody rb;
 
-    public CharacterData characterData;
+    public InGameCharacterData characterData;
 
     private void Awake()
     {

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,13 +17,18 @@ public class CharacterData : ScriptableObject
     }
     public Character character;
 
-    [Header("------Stats------"), Space(10)]
-    public float weight = 20;
-    public float acceleration = 10.0f;
-    public float braking = 1.0f;
-    public float maxSpeed = 2.0f;
-    public float rotationSpeed = 15.0f;
+    [Header("------Stats------")]
+    public InGameCharacterData characterData;
 
     [Header("------Model Info------"), Space(10)]
     public GameObject visualPrefab; 
+}
+[Serializable]
+public class InGameCharacterData
+{
+    public float weight = 20;
+    public float acceleration = 10.0f;
+    public float braking = 1.0f;
+    public float maxSpeed = 50.0f;
+    public float rotationSpeed = 15.0f;
 }
