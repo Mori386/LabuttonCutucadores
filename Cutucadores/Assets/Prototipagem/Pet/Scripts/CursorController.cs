@@ -6,17 +6,16 @@ using UnityEngine.UI;
 
 public class CursorController : MonoBehaviour
 {
-    public GameObject cursorObject,config, inicialMenu; // O objeto 3D que substituirá o cursor do mouse
+    public GameObject cursorObject,config, inicialMenu, roles, roleClientHost; 
     public Camera mainCamera;
     public Transform targetObject, targetObject2; // O objeto 3D para onde o cursor 3D será movido
-    public Animator animHand; // animações da mão
-    public Animator animBook; // animações caderno
+    public Animator animHand, animBook; // animações da mão e caderno
     public Image Blueprint; // blueprint seleção
    
 
     private bool isMoving = false;
-    private float moveTime = 2f; // Tempo total (tempo que o cursor fica na posição de destino + tempo de deslocamento)
-    private float pauseTime = 1.8f; // Tempo que o cursor fica na posição de destino
+    private float moveTime = 1.1f; // Tempo total (tempo que o cursor fica na posição de destino + tempo de deslocamento)
+    private float pauseTime = 0.9f; // Tempo que o cursor fica na posição de destino
     private float moveDuration; // Tempo de deslocamento
     private float timer = 0.0f; // verificação de tempo max
 
@@ -47,7 +46,7 @@ public class CursorController : MonoBehaviour
         }
         else
         {
-            // O objeto 3D está se movendo para a posição de destino para realizar a animação -- OBS, cursor do mouse não tem a posição modificada
+            // O objeto 3D está se movendo para a posição de destino para realizar a animação
             timer += Time.deltaTime;
 
             if (timer < moveDuration)
@@ -63,8 +62,8 @@ public class CursorController : MonoBehaviour
             }
             else
             {
-                // O tempo de espera acabou, animação executada, retornar o objeto 3D para a posição do mouse --- verificar calculo para retorno suave
-                cursorObject.transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                // O tempo de espera acabou, animação executada, retornar o objeto 3D para a posição do mouse --- calculo realizado no LockMousePosition
+                //cursorObject.transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 isMoving = false;
             }
         }
@@ -131,6 +130,13 @@ public class CursorController : MonoBehaviour
     {
         yield return new WaitForSeconds(0.25f);
         animHand.Play("arm_AMT|VirarPag");
+
+        yield return new WaitForSeconds(0.50f);
+        inicialMenu.SetActive(false);
+
+        yield return new WaitForSeconds(0.10f);
+        config.SetActive(true);
+
         StartCoroutine(LockMousePosition(cursorObject.transform, moveTime));
     }
 
@@ -138,6 +144,12 @@ public class CursorController : MonoBehaviour
     {
         yield return new WaitForSeconds(0.25f);
         animHand.Play("arm_AMT|VirarPag 0");
+
+        yield return new WaitForSeconds(0.50f);
+        config.SetActive(false);
+
+        yield return new WaitForSeconds(0.10f);
+        inicialMenu.SetActive(true);
         StartCoroutine(LockMousePosition(cursorObject.transform, moveTime));
     }
 
@@ -145,19 +157,35 @@ public class CursorController : MonoBehaviour
     {
 
         animBook.Play("Armature|ViraPag");
-        StartCoroutine(LockMousePosition(cursorObject.transform, moveTime));
-        yield return new WaitForSeconds(1.20f);
+
+        yield return new WaitForSeconds(0.25f);
+        roles.SetActive(false);
+        inicialMenu.SetActive(false);
+
+        yield return new WaitForSeconds(1.10f);
         animHand.Play("arm_AMT|FecharCaderno");
-       
+
+        yield return new WaitForSeconds(0.65f);
+        roleClientHost.SetActive(true);
+
+        StartCoroutine(LockMousePosition(cursorObject.transform, moveTime));
+
     }
 
     IEnumerator DelayOpenBook()
     {
 
-        animHand.Play("arm_AMT|FecharCaderno 0");
-        StartCoroutine(LockMousePosition(cursorObject.transform, moveTime));
-        yield return new WaitForSeconds(1.20f);
         animBook.Play("Armature|ViraPag 0");
+
+        yield return new WaitForSeconds(0.50f);
+        roleClientHost.SetActive(false);
+        animHand.Play("arm_AMT|FecharCaderno 0");
+
+
+        yield return new WaitForSeconds(0.75f);
+        roles.SetActive(true);
+        inicialMenu.SetActive(true);
+        StartCoroutine(LockMousePosition(cursorObject.transform, moveTime));
 
     }
     IEnumerator LockMousePosition(Transform armPosition,float duration)
