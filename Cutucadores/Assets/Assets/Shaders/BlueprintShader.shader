@@ -10,6 +10,10 @@ Shader "Unlit/BlueprintShader"
         Tags { "RenderType" = "Opaque" "Queue" = "Transparent"}
         LOD 100
         Blend SrcAlpha OneMinusSrcAlpha
+        Cull Back
+
+
+
 
         Pass
         {
@@ -84,7 +88,6 @@ Shader "Unlit/BlueprintShader"
                 float3 edge = step(unitWidth * _WireframeWidth, i.barycentric);
                 // Set alpha to 1 if within edge width, else 0.
                 float alpha = 1 - min(edge.x, min(edge.y, edge.z));
-                
                 if(random(i.pos)>0.75)alpha = 0;
                 // Set to our backwards facing wireframe colour.
                 return fixed4(_WireframeColor.r, _WireframeColor.g, _WireframeColor.b, alpha);

@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class CursorController : MonoBehaviour
 {
-    public GameObject cursorObject; // O objeto 3D que substituirá o cursor do mouse
+    public GameObject cursorObject,config, inicialMenu; // O objeto 3D que substituirá o cursor do mouse
+    public Camera mainCamera;
     public Transform targetObject, targetObject2; // O objeto 3D para onde o cursor 3D será movido
     public Animator animHand; // animações da mão
     public Animator animBook; // animações caderno
@@ -23,7 +25,9 @@ public class CursorController : MonoBehaviour
 
     void Start()
     {
-        Cursor.visible = false; // Esconde o cursor do mouse
+        mainCamera = Camera.main;
+
+        //Cursor.visible = false; // Esconde o cursor do mouse
         Cursor.lockState = CursorLockMode.Confined; // Mantém o cursor dentro da janela do jogo.
 
         startPosition = cursorObject.transform.position; //para retorno da posição inicial
@@ -38,12 +42,12 @@ public class CursorController : MonoBehaviour
             // Atualiza a posição do cursor 3D para seguir o mouse
             Vector3 mousePosition = Input.mousePosition;
             mousePosition.z = 2.3f; // Distância do cursor em relação à câmera
-            cursorObject.transform.position = Camera.main.ScreenToWorldPoint(mousePosition);
+            cursorObject.transform.position = mainCamera.ScreenToWorldPoint(mousePosition);
 
         }
         else
         {
-            // O cursor 3D está se movendo para a posição de destino para realizar a animação
+            // O objeto 3D está se movendo para a posição de destino para realizar a animação -- OBS, cursor do mouse não tem a posição modificada
             timer += Time.deltaTime;
 
             if (timer < moveDuration)
@@ -59,7 +63,7 @@ public class CursorController : MonoBehaviour
             }
             else
             {
-                // O tempo de espera acabou, animação executada, retornar à posição do mouse --- verificar calculo para retorno suave
+                // O tempo de espera acabou, animação executada, retornar o objeto 3D para a posição do mouse --- verificar calculo para retorno suave
                 cursorObject.transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 isMoving = false;
             }
@@ -120,23 +124,28 @@ public class CursorController : MonoBehaviour
         Blueprint.transform.localPosition = posicaoAtual;
     }
 
+
+
+    // Delay animações
     IEnumerator DelayNextPage()
     {
         yield return new WaitForSeconds(0.25f);
         animHand.Play("arm_AMT|VirarPag");
+        StartCoroutine(LockMousePosition(cursorObject.transform, moveTime));
     }
 
      IEnumerator DelayPreviousPage()
     {
         yield return new WaitForSeconds(0.25f);
         animHand.Play("arm_AMT|VirarPag 0");
+        StartCoroutine(LockMousePosition(cursorObject.transform, moveTime));
     }
 
     IEnumerator DelayCloseBook()
     {
 
         animBook.Play("Armature|ViraPag");
-
+        StartCoroutine(LockMousePosition(cursorObject.transform, moveTime));
         yield return new WaitForSeconds(1.20f);
         animHand.Play("arm_AMT|FecharCaderno");
        
@@ -146,8 +155,21 @@ public class CursorController : MonoBehaviour
     {
 
         animHand.Play("arm_AMT|FecharCaderno 0");
+        StartCoroutine(LockMousePosition(cursorObject.transform, moveTime));
         yield return new WaitForSeconds(1.20f);
         animBook.Play("Armature|ViraPag 0");
 
+    }
+    IEnumerator LockMousePosition(Transform armPosition,float duration)
+    {
+        float timer = 0;
+        Vector2 armScreenPosition = mainCamera.WorldToScreenPoint(armPosition.position);
+        while(timer<duration)
+        {
+            armScreenPosition = mainCamera.WorldToScreenPoint(armPosition.position);
+            Mouse.current.WarpCursorPosition(armScreenPosition);
+            timer += Time.deltaTime;
+            yield return null;
+        }
     }
 }

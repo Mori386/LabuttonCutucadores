@@ -29,7 +29,7 @@ Material:
     - _Glossiness: 0.5
     - _Metallic: 0
     - _WireframeAliasing: 1.5
-    - _WireframeWidth: 1.82
+    - _WireframeWidth: 0.5
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _WireframeBackColour: {r: 1, g: 1, b: 1, a: 1}
