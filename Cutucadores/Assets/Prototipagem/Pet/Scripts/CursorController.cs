@@ -1,12 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CursorController : MonoBehaviour
 {
     public GameObject cursorObject; // O objeto 3D que substituirá o cursor do mouse
     public Transform targetObject, targetObject2; // O objeto 3D para onde o cursor 3D será movido
-    public Animator anim; // animações da mão
+    public Animator animHand; // animações da mão
+    public Animator animBook; // animações caderno
+    public Image Blueprint; // blueprint seleção
+   
 
     private bool isMoving = false;
     private float moveTime = 2f; // Tempo total (tempo que o cursor fica na posição de destino + tempo de deslocamento)
@@ -73,7 +77,7 @@ public class CursorController : MonoBehaviour
         timer = 0.0f;
     }
 
-    public void ReturnPage(bool kitten)
+    public void ReturnPage(bool kitten) // anim para retorno
     {
         startPosition = cursorObject.transform.position;
         targetPosition = targetObject2.position;
@@ -83,15 +87,67 @@ public class CursorController : MonoBehaviour
         timer = 0.0f;
     }
 
+    public void CloseBook(bool kitten) // anim para fechar livro
+    {
+        startPosition = cursorObject.transform.position;
+        targetPosition = targetObject.position;
+
+        isMoving = true;
+        StartCoroutine(DelayCloseBook());
+        //timer = 0.0f;
+
+    }
+
+    public void OpenBook(bool kitten) // anim para abrir livro
+    {
+        startPosition = cursorObject.transform.position;
+        targetPosition = targetObject.position;
+
+        isMoving = true;
+        StartCoroutine(DelayOpenBook());
+        //timer = 0.0f;
+    }
+
+    public void BlueprintSelect() // anim para blueprint de seleção
+    {
+        Cursor.visible = true;
+        cursorObject.SetActive(false);
+
+        // Movimentar blueprint para perto da camera.
+        Vector3 posicaoAtual = Blueprint.transform.localPosition;
+        posicaoAtual.z = -183f; // posição do obj
+
+        Blueprint.transform.localPosition = posicaoAtual;
+    }
+
     IEnumerator DelayNextPage()
     {
         yield return new WaitForSeconds(0.25f);
-        anim.Play("arm_AMT|VirarPag");
+        animHand.Play("arm_AMT|VirarPag");
     }
 
      IEnumerator DelayPreviousPage()
     {
         yield return new WaitForSeconds(0.25f);
-        anim.Play("arm_AMT|VirarPag 0");
+        animHand.Play("arm_AMT|VirarPag 0");
+    }
+
+    IEnumerator DelayCloseBook()
+    {
+
+        animBook.Play("Armature|ViraPag");
+
+        yield return new WaitForSeconds(1.20f);
+        animHand.Play("arm_AMT|FecharCaderno");
+       
+    }
+
+    IEnumerator DelayOpenBook()
+    {
+
+        animHand.Play("arm_AMT|FecharCaderno 0");
+        yield return new WaitForSeconds(1.20f);
+        animBook.Play("Armature|ViraPag 0");
+
     }
 }
