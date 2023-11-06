@@ -13,14 +13,17 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
 
     public override void Spawned()
     {
-        if(Object.HasInputAuthority)
+        if (Object.HasInputAuthority)
         {
             Local = this;
-            GameManager.Instance.VirtualCamera.Follow = transform;
-            GameManager.Instance.VirtualCamera.LookAt = transform;
+            GameManager.Instance.virtualCamera.Follow = transform;
+            GameManager.Instance.virtualCamera.LookAt = transform;
             Debug.Log("Spawned local player");
         }
-        else Debug.Log("Spawned remote player");
+        else
+        {
+            Debug.Log("Spawned remote player");
+        }
     }
 
     public void PlayerLeft(PlayerRef player)

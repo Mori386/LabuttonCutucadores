@@ -19,6 +19,7 @@ public class CharacterMovementHandler : NetworkBehaviour
         networkCharacterDrillController.CalculateVelocity();
         if(GetInput(out NetworkInputData networkInputData))
         {
+            networkCharacterDrillController.RotateDrill();
             networkCharacterDrillController.Move(networkInputData.movementInput.y);
             networkCharacterDrillController.Rotate(networkInputData.movementInput.x);
         }
