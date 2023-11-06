@@ -34,7 +34,8 @@ public class NetworkCharacterDrillController : NetworkTransform
 
     public Rigidbody rb { get; private set; }
 
-    [Space] public Transform drillVisual;
+    [Space] public Transform visual;
+    public Transform drillVisual;
 
     protected override void Awake()
     {

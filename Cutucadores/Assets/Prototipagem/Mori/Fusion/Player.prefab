@@ -280,6 +280,7 @@ MonoBehaviour:
     rotationSpeed: 15
   activeSpeedMultiplier: 1
   _Velocity: {x: 0, y: 0}
+  visual: {fileID: 2640686690361192542}
   drillVisual: {fileID: 7926398639910541415}
 --- !u!114 &-4411249185986371647
 MonoBehaviour:

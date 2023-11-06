@@ -80,7 +80,7 @@ public class CollisionHandler : NetworkBehaviour
                 if (Object.HasStateAuthority)
                 {
                     networkCharacterController.StartSpeedBoost();
-                    other.SendMessage("DisableObject");
+                    other.SendMessage("GetPowerUp", networkCharacterController.visual);
                 }
                 break;
             case "Fall":
