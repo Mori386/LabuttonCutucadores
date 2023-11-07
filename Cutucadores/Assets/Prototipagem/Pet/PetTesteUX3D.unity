@@ -207,18 +207,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 814386935}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
       - m_Target: {fileID: 1477172731}
         m_TargetAssemblyTypeName: CursorController, Assembly-CSharp
         m_MethodName: OkPlayers
@@ -488,14 +476,14 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1384205425}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 1477172731}
+        m_TargetAssemblyTypeName: CursorController, Assembly-CSharp
+        m_MethodName: OkPlayers
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 2
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 1
@@ -1254,7 +1242,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 133394973}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 18.769598, y: 114.28689, z: -1.7299759}
+  m_LocalPosition: {x: 18.631, y: 115.713, z: -1.202}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1274,15 +1262,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4a74742753520da42beda562a453b58f, type: 3}
       propertyPath: m_LocalScale.x
-      value: 10
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4a74742753520da42beda562a453b58f, type: 3}
       propertyPath: m_LocalScale.y
-      value: 8.427285
+      value: 9.270013
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4a74742753520da42beda562a453b58f, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.1729624
+      value: 1.2902586
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4a74742753520da42beda562a453b58f, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1298,23 +1286,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4a74742753520da42beda562a453b58f, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.50008726
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4a74742753520da42beda562a453b58f, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.49991274
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4a74742753520da42beda562a453b58f, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.50008726
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4a74742753520da42beda562a453b58f, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.49991274
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4a74742753520da42beda562a453b58f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -89.98
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4a74742753520da42beda562a453b58f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
@@ -2086,7 +2074,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &351045965
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2199,7 +2187,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &355322007
 Transform:
   m_ObjectHideFlags: 0
@@ -2563,7 +2551,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 492204077}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 18.769598, y: 114.28689, z: 0.88102406}
+  m_LocalPosition: {x: 18.595, y: 115.742, z: 0.159}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6316,14 +6304,14 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1108559861}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 1477172731}
+        m_TargetAssemblyTypeName: CursorController, Assembly-CSharp
+        m_MethodName: OkPlayers
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 3
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 1
@@ -7549,14 +7537,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a08c3d5e7fc44dc4e8f85e487c4c9cef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cursorObject: {fileID: 1426392931}
+  cursorObject: {fileID: 374037457}
   cursorObject2: {fileID: 1426392931}
   config: {fileID: 1322117292}
   inicialMenu: {fileID: 1974476711}
   roles: {fileID: 1823859135}
   roleClientHost: {fileID: 1352847409}
   Okays:
-  - {fileID: 296393572}
+  - {fileID: 814386935}
   - {fileID: 2058211634}
   - {fileID: 1384205425}
   - {fileID: 1108559861}
@@ -8269,18 +8257,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2058211634}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
       - m_Target: {fileID: 1477172731}
         m_TargetAssemblyTypeName: CursorController, Assembly-CSharp
         m_MethodName: OkPlayers
@@ -9378,7 +9354,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1823859136
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9636,7 +9612,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1974476712
 RectTransform:
   m_ObjectHideFlags: 0

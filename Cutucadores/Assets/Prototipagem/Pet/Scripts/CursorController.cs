@@ -11,9 +11,9 @@ public class CursorController : MonoBehaviour
     public Transform targetObject, targetObject2; // O objeto 3D para onde o cursor 3D será movido
     public Animator animHand, animBook; // animações da mão e caderno
     public Image Blueprint; // blueprint seleção
-   
 
-    private bool isMoving = false; 
+
+    private bool isMoving = false;
     private bool isChange = false;
 
     private float moveTime = 1.1f; // Tempo total (tempo que o cursor fica na posição de destino + tempo de deslocamento)
@@ -74,7 +74,7 @@ public class CursorController : MonoBehaviour
 
         if (isChange == true)
         {
-
+            ChangeCursorObject(cursorObject2, 10f);
         }
 
     }
@@ -121,7 +121,7 @@ public class CursorController : MonoBehaviour
         //timer = 0.0f;
     }
 
-    public void BlueprintSelect(GameObject newCursorObject, float newMousePositionZ) // anim para blueprint de seleção
+    public void BlueprintSelect() // anim para blueprint de seleção
     {
 
         // Movimentar blueprint para perto da camera.
@@ -129,10 +129,13 @@ public class CursorController : MonoBehaviour
         posicaoAtual.z = -183f; // posição do obj
 
         Blueprint.transform.localPosition = posicaoAtual;
+
+        isChange = true;
     }
 
     void ChangeCursorObject(GameObject newCursorObject, float newMousePositionZ)
     {
+        Debug.Log("change");
         // Desativa o cursor anterior (se houver um)
         if (cursorObject != null)
         {
@@ -151,46 +154,58 @@ public class CursorController : MonoBehaviour
 
     public void OkPlayers(int playerNumber) // confirmação dos players
     {
-       
-            switch (playerNumber)
-            {
-                case 0:
-                    startPosition = cursorObject2.transform.position;
-                    targetPosition = Okays[0].transform.position;
-                   
-                timer = 0.0f;
 
-                Debug.Log("moveu");
+        switch (playerNumber) // vinculado a cada highligthed
+        {
+            case 0:
+                startPosition = cursorObject2.transform.position;
+                targetPosition = Okays[0].transform.position;
+                isMoving = true;
+                timer = 0.4f;
+                SetActiveWithDelay(Okays[0], true, 0.8f);
                 break;
 
-                case 1:
-                    startPosition = cursorObject2.transform.position;
-                    targetPosition = Okays[1].transform.position;
-                     
-                    break;
+            case 1:
+                startPosition = cursorObject2.transform.position;
+                targetPosition = Okays[1].transform.position;
+                isMoving = true;
+                timer = 0.4f;
+                SetActiveWithDelay(Okays[1], true, 0.8f);
+                break;
 
-                case 2:
-                    startPosition = cursorObject2.transform.position;
-                    targetPosition = Okays[2].transform.position;
-                  
-                    break;
+            case 2:
+                startPosition = cursorObject2.transform.position;
+                targetPosition = Okays[2].transform.position;
+                isMoving = true;
+                timer = 0.4f;
+                SetActiveWithDelay(Okays[2], true, 0.8f);
+                break;
 
-                case 3:
-                    startPosition = cursorObject2.transform.position;
-                    targetPosition = Okays[3].transform.position;
-                    
-                    break;
+            case 3:
+                startPosition = cursorObject2.transform.position;
+                targetPosition = Okays[3].transform.position;
+                isMoving = true;
+                timer = 0.4f;
+                SetActiveWithDelay(Okays[3], true, 0.8f);
+                break;
 
-                default:
-                    // Caso nenhum jogador válido seja selecionado
-                    Debug.LogError("Jogador inválido: " + playerNumber);
-                    break;
-            }
-        
+            default:
+                // Caso nenhum jogador válido seja selecionado
+                Debug.LogError("Jogador inválido: " + playerNumber);
+                break;
+        }
+
     }
 
-
-
+    public void SetActiveWithDelay(GameObject go, bool state, float delay)
+    {
+        StartCoroutine(SetActiveDelayCoroutine(go, state, delay));
+    }
+    IEnumerator SetActiveDelayCoroutine(GameObject go, bool state, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        go.SetActive(state);
+    }
     // Delay animações
     IEnumerator DelayNextPage()
     {
@@ -206,7 +221,7 @@ public class CursorController : MonoBehaviour
         StartCoroutine(LockMousePosition(cursorObject.transform, moveTime));
     }
 
-     IEnumerator DelayPreviousPage()
+    IEnumerator DelayPreviousPage()
     {
         yield return new WaitForSeconds(0.25f);
         animHand.Play("arm_AMT|VirarPag 0");
@@ -254,11 +269,11 @@ public class CursorController : MonoBehaviour
         StartCoroutine(LockMousePosition(cursorObject.transform, moveTime));
 
     }
-    IEnumerator LockMousePosition(Transform armPosition,float duration)
+    IEnumerator LockMousePosition(Transform armPosition, float duration)
     {
         float timer = 0;
         Vector2 armScreenPosition = mainCamera.WorldToScreenPoint(armPosition.position);
-        while(timer<duration)
+        while (timer < duration)
         {
             armScreenPosition = mainCamera.WorldToScreenPoint(armPosition.position);
             Mouse.current.WarpCursorPosition(armScreenPosition);
