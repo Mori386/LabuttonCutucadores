@@ -27,7 +27,6 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         virtualCameraNoiseChannel = virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
-        Debug.Log(virtualCameraNoiseChannel);
     }
     public void PlayOnBodyHitParticle(Vector3 position)
     {

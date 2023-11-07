@@ -8,6 +8,8 @@ public class SpeedPickUp : MonoBehaviour
 {
     private CapsuleCollider pickupCollider;
 
+    [Header("Respawn")]
+    public float respawnTime = 15f;
     [Header("Item")]
     public Transform itemVisual;
     public float itemRotationSpeed;
@@ -28,7 +30,7 @@ public class SpeedPickUp : MonoBehaviour
     {
         pickupCollider = GetComponent<CapsuleCollider>();
         individualArrows = new Transform[arrowVisual.childCount];
-        for(int i = 0;i<arrowVisual.childCount;i++)
+        for (int i = 0; i < arrowVisual.childCount; i++)
         {
             individualArrows[i] = arrowVisual.GetChild(i);
         }
@@ -40,15 +42,15 @@ public class SpeedPickUp : MonoBehaviour
     }
     private Coroutine itemCoroutine;
     private Coroutine arrowCoroutine;
-    public IEnumerator RotateAndFloatObject(Transform visualTransform,float rotationSpeed,float deltaFrequency, float YDelta)
+    public IEnumerator RotateAndFloatObject(Transform visualTransform, float rotationSpeed, float deltaFrequency, float YDelta)
     {
         Vector3 startingPosition = visualTransform.localPosition;
-        while(true)
+        while (true)
         {
             visualTransform.Rotate(0, rotationSpeed, 0, Space.Self);
-            visualTransform.localPosition = new Vector3(startingPosition.x,
+            visualTransform.localPosition = new Vector3(visualTransform.localPosition.x,
                 startingPosition.y + Mathf.Abs(Mathf.Sin(Time.time * deltaFrequency)) * YDelta
-                , startingPosition.z);
+                , visualTransform.localPosition.z);
             yield return new WaitForFixedUpdate();
         }
     }
@@ -57,8 +59,27 @@ public class SpeedPickUp : MonoBehaviour
     {
         //Deactivate collider
         pickupCollider.enabled = false;
-
-        //Deactivate item visual
+        StartCoroutine(TransferArrowsPowerUpToPlayer(player));
+    }
+    public IEnumerator TransferArrowsPowerUpToPlayer(Transform playerTransform)
+    {
+        float interval = 0.125f;
+        float timer = 0;
+        Vector3 arrowOriginalPos = arrowVisual.position;
+        Vector3 itemOriginalPos = itemVisual.position;
+        arrowVisual.parent = playerTransform;
+        itemVisual.parent = playerTransform;
+        //Item and arrow go to player
+        while (timer < interval)
+        {
+            itemVisual.localPosition = Vector3.Lerp(itemVisual.localPosition, Vector3.zero, timer / interval);
+            arrowVisual.localPosition = Vector3.Lerp(arrowVisual.localPosition, new Vector3(0, 4, 1.4f), timer / interval);
+            arrowVisual.localScale = Vector3.Lerp(arrowVisual.localScale, Vector3.one * 2f, timer / interval);
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        timer = 0;
+        //Deactivate item visual rotation
         StopCoroutine(itemCoroutine);
         itemCoroutine = null;
         itemVisual.gameObject.SetActive(false);
@@ -68,36 +89,18 @@ public class SpeedPickUp : MonoBehaviour
 
         //Deactivate arrow spinning
         StopCoroutine(arrowCoroutine);
-        arrowCoroutine = null;
-
-        StartCoroutine(TransferArrowsPowerUpToPlayer(player));
-    }
-    public IEnumerator TransferArrowsPowerUpToPlayer(Transform playerTransform)
-    {
-        float timer = 0;
-        Vector3 arrowStartPos = arrowVisual.position;
-        arrowCoroutine = StartCoroutine(RotateAndFloatObject(arrowVisual, arrowRotationSpeed*3f, arrowYDeltaFrequency, arrowYDelta));
-        arrowVisual.localScale = Vector3.zero;
-        arrowVisual.parent = playerTransform;
-        arrowVisual.localPosition = new Vector3(0,4,0);
-        while (timer<0.25f)
+        arrowCoroutine = StartCoroutine(RotateAndFloatObject(arrowVisual, arrowRotationSpeed * 3f, arrowYDeltaFrequency, arrowYDelta));
+        yield return new WaitForSeconds(interval*3);
+        while (timer < interval)
         {
-            arrowVisual.localScale = Vector3.Lerp(Vector3.zero, Vector3.one * 1.5f, timer / 0.25f);
-            timer += Time.deltaTime;
-            yield return null;
-        }
-        yield return new WaitForSeconds(0.25f);
-        timer = 0;
-        while (timer < 0.25f)
-        {
-            arrowVisual.localScale = Vector3.Lerp(Vector3.one* 1.5f, Vector3.one * 1.75f, timer / 0.25f);
+            arrowVisual.localScale = Vector3.Lerp(Vector3.one * 2f, Vector3.one * 2.25f, timer / interval);
             timer += Time.deltaTime;
             yield return null;
         }
         timer = 0;
-        while (timer < 0.25f)
+        while (timer < interval)
         {
-            arrowVisual.localScale = Vector3.Lerp(Vector3.one * 1.75f, Vector3.zero, timer / 0.25f);
+            arrowVisual.localScale = Vector3.Lerp(Vector3.one * 2.25f, Vector3.zero, timer / interval);
             timer += Time.deltaTime;
             yield return null;
         }
@@ -105,9 +108,25 @@ public class SpeedPickUp : MonoBehaviour
         StopCoroutine(arrowCoroutine);
         arrowCoroutine = null;
         arrowVisual.gameObject.SetActive(false);
+
+        itemVisual.parent = transform;
+        arrowVisual.parent = transform;
+
+        arrowVisual.position = arrowOriginalPos;
+        itemVisual.position = itemOriginalPos;
+
+        StartCoroutine(RespawnTimer());
     }
     public IEnumerator RespawnTimer()
     {
-        yield return null;
+        yield return new WaitForSeconds(respawnTime);
+        arrowVisual.localScale = Vector3.one;
+        arrowVisual.gameObject.SetActive(true);
+        itemVisual.gameObject.SetActive(true);
+        pickupAreaVisual.gameObject.SetActive(true);
+        itemCoroutine = StartCoroutine(RotateAndFloatObject(itemVisual, itemRotationSpeed, itemYDeltaFrequency, itemYDelta));
+        arrowCoroutine = StartCoroutine(RotateAndFloatObject(arrowVisual, arrowRotationSpeed, arrowYDeltaFrequency, arrowYDelta));
+        yield return new WaitForSeconds(0.5f);
+        pickupCollider.enabled = true;
     }
 }

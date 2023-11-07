@@ -36,6 +36,7 @@ public class NetworkCharacterDrillController : NetworkTransform
 
     [Space] public Transform visual;
     public Transform drillVisual;
+    public TrailRenderer[] speedBoostTrail;
 
     protected override void Awake()
     {
@@ -98,22 +99,42 @@ public class NetworkCharacterDrillController : NetworkTransform
             speedBoostCoroutine = StartCoroutine(SpeedBoost());
         }
     }
+    public void SetActiveStateSpeedBoostVisual(bool state)
+    {
+        for(int i =0;i<speedBoostTrail.Length;i++)
+        {
+            speedBoostTrail[i].enabled = state;
+        }
+    }
+    public void DefineTrailTime(float time)
+    {
+        for (int i = 0; i < speedBoostTrail.Length; i++)
+        {
+            speedBoostTrail[i].time = time;
+        }
+    }
     public Coroutine speedBoostCoroutine;
     public IEnumerator SpeedBoost()
     {
+        yield return new WaitForSeconds(0.5f);
+        SetActiveStateSpeedBoostVisual(true);
         activeSpeedMultiplier = speedBoostMultiplier;
         yield return new WaitForSeconds(speedBoostDuration);
         float timer = 0;
+        float trailTime = speedBoostTrail[0].time;
         while (timer < 0.5f)
         {
+            DefineTrailTime(Mathf.Lerp(trailTime, 0, timer / 0.5f));
             activeSpeedMultiplier = Mathf.Lerp(speedBoostMultiplier, 1, timer / 0.5f);
             timer += Time.deltaTime;
             yield return null;
         }
         activeSpeedMultiplier = 1;
+        SetActiveStateSpeedBoostVisual(false);
+        DefineTrailTime(trailTime);
         speedBoostCoroutine = null;
     }
-
+    
     public virtual void Rotate(float direction)
     {
         //rb.AddTorque(transform.up * direction * rotationSpeed * Runner.DeltaTime, ForceMode.Force);
