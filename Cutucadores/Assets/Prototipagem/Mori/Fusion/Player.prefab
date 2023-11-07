@@ -235,7 +235,7 @@ TrailRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0, g: 0, b: 0, a: 0.19607843}
+      key0: {r: 0, g: 0, b: 0, a: 0.5882353}
       key1: {r: 0, g: 0, b: 0, a: 0}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
@@ -283,7 +283,6 @@ GameObject:
   - component: {fileID: 5222268562381311468}
   - component: {fileID: -6888185280430147709}
   - component: {fileID: -195818942333787633}
-  - component: {fileID: 6095065438581884743}
   - component: {fileID: -4424772123130266832}
   - component: {fileID: 8816218858713393912}
   - component: {fileID: -4411249185986371647}
@@ -366,41 +365,12 @@ MonoBehaviour:
     RawGuidValue: ec632613a285a274ea9ade7002e9404c
   NestedObjects: []
   NetworkedBehaviours:
-  - {fileID: 6095065438581884743}
   - {fileID: -4424772123130266832}
   - {fileID: 8816218858713393912}
   - {fileID: -4411249185986371647}
   - {fileID: 2221820427402001463}
   - {fileID: 3553782799364510862}
   SimulationBehaviours: []
---- !u!114 &6095065438581884743
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1877149326463046058}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 1710889294, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _interpolationDataSource: 0
-  InterpolationSpace: 0
-  InterpolationTarget: {fileID: 2640686690361192542}
-  InterpolateErrorCorrection: 1
-  InterpolatedErrorCorrectionSettings:
-    MinRate: 3.3
-    MaxRate: 10
-    PosBlendStart: 0.25
-    PosBlendEnd: 1
-    PosMinCorrection: 0.025
-    PosTeleportDistance: 2
-    RotBlendStart: 0.1
-    RotBlendEnd: 0.5
-    RotTeleportRadians: 1.5
-  UseLegacySharedModeInterpolation: 0
-  TargetInterpolationDelay: 0.03
 --- !u!114 &-4424772123130266832
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -427,6 +397,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
+  InterpolationSpace: 0
+  InterpolationTarget: {fileID: 2640686690361192542}
+  InterpolateErrorCorrection: 1
+  InterpolatedErrorCorrectionSettings:
+    MinRate: 3.3
+    MaxRate: 10
+    PosBlendStart: 0.25
+    PosBlendEnd: 1
+    PosMinCorrection: 0.025
+    PosTeleportDistance: 2
+    RotBlendStart: 0.1
+    RotBlendEnd: 0.5
+    RotTeleportRadians: 1.5
+  UseLegacySharedModeInterpolation: 0
+  TargetInterpolationDelay: 0.03
   characterData:
     weight: 20
     acceleration: 10
@@ -946,7 +931,7 @@ TrailRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0, g: 0, b: 0, a: 0.19607843}
+      key0: {r: 0, g: 0, b: 0, a: 0.5882353}
       key1: {r: 0, g: 0, b: 0, a: 0}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}

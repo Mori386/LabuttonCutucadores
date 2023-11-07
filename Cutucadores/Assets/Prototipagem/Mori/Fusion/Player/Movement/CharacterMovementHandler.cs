@@ -10,10 +10,6 @@ public class CharacterMovementHandler : NetworkBehaviour
     {
         networkCharacterDrillController = GetComponent<NetworkCharacterDrillController>();
     }
-    void Start()
-    {
-        if (!Object.HasInputAuthority) Destroy(this);
-    }
     public override void FixedUpdateNetwork()
     {
         networkCharacterDrillController.CalculateVelocity();
@@ -22,5 +18,6 @@ public class CharacterMovementHandler : NetworkBehaviour
             networkCharacterDrillController.Move(networkInputData.movementInput.y);
             networkCharacterDrillController.Rotate(networkInputData.movementInput.x);
         }
+        networkCharacterDrillController.RotateDrill();
     }
 }
