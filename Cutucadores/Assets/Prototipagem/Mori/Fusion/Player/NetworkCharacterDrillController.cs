@@ -54,11 +54,13 @@ public class NetworkCharacterDrillController : NetworkTransform
         if (rb == null)
         {
             rb = GetComponent<Rigidbody>();
+            if (!Object.HasInputAuthority) rb.isKinematic = true;
         }
     }
+    float rotationDirection;
     public void RotateDrill()
     {
-        drillVisual.Rotate(Velocity.magnitude * 2f, 0, 0, Space.Self);
+        drillVisual.Rotate(2.5f + rotationDirection * Velocity.magnitude * 2f, 0, 0, Space.Self);
     }
     public void CalculateVelocity()
     {
@@ -69,6 +71,7 @@ public class NetworkCharacterDrillController : NetworkTransform
         float deltaTime = Runner.DeltaTime;
         Vector3 moveForce = transform.forward * direction * 50 * characterData.maxSpeed * deltaTime * activeSpeedMultiplier;
         rb.AddForce(moveForce, ForceMode.Acceleration);
+        rotationDirection = direction;
     }
     public virtual void Knockback(Vector3 contactPoint, bool considerWeight)
     {

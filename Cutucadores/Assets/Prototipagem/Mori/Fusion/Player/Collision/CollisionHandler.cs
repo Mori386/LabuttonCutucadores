@@ -77,7 +77,7 @@ public class CollisionHandler : NetworkBehaviour
         switch(other.tag)
         {
             case "Speed":
-                if (Object.HasStateAuthority)
+                if (Object.HasInputAuthority)
                 {
                     networkCharacterController.StartSpeedBoost();
                     other.SendMessage("GetPowerUp", networkCharacterController.visual);

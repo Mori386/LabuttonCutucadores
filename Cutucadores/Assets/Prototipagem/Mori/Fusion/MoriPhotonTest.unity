@@ -1689,6 +1689,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3582827455592393699, guid: 1e5c14b776ba0d74588b6de6854c11bc, type: 3}
+      propertyPath: Flags
+      value: 2561
+      objectReference: {fileID: 0}
+    - target: {fileID: 3582827455592393699, guid: 1e5c14b776ba0d74588b6de6854c11bc, type: 3}
+      propertyPath: NetworkGuid.RawGuidValue.Array.data[0]
+      value: -3150119099012762012
+      objectReference: {fileID: 0}
+    - target: {fileID: 3582827455592393699, guid: 1e5c14b776ba0d74588b6de6854c11bc, type: 3}
+      propertyPath: NetworkGuid.RawGuidValue.Array.data[1]
+      value: -1111132473776245587
+      objectReference: {fileID: 0}
     - target: {fileID: 6430294451128588773, guid: 1e5c14b776ba0d74588b6de6854c11bc, type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
