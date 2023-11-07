@@ -1,19 +1,21 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class CursorController : MonoBehaviour
 {
-    public GameObject cursorObject,config, inicialMenu, roles, roleClientHost; 
+    public GameObject cursorObject, cursorObject2, config, inicialMenu, roles, roleClientHost;
+    public GameObject[] Okays;
     public Camera mainCamera;
     public Transform targetObject, targetObject2; // O objeto 3D para onde o cursor 3D será movido
     public Animator animHand, animBook; // animações da mão e caderno
     public Image Blueprint; // blueprint seleção
    
 
-    private bool isMoving = false;
+    private bool isMoving = false; 
+    private bool isChange = false;
+
     private float moveTime = 1.1f; // Tempo total (tempo que o cursor fica na posição de destino + tempo de deslocamento)
     private float pauseTime = 0.9f; // Tempo que o cursor fica na posição de destino
     private float moveDuration; // Tempo de deslocamento
@@ -21,6 +23,8 @@ public class CursorController : MonoBehaviour
 
     private Vector3 startPosition;
     private Vector3 targetPosition;
+
+    public Vector3 mousePosition;
 
     void Start()
     {
@@ -39,8 +43,8 @@ public class CursorController : MonoBehaviour
         if (!isMoving)
         {
             // Atualiza a posição do cursor 3D para seguir o mouse
-            Vector3 mousePosition = Input.mousePosition;
-            mousePosition.z = 2.3f; // Distância do cursor em relação à câmera
+            mousePosition = Input.mousePosition;
+            mousePosition.z = 1f; // Distância do cursor em relação à câmera
             cursorObject.transform.position = mainCamera.ScreenToWorldPoint(mousePosition);
 
         }
@@ -67,6 +71,12 @@ public class CursorController : MonoBehaviour
                 isMoving = false;
             }
         }
+
+        if (isChange == true)
+        {
+
+        }
+
     }
 
     public void NextPage(bool kitten) // chamando esse void através dos botões em cena, caso o parametro do metodo seja verdadeiro, a sequência do update é executada
@@ -111,16 +121,72 @@ public class CursorController : MonoBehaviour
         //timer = 0.0f;
     }
 
-    public void BlueprintSelect() // anim para blueprint de seleção
+    public void BlueprintSelect(GameObject newCursorObject, float newMousePositionZ) // anim para blueprint de seleção
     {
-        Cursor.visible = true;
-        cursorObject.SetActive(false);
 
         // Movimentar blueprint para perto da camera.
         Vector3 posicaoAtual = Blueprint.transform.localPosition;
         posicaoAtual.z = -183f; // posição do obj
 
         Blueprint.transform.localPosition = posicaoAtual;
+    }
+
+    void ChangeCursorObject(GameObject newCursorObject, float newMousePositionZ)
+    {
+        // Desativa o cursor anterior (se houver um)
+        if (cursorObject != null)
+        {
+            cursorObject.SetActive(false);
+        }
+
+        // Atualiza a posição z do mouse
+        mousePosition.z = newMousePositionZ;
+
+        // Ativa o novo cursor
+        newCursorObject.SetActive(true);
+
+        // Atualiza a referência para o novo objeto de cursor
+        cursorObject = newCursorObject;
+    }
+
+    public void OkPlayers(int playerNumber) // confirmação dos players
+    {
+       
+            switch (playerNumber)
+            {
+                case 0:
+                    startPosition = cursorObject2.transform.position;
+                    targetPosition = Okays[0].transform.position;
+                   
+                timer = 0.0f;
+
+                Debug.Log("moveu");
+                break;
+
+                case 1:
+                    startPosition = cursorObject2.transform.position;
+                    targetPosition = Okays[1].transform.position;
+                     
+                    break;
+
+                case 2:
+                    startPosition = cursorObject2.transform.position;
+                    targetPosition = Okays[2].transform.position;
+                  
+                    break;
+
+                case 3:
+                    startPosition = cursorObject2.transform.position;
+                    targetPosition = Okays[3].transform.position;
+                    
+                    break;
+
+                default:
+                    // Caso nenhum jogador válido seja selecionado
+                    Debug.LogError("Jogador inválido: " + playerNumber);
+                    break;
+            }
+        
     }
 
 
