@@ -9,28 +9,17 @@ using Unity.VisualScripting;
 
 [OrderBefore(typeof(NetworkTransform))]
 [DisallowMultipleComponent]
-public class NetworkCharacterDrillController : NetworkTransform
+public class NetworkCharacterDrillController : NetworkBehaviour
 {
     public InGameCharacterData characterData;
 
     public float activeSpeedMultiplier = 1f;
     readonly private float speedBoostMultiplier = 2f;
     readonly private float speedBoostDuration = 10f;
+
     [Networked]
     [HideInInspector]
     public Vector2 Velocity { get; set; }
-
-    /// <summary>
-    /// Sets the default teleport interpolation velocity to be the CC's current velocity.
-    /// For more details on how this field is used, see <see cref="NetworkTransform.TeleportToPosition"/>.
-    /// </summary>
-    protected override Vector3 DefaultTeleportInterpolationVelocity => Velocity;
-
-    /// <summary>
-    /// Sets the default teleport interpolation angular velocity to be the CC's rotation speed on the Z axis.
-    /// For more details on how this field is used, see <see cref="NetworkTransform.TeleportToRotation"/>.
-    /// </summary>
-    protected override Vector3 DefaultTeleportInterpolationAngularVelocity => new Vector3(0f, 0f, characterData.rotationSpeed);
 
     public Rigidbody rb { get; private set; }
 
@@ -38,9 +27,8 @@ public class NetworkCharacterDrillController : NetworkTransform
     public Transform drillVisual;
     public TrailRenderer[] speedBoostTrail;
 
-    protected override void Awake()
+    protected void Awake()
     {
-        base.Awake();
         CacheRigidbody();
     }
 
@@ -54,7 +42,6 @@ public class NetworkCharacterDrillController : NetworkTransform
         if (rb == null)
         {
             rb = GetComponent<Rigidbody>();
-            if (!Object.HasInputAuthority) rb.isKinematic = true;
         }
     }
     float rotationDirection;
@@ -104,7 +91,7 @@ public class NetworkCharacterDrillController : NetworkTransform
     }
     public void SetActiveStateSpeedBoostVisual(bool state)
     {
-        for (int i = 0; i < speedBoostTrail.Length; i++)
+        for(int i =0;i<speedBoostTrail.Length;i++)
         {
             speedBoostTrail[i].enabled = state;
         }
@@ -137,7 +124,7 @@ public class NetworkCharacterDrillController : NetworkTransform
         DefineTrailTime(trailTime);
         speedBoostCoroutine = null;
     }
-
+    
     public virtual void Rotate(float direction)
     {
         //rb.AddTorque(transform.up * direction * rotationSpeed * Runner.DeltaTime, ForceMode.Force);
