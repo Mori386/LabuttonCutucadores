@@ -12,13 +12,12 @@ public class CharacterInputHandler : MonoBehaviour
     }
     void Start()
     {
-        
+        if (!characterMovementHandler.Object.HasInputAuthority) Destroy(this);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(!characterMovementHandler.Object.HasInputAuthority) return;
         moveInputVector.x = Input.GetAxis("Horizontal");
         moveInputVector.y = Input.GetAxis("Vertical");
     }
@@ -26,8 +25,7 @@ public class CharacterInputHandler : MonoBehaviour
 
     public NetworkInputData GetNetworkInput()
     {
-        NetworkInputData networkInputData = new NetworkInputData();
-        networkInputData.movementInput = moveInputVector;
+        NetworkInputData networkInputData = new NetworkInputData(moveInputVector);
         return networkInputData;
     }
 }
