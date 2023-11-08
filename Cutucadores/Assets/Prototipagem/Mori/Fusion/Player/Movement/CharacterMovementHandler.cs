@@ -12,11 +12,12 @@ public class CharacterMovementHandler : NetworkBehaviour
     }
     void Start()
     {
+        
     }
     public override void FixedUpdateNetwork()
     {
         networkCharacterDrillController.CalculateVelocity();
-        if(GetInput(out NetworkInputData networkInputData))
+        if (GetInput(out NetworkInputData networkInputData))
         {
             networkCharacterDrillController.Move(networkInputData.movementInput.y);
             networkCharacterDrillController.Rotate(networkInputData.movementInput.x);

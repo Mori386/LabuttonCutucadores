@@ -5,33 +5,37 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.InputSystem.XR;
 using TMPro;
-using Unity.VisualScripting;
 
 [OrderBefore(typeof(NetworkTransform))]
 [DisallowMultipleComponent]
-public class NetworkCharacterDrillController : NetworkBehaviour
+public class NetworkCharacterDrillController : NetworkTransform
 {
     public InGameCharacterData characterData;
-
     public float activeSpeedMultiplier = 1f;
     readonly private float speedBoostMultiplier = 2f;
     readonly private float speedBoostDuration = 10f;
-
     [Networked]
     [HideInInspector]
     public Vector2 Velocity { get; set; }
-
+    /// <summary>
+    /// Sets the default teleport interpolation velocity to be the CC's current velocity.
+    /// For more details on how this field is used, see <see cref="NetworkTransform.TeleportToPosition"/>.
+    /// </summary>
+    protected override Vector3 DefaultTeleportInterpolationVelocity => Velocity;
+    /// <summary>
+    /// Sets the default teleport interpolation angular velocity to be the CC's rotation speed on the Z axis.
+    /// For more details on how this field is used, see <see cref="NetworkTransform.TeleportToRotation"/>.
+    /// </summary>
+    protected override Vector3 DefaultTeleportInterpolationAngularVelocity => new Vector3(0f, 0f, characterData.rotationSpeed);
     public Rigidbody rb { get; private set; }
-
     [Space] public Transform visual;
     public Transform drillVisual;
     public TrailRenderer[] speedBoostTrail;
-
-    protected void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         CacheRigidbody();
     }
-
     public override void Spawned()
     {
         base.Spawned();
@@ -44,14 +48,20 @@ public class NetworkCharacterDrillController : NetworkBehaviour
             rb = GetComponent<Rigidbody>();
         }
     }
-    float rotationDirection;
+    private void FixedUpdate()
+    {
+        RotateDrill();
+    }
+
+    [Networked]
+    float rotationDirection { get; set; }
     public void RotateDrill()
     {
-        drillVisual.Rotate(2.5f + rotationDirection * Velocity.magnitude * 2f, 0, 0, Space.Self);
+        drillVisual.Rotate((2.5f + rotationDirection * Velocity.magnitude / 40f), 0, 0, Space.Self);
     }
     public void CalculateVelocity()
     {
-        Velocity = new Vector2(rb.velocity.x, rb.velocity.z);
+        Velocity = new Vector2(rb.velocity.x, rb.velocity.z) * Runner.Simulation.Config.TickRate;
     }
     public virtual void Move(float direction)
     {
@@ -59,7 +69,6 @@ public class NetworkCharacterDrillController : NetworkBehaviour
         Vector3 moveForce = transform.forward * direction * 50 * characterData.maxSpeed * deltaTime * activeSpeedMultiplier;
         rb.AddForce(moveForce, ForceMode.Acceleration);
         rotationDirection = direction;
-        RotateDrill();
     }
     public virtual void Knockback(Vector3 contactPoint, bool considerWeight)
     {
@@ -77,7 +86,6 @@ public class NetworkCharacterDrillController : NetworkBehaviour
         }
         rb.AddForce(directionOfKnockback, ForceMode.VelocityChange);
     }
-
     public void StartSpeedBoost()
     {
         if (speedBoostCoroutine == null)
@@ -92,7 +100,7 @@ public class NetworkCharacterDrillController : NetworkBehaviour
     }
     public void SetActiveStateSpeedBoostVisual(bool state)
     {
-        for(int i =0;i<speedBoostTrail.Length;i++)
+        for (int i = 0; i < speedBoostTrail.Length; i++)
         {
             speedBoostTrail[i].enabled = state;
         }
@@ -125,7 +133,7 @@ public class NetworkCharacterDrillController : NetworkBehaviour
         DefineTrailTime(trailTime);
         speedBoostCoroutine = null;
     }
-    
+
     public virtual void Rotate(float direction)
     {
         //rb.AddTorque(transform.up * direction * rotationSpeed * Runner.DeltaTime, ForceMode.Force);
