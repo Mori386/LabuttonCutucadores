@@ -44,7 +44,7 @@ public class CursorController : MonoBehaviour
         {
             // Atualiza a posição do cursor 3D para seguir o mouse
             mousePosition = Input.mousePosition;
-            mousePosition.z = 1f; // Distância do cursor em relação à câmera
+            mousePosition.z = 2.3f; // Distância do cursor em relação à câmera
             cursorObject.transform.position = mainCamera.ScreenToWorldPoint(mousePosition);
 
         }
