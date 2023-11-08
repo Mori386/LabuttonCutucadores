@@ -30,9 +30,7 @@ public class NetworkRunnerHandler : MonoBehaviour
         {
             sceneManager = runner.gameObject.AddComponent<NetworkSceneManagerDefault>();
         }
-
         runner.ProvideInput = true;
-
         return runner.StartGame(new StartGameArgs
         {
             GameMode = gameMode,

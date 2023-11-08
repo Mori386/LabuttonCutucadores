@@ -12,8 +12,8 @@ public class GameManager : MonoBehaviour
     public Transform[] playerSpawnpoints;
     public ParticleSystem onDrillHitParticlePrefab,onBodyHitParticlePrefab;
 
-    public readonly float onBodyHitCameraShakeAmplitude = 10f;
-    public readonly float onDrillHitCameraShakeAmplitude = 5f;
+    public readonly float onBodyHitCameraShakeAmplitude = 20f;
+    public readonly float onDrillHitCameraShakeAmplitude = 10f;
     private void Awake()
     {
         ParticleSystem particleSpawned;
