@@ -59,6 +59,7 @@ public class NetworkCharacterDrillController : NetworkBehaviour
         Vector3 moveForce = transform.forward * direction * 50 * characterData.maxSpeed * deltaTime * activeSpeedMultiplier;
         rb.AddForce(moveForce, ForceMode.Acceleration);
         rotationDirection = direction;
+        RotateDrill();
     }
     public virtual void Knockback(Vector3 contactPoint, bool considerWeight)
     {

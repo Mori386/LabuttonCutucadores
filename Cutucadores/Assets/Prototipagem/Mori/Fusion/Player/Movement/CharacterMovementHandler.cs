@@ -12,7 +12,6 @@ public class CharacterMovementHandler : NetworkBehaviour
     }
     void Start()
     {
-        if (!Object.HasInputAuthority) Destroy(this);
     }
     public override void FixedUpdateNetwork()
     {

@@ -12,7 +12,6 @@ public class CharacterInputHandler : MonoBehaviour
     }
     void Start()
     {
-        if (!characterMovementHandler.Object.HasInputAuthority) Destroy(this);
     }
 
     // Update is called once per frame
