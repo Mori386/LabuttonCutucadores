@@ -12,13 +12,16 @@ public class CharacterInputHandler : MonoBehaviour
     }
     void Start()
     {
+        if (characterMovementHandler.Object.HasInputAuthority) StartCoroutine(GetInputCoroutine());
     }
-
-    // Update is called once per frame
-    void Update()
+    public IEnumerator GetInputCoroutine()
     {
-        moveInputVector.x = Input.GetAxis("Horizontal");
-        moveInputVector.y = Input.GetAxis("Vertical");
+        while(true)
+        {
+            moveInputVector.x = Input.GetAxis("Horizontal");
+            moveInputVector.y = Input.GetAxis("Vertical");
+            yield return null;
+        }
     }
 
 
