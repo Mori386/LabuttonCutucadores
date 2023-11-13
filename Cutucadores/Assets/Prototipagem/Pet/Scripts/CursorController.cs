@@ -5,19 +5,21 @@ using UnityEngine.UI;
 
 public class CursorController : MonoBehaviour
 {
-    public GameObject cursorObject, cursorObject2, config, inicialMenu, roles, roleClientHost;
+    public GameObject cursorObject, cursorObject2, config, inicialMenu, roles, roleClientHost, Blueprint, credits;
     public GameObject[] Okays;
     public Camera mainCamera;
-    public Transform targetObject, targetObject2; // O objeto 3D para onde o cursor 3D será movido
-    public Animator animHand, animBook; // animações da mão e caderno
-    public Image Blueprint; // blueprint seleção
+    public Transform targetObject, targetObject2, targetObject3, Book; // O objeto 3D para onde o cursor 3D será movido
+    public Animator animHand, animBook, animPage; // animações da mão e caderno
+    //public Image  // blueprint seleção
 
 
     private bool isMoving = false;
     private bool isChange = false;
 
-    private float moveTime = 1.1f; // Tempo total (tempo que o cursor fica na posição de destino + tempo de deslocamento)
-    private float pauseTime = 0.9f; // Tempo que o cursor fica na posição de destino
+    public float moveTime = 2f; // Tempo total (tempo que o cursor fica na posição de destino + tempo de deslocamento)
+    public float pauseTime = 1.5f; // Tempo que o cursor fica na posição de destino
+    public float smoothTime = 0.5f; 
+
     private float moveDuration; // Tempo de deslocamento
     private float timer = 0.0f; // verificação de tempo max
 
@@ -30,12 +32,13 @@ public class CursorController : MonoBehaviour
     {
         mainCamera = Camera.main;
 
-        //Cursor.visible = false; // Esconde o cursor do mouse
+        Cursor.visible = false; // Esconde o cursor do mouse
         Cursor.lockState = CursorLockMode.Confined; // Mantém o cursor dentro da janela do jogo.
 
         startPosition = cursorObject.transform.position; //para retorno da posição inicial
         moveDuration = moveTime - pauseTime; // valor do tempo de deslocamento
-        //anim = GetComponent<Animator>();
+                                            
+        StartCoroutine(MoveBookSmoothly());
     }
 
     void Update()
@@ -44,7 +47,7 @@ public class CursorController : MonoBehaviour
         {
             // Atualiza a posição do cursor 3D para seguir o mouse
             mousePosition = Input.mousePosition;
-            mousePosition.z = 2.3f; // Distância do cursor em relação à câmera
+            mousePosition.z = 3f; // Distância do cursor em relação à câmera
             cursorObject.transform.position = mainCamera.ScreenToWorldPoint(mousePosition);
 
         }
@@ -90,10 +93,20 @@ public class CursorController : MonoBehaviour
         timer = 0.0f;
     }
 
-    public void ReturnPage(bool kitten) // anim para retorno
+    public void Credits(bool kitten)
     {
         startPosition = cursorObject.transform.position;
-        targetPosition = targetObject2.position;
+        targetPosition = targetObject.position;
+
+        isMoving = true;
+        StartCoroutine(DelayCredits());
+        timer = 0.0f;
+    }
+
+    public void ReturnPage(bool kitten) // anim para retorno
+    {
+       startPosition = targetObject.transform.position;
+       targetPosition = targetObject.position;
 
         isMoving = true;
         StartCoroutine(DelayPreviousPage());
@@ -107,7 +120,7 @@ public class CursorController : MonoBehaviour
 
         isMoving = true;
         StartCoroutine(DelayCloseBook());
-        //timer = 0.0f;
+        timer = 0.0f;
 
     }
 
@@ -118,11 +131,12 @@ public class CursorController : MonoBehaviour
 
         isMoving = true;
         StartCoroutine(DelayOpenBook());
-        //timer = 0.0f;
+        timer = 0.0f;
     }
 
     public void BlueprintSelect() // anim para blueprint de seleção
     {
+        Blueprint.SetActive(true);
 
         // Movimentar blueprint para perto da camera.
         Vector3 posicaoAtual = Blueprint.transform.localPosition;
@@ -212,64 +226,121 @@ public class CursorController : MonoBehaviour
         yield return new WaitForSeconds(0.25f);
         animHand.Play("arm_AMT|VirarPag");
 
-        yield return new WaitForSeconds(0.50f);
+        yield return new WaitForSeconds(0.5f);
+        animPage.Play("FolhaVirando");
+
+        yield return new WaitForSeconds(0.15f);
         inicialMenu.SetActive(false);
 
         yield return new WaitForSeconds(0.10f);
         config.SetActive(true);
 
-        StartCoroutine(LockMousePosition(cursorObject.transform, moveTime));
+        StartCoroutine(LockMousePosition(targetObject, moveTime));
     }
+    IEnumerator DelayCredits()
+    {
+        yield return new WaitForSeconds(0.25f);
+        animHand.Play("arm_AMT|VirarPag");
+
+        yield return new WaitForSeconds(0.5f);
+        animPage.Play("FolhaVirando");
+
+        yield return new WaitForSeconds(0.15f);
+        config.SetActive(false);
+
+        yield return new WaitForSeconds(0.10f);
+        credits.SetActive(true);
+
+        StartCoroutine(LockMousePosition(targetObject, moveTime));
+    }
+
 
     IEnumerator DelayPreviousPage()
     {
-        yield return new WaitForSeconds(0.25f);
+        
         animHand.Play("arm_AMT|VirarPag 0");
 
-        yield return new WaitForSeconds(0.50f);
+        yield return new WaitForSeconds(0.15f);
+        animPage.Play("FolhaVirando 0");
+
+        yield return new WaitForSeconds(0.25f);
         config.SetActive(false);
 
         yield return new WaitForSeconds(0.10f);
         inicialMenu.SetActive(true);
-        StartCoroutine(LockMousePosition(cursorObject.transform, moveTime));
+        StartCoroutine(LockMousePosition(targetObject, moveTime));
     }
 
     IEnumerator DelayCloseBook()
     {
 
-        animBook.Play("Armature|ViraPag");
+        animHand.Play("arm_AMT|VirarPag 0");
+
+        yield return new WaitForSeconds(0.15f);
+        animBook.Play("CadernoFechando");
 
         yield return new WaitForSeconds(0.25f);
         roles.SetActive(false);
         inicialMenu.SetActive(false);
 
-        yield return new WaitForSeconds(1.10f);
-        animHand.Play("arm_AMT|FecharCaderno");
-
-        yield return new WaitForSeconds(0.65f);
+        yield return new WaitForSeconds(0.25f);
         roleClientHost.SetActive(true);
 
-        StartCoroutine(LockMousePosition(cursorObject.transform, moveTime));
+        StartCoroutine(LockMousePosition(targetObject, moveTime));
 
     }
 
     IEnumerator DelayOpenBook()
     {
+        animHand.Play("arm_AMT|VirarPag");
 
-        animBook.Play("Armature|ViraPag 0");
+        yield return new WaitForSeconds(0.35f);
+        animBook.Play("CadernoFechando 0");
+        
 
         yield return new WaitForSeconds(0.50f);
         roleClientHost.SetActive(false);
-        animHand.Play("arm_AMT|FecharCaderno 0");
+        //animHand.Play("CadernoFechando 0");
 
 
-        yield return new WaitForSeconds(0.75f);
+        yield return new WaitForSeconds(0.25f);
         roles.SetActive(true);
         inicialMenu.SetActive(true);
-        StartCoroutine(LockMousePosition(cursorObject.transform, moveTime));
+        StartCoroutine(LockMousePosition(targetObject, moveTime));
 
     }
-    IEnumerator LockMousePosition(Transform armPosition, float duration)
+
+    IEnumerator MoveBookSmoothly()
+    {
+        Vector3 pontoOrigem = Book.position;
+        float duration = 1.0f; // Tempo total da transição em segundos
+
+        for (float t = 0; t < 1.0f; t += Time.deltaTime / duration)
+        {
+            Vector3 pontoAtual = Vector3.Lerp(pontoOrigem, targetObject3.position, t);
+            pontoAtual.y = pontoOrigem.y + t * t * (targetObject3.position.y - pontoOrigem.y);
+
+            Debug.Log("Ponto atual: " + pontoAtual);
+
+            // Movimenta o objeto para o ponto atual
+            Book.position = pontoAtual;
+
+            yield return null; // Aguarda até o próximo quadro
+        }
+
+        animBook.Play("CadernoFechando 0");
+        roles.SetActive(true);
+
+        yield return new WaitForSeconds(0.50f);
+        animPage.Play("FolhaVirando");
+
+        yield return new WaitForSeconds(0.45f);
+        inicialMenu.SetActive(true);
+
+
+    }
+
+    IEnumerator LockMousePosition(Transform armPosition, float duration) // retornar o mouse suavimente para a posição
     {
         float timer = 0;
         Vector2 armScreenPosition = mainCamera.WorldToScreenPoint(armPosition.position);

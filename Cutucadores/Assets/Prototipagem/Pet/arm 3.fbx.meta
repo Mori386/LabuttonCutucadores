@@ -124,7 +124,7 @@ ModelImporter:
       takeName: arm_AMT|VirarPag
       internalID: 2358349528530662283
       firstFrame: 0
-      lastFrame: 29
+      lastFrame: 24.100002
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -204,7 +204,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 0.001
+    globalScale: 0.1
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0

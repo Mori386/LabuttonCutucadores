@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: e88c4dd1f170d7840aeae55de6fe0f25
+guid: 7a2a3e56f8e8ea646ad039fb4e14b184
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
@@ -7,8 +7,83 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: WoodworkLOGO_edited
+    second: {fileID: 2100000, guid: 3ede0f1609fe94f428a2cdbc6471cfb7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: couro cad
+    second: {fileID: 2100000, guid: 52c71cae34f8a7e42b04def6404e8b91, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: metal cad
+    second: {fileID: 2100000, guid: d33ad1fd9bc95b64e90efae2b50229db, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pangLogo
+    second: {fileID: 2100000, guid: 35c4246dba1618545ad5232ce6161fb5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: papel cad
-    second: {fileID: 2100000, guid: b41415bb9f280d7409490ba8d493aa70, type: 2}
+    second: {fileID: 2100000, guid: e67f13b2a4d76d347a5fc1c1117115aa, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: papel cad.001
+    second: {fileID: 6216444218634418233, guid: a72e3042afca5574c9795a7637caa43f, type: 3}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: papel cad.002
+    second: {fileID: 6216444218634418233, guid: a72e3042afca5574c9795a7637caa43f, type: 3}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: papel cad.003
+    second: {fileID: 2100000, guid: f02926422cba4514abf28993cd4ac1a8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: post it 2
+    second: {fileID: 2100000, guid: 06c72567fbfb4214289453285cba0f86, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: post it 2.001
+    second: {fileID: 2100000, guid: fe9ffb8476c649a4fbc1756e7d073cd8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: postit1
+    second: {fileID: 2100000, guid: ab13fee2152b1bb4f889c520bcfa3a8e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: postit1.001
+    second: {fileID: 2100000, guid: c0b31dd0aef592746b6600fd70c9442a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: postit3
+    second: {fileID: 2100000, guid: 614df6ae96afa624fb3b15ad38555e38, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: postit4
+    second: {fileID: 2100000, guid: dee6a9bf5221c4a419a5edf6434dc2ab, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: postit5
+    second: {fileID: 2100000, guid: 7a47b5c9dba4dd34a9949f5d6db155a9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: postit6
+    second: {fileID: 2100000, guid: 67c746023c3898b46a679e879a5993ef, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -38,18 +113,18 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Plane.008|Plane.008Action
-      takeName: Plane.008|Plane.008Action
-      internalID: -5246050012434224033
+      name: Armature|CadernoFechando
+      takeName: Armature|CadernoFechando
+      internalID: 1068172689746698357
       firstFrame: 0
-      lastFrame: 10
+      lastFrame: 9
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 1
+      loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
@@ -67,11 +142,40 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Plane.008|Plane.009Action
-      takeName: Plane.008|Plane.009Action
-      internalID: -6567575297897603958
+      name: Armature|FolhaVirando
+      takeName: Armature|FolhaVirando
+      internalID: -2776692745569794118
       firstFrame: 0
-      lastFrame: 10
+      lastFrame: 9
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Armature|CadernoFechando (1)
+      takeName: Armature|CadernoFechando
+      internalID: 4437385812362332326
+      firstFrame: 8.9
+      lastFrame: 9
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -98,7 +202,7 @@ ModelImporter:
     isReadable: 0
   meshes:
     lODScreenPercentages: []
-    globalScale: 100
+    globalScale: 1
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
@@ -151,7 +255,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 100
+    globalScale: 1
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
