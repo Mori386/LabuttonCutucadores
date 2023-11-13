@@ -47,10 +47,6 @@ public class CollisionHandler : NetworkBehaviour
                             networkCharacterController.Knockback(collision.GetContact(0).point, false);
                         }
                         GameManager.Instance.PlayOnBodyHitParticle(collision.GetContact(0).point);
-                        if (Object.HasInputAuthority)
-                        {
-                            GameManager.Instance.ShakeCamera(GameManager.Instance.onBodyHitCameraShakeAmplitude);
-                        }
                         break;
                     case "Drill":
                         //If other player drill hit this player drill
@@ -82,8 +78,6 @@ public class CollisionHandler : NetworkBehaviour
                     networkCharacterController.StartSpeedBoost();
                     other.SendMessage("GetPowerUp", networkCharacterController.visual);
                 }
-                break;
-            case "Fall":
                 break;
         }
     }

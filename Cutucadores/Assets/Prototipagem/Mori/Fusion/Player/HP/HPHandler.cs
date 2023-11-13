@@ -17,13 +17,18 @@ public class HPHandler : NetworkBehaviour
 
     public TextMeshPro hpText;
 
-    private void Start()
+    public NetworkVisualHandler networkVisualHandler;
+    private void Awake()
     {
+        networkVisualHandler = GetComponent<NetworkVisualHandler>();
+    }
+    public override void Spawned()
+    {
+        base.Spawned();
         HP = startingHP;
         UpdateHpUI();
         isDead = false;
     }
-
     public void OnTakeDamage(byte damageAmount)
     {
         if(isDead) return;
@@ -40,10 +45,27 @@ public class HPHandler : NetworkBehaviour
     static void OnHPChanged(Changed<HPHandler> changed)
     {
         changed.Behaviour.UpdateHpUI();
-        Debug.Log(changed.Behaviour.HP);
+        byte newHp = changed.Behaviour.HP;
+        changed.LoadOld();
+        byte oldHp = changed.Behaviour.HP;
+
+        if(newHp<oldHp)
+        {
+            changed.Behaviour.OnHPLower();
+        }
+    }
+    public void OnHPLower()
+    {
+        if (Object.HasInputAuthority)
+        {
+            GameManager.Instance.ShakeCamera(GameManager.Instance.onBodyHitCameraShakeAmplitude);
+        }
     }
     static void OnStateChanged(Changed<HPHandler> changed)
     {
-
+        if(changed.Behaviour.isDead)
+        {
+            changed.Behaviour.networkVisualHandler.OndDeath();
+        }
     }    
 }

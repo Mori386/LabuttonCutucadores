@@ -27,7 +27,6 @@ public class CharacterData : ScriptableObject
 public class InGameCharacterData
 {
     [Range(0,100)]public float weight = 20;
-    public float acceleration = 10.0f;
     public float braking = 1.0f;
     public float maxSpeed = 50.0f;
     public float rotationSpeed = 15.0f;

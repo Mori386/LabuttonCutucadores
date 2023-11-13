@@ -29,17 +29,19 @@ public class NetworkCharacterDrillController : NetworkTransform
     protected override Vector3 DefaultTeleportInterpolationAngularVelocity => new Vector3(0f, 0f, characterData.rotationSpeed);
     public Rigidbody rb { get; private set; }
     [Space] public Transform visual;
-    public Transform drillVisual;
     public TrailRenderer[] speedBoostTrail;
+    public NetworkVisualHandler visualHandler;
     protected override void Awake()
     {
         base.Awake();
         CacheRigidbody();
+        if (visualHandler == null) visualHandler = GetComponent<NetworkVisualHandler>();
     }
     public override void Spawned()
     {
         base.Spawned();
         CacheRigidbody();
+        if (visualHandler == null) visualHandler = GetComponent<NetworkVisualHandler>();
     }
     private void CacheRigidbody()
     {
@@ -47,17 +49,6 @@ public class NetworkCharacterDrillController : NetworkTransform
         {
             rb = GetComponent<Rigidbody>();
         }
-    }
-    private void FixedUpdate()
-    {
-        RotateDrill();
-    }
-
-    [Networked]
-    float rotationDirection { get; set; }
-    public void RotateDrill()
-    {
-        drillVisual.Rotate((2.5f + rotationDirection * Velocity.magnitude / 40f), 0, 0, Space.Self);
     }
     public void CalculateVelocity()
     {
@@ -68,7 +59,7 @@ public class NetworkCharacterDrillController : NetworkTransform
         float deltaTime = Runner.DeltaTime;
         Vector3 moveForce = transform.forward * direction * 50 * characterData.maxSpeed * deltaTime * activeSpeedMultiplier;
         rb.AddForce(moveForce, ForceMode.Acceleration);
-        rotationDirection = direction;
+        visualHandler.rotationDirection = direction;
     }
     public virtual void Knockback(Vector3 contactPoint, bool considerWeight)
     {
@@ -105,7 +96,7 @@ public class NetworkCharacterDrillController : NetworkTransform
             speedBoostTrail[i].enabled = state;
         }
     }
-    public void DefineTrailTime(float time)
+    public virtual void DefineTrailTime(float time)
     {
         for (int i = 0; i < speedBoostTrail.Length; i++)
         {
@@ -115,7 +106,6 @@ public class NetworkCharacterDrillController : NetworkTransform
     public Coroutine speedBoostCoroutine;
     public IEnumerator SpeedBoost()
     {
-        yield return new WaitForSeconds(0.5f);
         SetActiveStateSpeedBoostVisual(true);
         activeSpeedMultiplier = speedBoostMultiplier;
         yield return new WaitForSeconds(speedBoostDuration);
@@ -136,7 +126,7 @@ public class NetworkCharacterDrillController : NetworkTransform
 
     public virtual void Rotate(float direction)
     {
-        //rb.AddTorque(transform.up * direction * rotationSpeed * Runner.DeltaTime, ForceMode.Force);
-        transform.Rotate(0, direction * Runner.DeltaTime * characterData.rotationSpeed * 10f, 0);
+        //rb.AddTorque(transform.up * direction * characterData.rotationSpeed * Runner.DeltaTime*30f, ForceMode.Acceleration);
+        rb.rotation = transform.rotation * Quaternion.Euler(0, direction * Runner.DeltaTime * characterData.rotationSpeed * 10f, 0);
     }
 }
