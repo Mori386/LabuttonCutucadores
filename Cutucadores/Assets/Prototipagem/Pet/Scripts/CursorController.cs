@@ -32,7 +32,7 @@ public class CursorController : MonoBehaviour
     {
         mainCamera = Camera.main;
 
-        Cursor.visible = false; // Esconde o cursor do mouse
+        Cursor.visible = true; // Esconde o cursor do mouse
         Cursor.lockState = CursorLockMode.Confined; // Mantém o cursor dentro da janela do jogo.
 
         startPosition = cursorObject.transform.position; //para retorno da posição inicial
@@ -61,11 +61,14 @@ public class CursorController : MonoBehaviour
                 // Interpole suavemente a posição do cursor 3D durante o tempo de deslocamento
                 float t = timer / moveDuration;
                 cursorObject.transform.position = Vector3.Lerp(startPosition, targetPosition, t);
+                cursorObject2.transform.position = Vector3.Lerp(startPosition, targetPosition, t);
             }
             else if (timer >= moveDuration && timer < moveTime)
             {
                 // O tempo de deslocamento acabou; o cursor fica parado
                 cursorObject.transform.position = targetPosition;
+                cursorObject2.transform.position = targetPosition;
+
             }
             else
             {
@@ -78,7 +81,17 @@ public class CursorController : MonoBehaviour
         if (isChange == true)
         {
             ChangeCursorObject(cursorObject2, 10f);
+            cursorObject2.SetActive(true);
+            mousePosition.z = 1f;
+            cursorObject2.transform.position = mainCamera.ScreenToWorldPoint(mousePosition);
         }
+        else
+        {
+            ChangeCursorObject(cursorObject, 10f);
+            cursorObject2.SetActive(false);
+            mousePosition.z = 3f;
+        }
+
 
     }
 
