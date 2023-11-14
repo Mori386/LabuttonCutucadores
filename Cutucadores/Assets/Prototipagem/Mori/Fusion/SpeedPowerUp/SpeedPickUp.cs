@@ -19,35 +19,36 @@ public class SpeedPickUp : NetworkBehaviour
     [Header("PickupArea")]
     public Transform pickupAreaVisual;
 
-    [Networked] TickTimer respawnTickTimer { get; set;}
+    [Networked] TickTimer respawnTickTimer { get; set; }
     private void Awake()
     {
         pickupCollider = GetComponent<CapsuleCollider>();
     }
-    private void Start()
-    {
-        itemCoroutine = StartCoroutine(RotateAndFloatObject(itemVisual, itemRotationSpeed, itemYDeltaFrequency, itemYDelta));
-    }
     public override void Spawned()
     {
         base.Spawned();
-        itemCoroutine = StartCoroutine(RotateAndFloatObject(itemVisual, itemRotationSpeed, itemYDeltaFrequency, itemYDelta));
+        startingPosition = itemVisual.localPosition;
     }
-    private Coroutine itemCoroutine;
-    public IEnumerator RotateAndFloatObject(Transform visualTransform, float rotationSpeed, float deltaFrequency, float YDelta)
+    Vector3 startingPosition;
+    private void FixedUpdate()
     {
-        Vector3 startingPosition = visualTransform.localPosition;
-        while (true)
+        itemVisual.Rotate(0, itemRotationSpeed, 0, Space.Self);
+        itemVisual.localPosition = new Vector3(itemVisual.localPosition.x,
+            startingPosition.y + Mathf.Abs(Mathf.Sin(Time.time * itemYDeltaFrequency)) * itemYDelta
+            , itemVisual.localPosition.z);
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
         {
-            visualTransform.Rotate(0, rotationSpeed, 0, Space.Self);
-            visualTransform.localPosition = new Vector3(visualTransform.localPosition.x,
-                startingPosition.y + Mathf.Abs(Mathf.Sin(Time.time * deltaFrequency)) * YDelta
-                , visualTransform.localPosition.z);
-            yield return new WaitForFixedUpdate();
+            if (other.transform.parent.TryGetComponent<NetworkCharacterDrillController>(out NetworkCharacterDrillController drillController))
+            {
+                GetPowerUp();
+                drillController.StartSpeedBoost();
+            }
         }
     }
-
-    public void GetPowerUp(Transform player)
+    public void GetPowerUp()
     {
         //Deactivate collider
         pickupCollider.enabled = false;
@@ -58,7 +59,7 @@ public class SpeedPickUp : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
-       if(respawnTickTimer.Expired(Runner))
+        if (respawnTickTimer.Expired(Runner))
         {
             Respawn();
         }
