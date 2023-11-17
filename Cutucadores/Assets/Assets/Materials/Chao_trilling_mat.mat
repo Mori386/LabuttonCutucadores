@@ -101,6 +101,18 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_1601e412009645029378533619b0cea2_Texture_1:
+        m_Texture: {fileID: 2800000, guid: 4694532833613cb4dad821cdac2eae4c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_84e236ffb88f496a82dbcb2f5621aaf7_Texture_1:
+        m_Texture: {fileID: 2800000, guid: 4694532833613cb4dad821cdac2eae4c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_f4d702be9ad74cfa88532e3d3a9fdbd8_Texture_1:
+        m_Texture: {fileID: 2800000, guid: 4694532833613cb4dad821cdac2eae4c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _SpecularColorMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -265,8 +277,8 @@ Material:
     - _UVEmissive: 0
     - _UseEmissiveIntensity: 0
     - _UseShadowThreshold: 0
-    - _X: 15
-    - _Y: 15
+    - _X: 25
+    - _Y: 25
     - _ZTestDepthEqualForOpaque: 3
     - _ZTestGBuffer: 4
     - _ZTestTransparent: 4
