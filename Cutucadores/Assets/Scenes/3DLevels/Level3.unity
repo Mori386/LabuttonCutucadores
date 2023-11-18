@@ -1276,17 +1276,61 @@ PrefabInstance:
       propertyPath: m_LookAt
       value: 
       objectReference: {fileID: 1704222892}
+    - target: {fileID: 3709027, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: m_StandbyUpdate
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3709027, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: m_Lens.FieldOfView
+      value: 55
+      objectReference: {fileID: 0}
+    - target: {fileID: 3709027, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: m_Lens.FarClipPlane
+      value: 950
+      objectReference: {fileID: 0}
+    - target: {fileID: 3709027, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: m_Lens.NearClipPlane
+      value: 0.001
+      objectReference: {fileID: 0}
     - target: {fileID: 3709028, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 44.000008
       objectReference: {fileID: 0}
     - target: {fileID: 3709028, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 40
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 3709028, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
       propertyPath: m_LocalPosition.z
       value: -11.199997
+      objectReference: {fileID: 0}
+    - target: {fileID: 3709028, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.71825427
+      objectReference: {fileID: 0}
+    - target: {fileID: 3709028, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.688377
+      objectReference: {fileID: 0}
+    - target: {fileID: 3709028, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.07308591
+      objectReference: {fileID: 0}
+    - target: {fileID: 3709028, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.07004576
+      objectReference: {fileID: 0}
+    - target: {fileID: 1216387083, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: field of view
+      value: 55
+      objectReference: {fileID: 0}
+    - target: {fileID: 1216387083, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: far clip plane
+      value: 950
+      objectReference: {fileID: 0}
+    - target: {fileID: 1216387083, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: near clip plane
+      value: 0.001
       objectReference: {fileID: 0}
     - target: {fileID: 1216387084, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1294,11 +1338,119 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1216387084, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 40
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 1216387084, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
       propertyPath: m_LocalPosition.z
       value: -11.199997
+      objectReference: {fileID: 0}
+    - target: {fileID: 1216387084, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.71825427
+      objectReference: {fileID: 0}
+    - target: {fileID: 1216387084, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.688377
+      objectReference: {fileID: 0}
+    - target: {fileID: 1216387084, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.07308591
+      objectReference: {fileID: 0}
+    - target: {fileID: 1216387084, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.07004576
+      objectReference: {fileID: 0}
+    - target: {fileID: 1580249076, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: m_XDamping
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1580249076, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: m_YDamping
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1580249076, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: m_ZDamping
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1580249076, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: m_YawDamping
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1580249076, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: m_XAxis.Value
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 1580249076, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: m_XAxis.m_Wrap
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1580249076, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: m_FollowOffset.y
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 1580249076, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: m_Heading.m_Bias
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 1580249076, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: m_XAxis.m_MaxSpeed
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 1580249076, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: m_XAxis.m_MaxValue
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 1580249076, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: m_XAxis.m_MinValue
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 1580249076, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: m_XAxis.m_AccelTime
+      value: 10000
+      objectReference: {fileID: 0}
+    - target: {fileID: 1580249076, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: m_XAxis.m_DecelTime
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1580249076, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: m_Heading.m_Definition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1580249076, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: m_Heading.m_VelocityFilterStrength
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1580249076, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: m_RecenterToTargetHeading.m_WaitTime
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1580249076, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: m_RecenterToTargetHeading.m_RecenteringTime
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1580249077, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: m_DeadZoneWidth
+      value: 0.04869792
+      objectReference: {fileID: 0}
+    - target: {fileID: 1580249077, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: m_LookaheadTime
+      value: 0.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 1580249077, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: m_DeadZoneHeight
+      value: 0.155168
+      objectReference: {fileID: 0}
+    - target: {fileID: 1580249077, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: m_LookaheadSmoothing
+      value: 11.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1580249077, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: m_TrackedObjectOffset.x
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1580249077, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
+      propertyPath: m_TrackedObjectOffset.z
+      value: 3.48
       objectReference: {fileID: 0}
     - target: {fileID: 6449472562953846515, guid: a06a4da6d21a1934ab0a6d1dbcbc78b4, type: 3}
       propertyPath: m_RootOrder
