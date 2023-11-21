@@ -422,7 +422,7 @@ MonoBehaviour:
   characterData:
     weight: 20
     braking: 1
-    maxSpeed: 50
+    maxSpeed: 175
     rotationSpeed: 15
   activeSpeedMultiplier: 1
   _Velocity: {x: 0, y: 0}
@@ -430,7 +430,10 @@ MonoBehaviour:
   speedBoostTrail:
   - {fileID: 3511347296981472518}
   - {fileID: 7371276022837095017}
+  characterInputHandler: {fileID: 0}
+  hpHandler: {fileID: 0}
   visualHandler: {fileID: 0}
+  playerColliders: []
 --- !u!114 &-4411249185986371647
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -472,6 +475,7 @@ MonoBehaviour:
   _isDead: 0
   hpText: {fileID: 528173328059072990}
   networkVisualHandler: {fileID: 0}
+  drillController: {fileID: 0}
 --- !u!114 &3553782799364510862
 MonoBehaviour:
   m_ObjectHideFlags: 0

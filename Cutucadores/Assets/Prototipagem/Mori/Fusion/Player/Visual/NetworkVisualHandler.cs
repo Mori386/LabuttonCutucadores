@@ -46,11 +46,6 @@ public class NetworkVisualHandler : NetworkBehaviour
     {
         drillVisual.Rotate((2.5f + rotationDirection * characterDrillController.Velocity.magnitude / 40f), 0, 0, Space.Self);
     }
-    private void Update()
-    {
-        if (Input.GetMouseButtonDown(0)) PlayPowerUpVfx();
-
-    }
     public void PlayPowerUpVfx()
     {
         for (int i = 0; i < powerUpSpeedParticleSystem.Length; i++)

@@ -16,6 +16,10 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         if (Object.HasInputAuthority)
         {
             Local = this;
+            Vector3 cameraPos = transform.position;
+            cameraPos.y = GameManager.Instance.virtualCamera.transform.position.y;
+            Vector3 cameraRot = GameManager.Instance.virtualCamera.transform.rotation.eulerAngles;
+            GameManager.Instance.virtualCamera.ForceCameraPosition(cameraPos, Quaternion.Euler(cameraRot));
             GameManager.Instance.virtualCamera.Follow = transform;
             GameManager.Instance.virtualCamera.LookAt = transform;
             Debug.Log("Spawned local player");

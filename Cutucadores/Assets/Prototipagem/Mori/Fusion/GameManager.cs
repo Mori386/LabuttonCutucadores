@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance {  get; private set; }
     public CinemachineVirtualCamera virtualCamera;
-    public CinemachineBasicMultiChannelPerlin virtualCameraNoiseChannel;
+    [HideInInspector]public CinemachineBasicMultiChannelPerlin virtualCameraNoiseChannel;
     public Transform[] playerSpawnpoints;
     public ParticleSystem onDrillHitParticlePrefab,onBodyHitParticlePrefab;
 
@@ -60,7 +60,7 @@ public class GameManager : MonoBehaviour
         shakeCameraCoroutine = null;
     }
 
-    public List<NetworkCharacterDrillController> playersControllers = new List<NetworkCharacterDrillController>();
+    [HideInInspector]public List<NetworkCharacterDrillController> playersControllers = new List<NetworkCharacterDrillController>();
     public void CheckIfThereIsWinner()
     {
         int totalPlayersAlive = 0;
