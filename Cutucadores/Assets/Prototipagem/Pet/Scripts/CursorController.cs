@@ -23,7 +23,15 @@ public class CursorController : MonoBehaviour
 
     [Header("OBJETOS DO BLUEPRINT")]
     public GameObject[] Okays;
-    public GameObject tanques;
+    public GameObject[] Polaroids;
+    public Material[] tanksMaterial;
+    public GameObject[] tankMesh; // acessar o renderer corretamente e trocar o material
+    public GameObject[] tankDrill; // acessar o renderer corretamente e trocar o material
+    public Material Bluematerial; 
+    public GameObject tanques; // desativas todos, verificar se já não há a declaração no game manager
+    public GameObject Lampada;
+    public GameObject Luz;
+
 
     [Header("PARA ANIMAÇÃO")]
     public float moveTime = 2f; // Tempo total (tempo que o cursor fica na posição de destino + tempo de deslocamento)
@@ -187,10 +195,12 @@ public class CursorController : MonoBehaviour
         Blueprint.SetActive(true);
         tanques.SetActive(true);
         roleClientHost.SetActive(false);
+        Luz.SetActive(true);
+        Lampada.SetActive(false);
 
         // Movimentar blueprint para perto da camera.
         Vector3 posicaoAtual = Blueprint.transform.localPosition;
-        posicaoAtual.z = -183f; // posição do obj
+        posicaoAtual.z = -179f; // posição do obj
 
         Blueprint.transform.localPosition = posicaoAtual;
         isChange = true;
@@ -201,9 +211,27 @@ public class CursorController : MonoBehaviour
     {
         Blueprint.SetActive(false);
         tanques.SetActive(false);
+        Luz.SetActive(false);
+        Lampada.SetActive(true);
         roleClientHost.SetActive(true);
         isReturn = true;
         isChange = false;
+    }
+
+    public void ChangeMaterial(Material newMaterial, GameObject Tank, GameObject Drill)
+    {
+        Renderer renderer1 = Tank.GetComponent<Renderer>();
+        Renderer renderer2 = Drill.GetComponent<Renderer>();
+
+        if (renderer1 != null && renderer2 != null)
+        {
+            renderer1.material = newMaterial;
+            renderer2.material = newMaterial;
+        }
+        else
+        {
+            Debug.LogWarning("O objeto não possui um componente Renderer.");
+        }
     }
 
     public void OkPlayers(int playerNumber) // confirmação dos players
@@ -215,6 +243,8 @@ public class CursorController : MonoBehaviour
                 Debug.Log("Anim roda");
                 startPosition = cursorObject2.transform.position;
                 targetPosition = Okays[0].transform.position;
+                Polaroids[0].SetActive(false);
+                ChangeMaterial(tanksMaterial[0], tankMesh[0], tankDrill[0]);
                 isMoving = true;
                 timer = 0.4f;
                 SetActiveWithDelay(Okays[0], true, 0.8f);
@@ -239,6 +269,7 @@ public class CursorController : MonoBehaviour
             case 3:
                 startPosition = cursorObject2.transform.position;
                 targetPosition = Okays[3].transform.position;
+                Polaroids[4].SetActive(false);
                 isMoving = true;
                 timer = 0.4f;
                 SetActiveWithDelay(Okays[3], true, 0.8f);
