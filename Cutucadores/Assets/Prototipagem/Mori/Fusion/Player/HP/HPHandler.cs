@@ -19,6 +19,8 @@ public class HPHandler : NetworkBehaviour
 
     public NetworkVisualHandler networkVisualHandler;
     public NetworkCharacterDrillController drillController;
+
+    [Networked] public TickTimer InvulnerabilityTimer { get; set; }
     private void Awake()
     {
         networkVisualHandler = GetComponent<NetworkVisualHandler>();

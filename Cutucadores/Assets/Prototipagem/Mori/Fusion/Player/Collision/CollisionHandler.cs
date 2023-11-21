@@ -68,8 +68,4 @@ public class CollisionHandler : NetworkBehaviour
                 break;
         }
     }
-    private void OnTriggerEnter(Collider other)
-    {
-        
-    }
 }

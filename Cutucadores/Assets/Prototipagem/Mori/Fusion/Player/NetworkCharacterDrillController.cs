@@ -12,7 +12,7 @@ public class NetworkCharacterDrillController : NetworkTransform
 {
     public InGameCharacterData characterData;
     public float activeSpeedMultiplier = 1f;
-    readonly private float speedBoostMultiplier = 1.75f;
+    readonly private float speedBoostMultiplier = 1.5f;
     readonly private float speedBoostDuration = 10f;
     [Networked]
     [HideInInspector]
