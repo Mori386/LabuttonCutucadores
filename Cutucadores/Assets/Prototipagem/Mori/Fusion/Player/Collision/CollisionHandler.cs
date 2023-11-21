@@ -23,9 +23,12 @@ public class CollisionHandler : NetworkBehaviour
                         break;
                     case "Drill":
                         //Contact with other player body with this player drill
-                        if (Object.HasInputAuthority)
+                        if (Object.HasStateAuthority)
                         {
                             networkCharacterController.Knockback(collision.GetContact(0).point, true);
+                        }
+                        if (Object.HasInputAuthority)
+                        {
                             GameManager.Instance.ShakeCamera(GameManager.Instance.onBodyHitCameraShakeAmplitude);
                         }
                         break;
@@ -37,7 +40,7 @@ public class CollisionHandler : NetworkBehaviour
                 {
                     case "Player":
                         //If other player drill hit this player body
-                        if (Object.HasInputAuthority)
+                        if (Object.HasStateAuthority)
                         {
                             Debug.Log("Hit Player");
                             transform.root.GetComponent<HPHandler>().OnTakeDamage(1);
@@ -47,10 +50,13 @@ public class CollisionHandler : NetworkBehaviour
                         break;
                     case "Drill":
                         //If other player drill hit this player drill
+                        if (Object.HasStateAuthority)
+                        {                    
+                            networkCharacterController.Knockback(collision.GetContact(0).point, true);
+                        }
                         GameManager.Instance.PlayOnDrillHitParticle(collision.GetContact(0).point);
                         if (Object.HasInputAuthority)
                         {
-                            networkCharacterController.Knockback(collision.GetContact(0).point, true);
                             GameManager.Instance.ShakeCamera(GameManager.Instance.onDrillHitCameraShakeAmplitude);
                         }
                         break;
