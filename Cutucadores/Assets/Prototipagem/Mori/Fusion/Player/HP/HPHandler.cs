@@ -18,9 +18,11 @@ public class HPHandler : NetworkBehaviour
     public TextMeshPro hpText;
 
     public NetworkVisualHandler networkVisualHandler;
+    public NetworkCharacterDrillController drillController;
     private void Awake()
     {
         networkVisualHandler = GetComponent<NetworkVisualHandler>();
+        drillController = GetComponent<NetworkCharacterDrillController>();
     }
     public override void Spawned()
     {
@@ -65,7 +67,7 @@ public class HPHandler : NetworkBehaviour
     {
         if(changed.Behaviour.isDead)
         {
-            changed.Behaviour.networkVisualHandler.OndDeath();
+            changed.Behaviour.drillController.Die();
         }
     }    
 }

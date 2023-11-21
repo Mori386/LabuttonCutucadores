@@ -12,8 +12,9 @@ public class CharacterInputHandler : MonoBehaviour
     }
     void Start()
     {
-        if (characterMovementHandler.Object.HasInputAuthority) StartCoroutine(GetInputCoroutine());
+        EnableCharacter();
     }
+    public Coroutine InputRegisterCoroutine;
     public IEnumerator GetInputCoroutine()
     {
         while(true)
@@ -24,7 +25,23 @@ public class CharacterInputHandler : MonoBehaviour
         }
     }
 
-
+    private void OnDisable()
+    {
+        if(InputRegisterCoroutine != null)
+        {
+            StopCoroutine(InputRegisterCoroutine);
+            InputRegisterCoroutine = null;
+            moveInputVector = Vector2.zero;
+        }
+    }
+    private void OnEnable()
+    {
+        EnableCharacter();
+    }
+    public void EnableCharacter()
+    {
+        if (characterMovementHandler.Object.HasInputAuthority && InputRegisterCoroutine == null) InputRegisterCoroutine = StartCoroutine(GetInputCoroutine());
+    }
     public NetworkInputData GetNetworkInput()
     {
         NetworkInputData networkInputData = new NetworkInputData(moveInputVector);

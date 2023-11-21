@@ -20,7 +20,7 @@ public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
         if (runner.IsServer)
         {
             Debug.Log("OnPlayerJoined we are server, spawning player");
-            runner.Spawn(playerPrefab, GameManager.Instance.playerSpawnpoints[0].position, Quaternion.identity, player);
+            runner.Spawn(playerPrefab, GameManager.Instance.playerSpawnpoints[runner.SessionInfo.PlayerCount-1].position, Quaternion.identity, player);
         }
         else Debug.Log("OnPlayerJoined");
     }

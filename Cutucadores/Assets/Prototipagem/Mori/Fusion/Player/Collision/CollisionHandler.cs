@@ -70,15 +70,6 @@ public class CollisionHandler : NetworkBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        switch(other.tag)
-        {
-            case "Speed":
-                if (Object.HasInputAuthority)
-                {
-                    networkCharacterController.StartSpeedBoost();
-                    other.SendMessage("GetPowerUp", networkCharacterController.visual);
-                }
-                break;
-        }
+        
     }
 }

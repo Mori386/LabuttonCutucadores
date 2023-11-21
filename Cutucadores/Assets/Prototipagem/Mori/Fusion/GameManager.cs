@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
     public ParticleSystem onDrillHitParticlePrefab,onBodyHitParticlePrefab;
 
     public readonly float onBodyHitCameraShakeAmplitude = 20f;
-    public readonly float onDrillHitCameraShakeAmplitude = 10f;
+    public readonly float onDrillHitCameraShakeAmplitude = 15f;
     private void Awake()
     {
         ParticleSystem particleSpawned;
@@ -58,5 +58,19 @@ public class GameManager : MonoBehaviour
         }
         virtualCameraNoiseChannel.m_AmplitudeGain = 0;
         shakeCameraCoroutine = null;
+    }
+
+    public List<NetworkCharacterDrillController> playersControllers = new List<NetworkCharacterDrillController>();
+    public void CheckIfThereIsWinner()
+    {
+        int totalPlayersAlive = 0;
+        for(int i = 0; i < playersControllers.Count; i++)
+        {
+            if(!playersControllers[i].hpHandler.isDead) totalPlayersAlive++;
+        }
+        if(totalPlayersAlive <=1)
+        {
+            Debug.Log("Alguem ganhou");
+        }
     }
 }

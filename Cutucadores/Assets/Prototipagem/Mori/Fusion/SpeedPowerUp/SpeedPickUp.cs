@@ -20,6 +20,7 @@ public class SpeedPickUp : NetworkBehaviour
     public Transform pickupAreaVisual;
 
     [Networked] TickTimer respawnTickTimer { get; set; }
+    [Networked] TickTimer respawningTickTimer { get; set; }
     private void Awake()
     {
         pickupCollider = GetComponent<CapsuleCollider>();
@@ -63,11 +64,21 @@ public class SpeedPickUp : NetworkBehaviour
         {
             Respawn();
         }
+        else if (respawningTickTimer.Expired(Runner))
+        {
+            ReEnablePowerUp();
+        }
     }
     public void Respawn()
     {
-        itemVisual.gameObject.SetActive(true);
         pickupAreaVisual.gameObject.SetActive(true);
+        respawnTickTimer = TickTimer.None;
+        respawningTickTimer = TickTimer.CreateFromSeconds(Runner, 0.25f);
+    }
+    public void ReEnablePowerUp()
+    {
+        itemVisual.gameObject.SetActive(true);
         pickupCollider.enabled = true;
+        respawningTickTimer = TickTimer.None;
     }
 }
