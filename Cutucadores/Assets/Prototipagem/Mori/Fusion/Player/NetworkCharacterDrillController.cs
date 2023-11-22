@@ -91,11 +91,11 @@ public class NetworkCharacterDrillController : NetworkTransform
         directionOfKnockback.Normalize();
         if (considerWeight)
         {
-            directionOfKnockback = directionOfKnockback * (0.5f + ((100 - characterData.weight) / 100) * 0.25f) * 50;
+            directionOfKnockback = directionOfKnockback * (0.5f + ((100 - characterData.weight) / 100) * 0.25f) * 100;
         }
         else
         {
-            directionOfKnockback = directionOfKnockback * 0.75f * 50;
+            directionOfKnockback = directionOfKnockback * 0.75f * 100;
         }
         rb.AddForce(directionOfKnockback, ForceMode.VelocityChange);
     }
