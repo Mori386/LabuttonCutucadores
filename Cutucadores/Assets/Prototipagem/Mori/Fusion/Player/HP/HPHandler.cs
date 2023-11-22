@@ -13,7 +13,7 @@ public class HPHandler : NetworkBehaviour
 
     bool isInitialized = false;
 
-    const byte startingHP = 3;
+    const byte startingHP = 5;
 
     public TextMeshPro hpText;
 
