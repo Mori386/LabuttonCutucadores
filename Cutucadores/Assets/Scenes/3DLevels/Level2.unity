@@ -699,7 +699,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 40291386}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Coisor_digonal_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1817,7 +1817,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 105628811}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Collision
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3858,6 +3858,75 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8350636824886537543, guid: 4b3cfb91014b0c345b0120f41405005a, type: 3}
   m_PrefabInstance: {fileID: 285322755}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &297630396
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1190852707908525785, guid: 47138409e9865b044a96bdaea797eb85, type: 3}
+      propertyPath: m_Name
+      value: InBetweenScenesManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 1190852707908525786, guid: 47138409e9865b044a96bdaea797eb85, type: 3}
+      propertyPath: m_RootOrder
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 1190852707908525786, guid: 47138409e9865b044a96bdaea797eb85, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1190852707908525786, guid: 47138409e9865b044a96bdaea797eb85, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1190852707908525786, guid: 47138409e9865b044a96bdaea797eb85, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1190852707908525786, guid: 47138409e9865b044a96bdaea797eb85, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1190852707908525786, guid: 47138409e9865b044a96bdaea797eb85, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1190852707908525786, guid: 47138409e9865b044a96bdaea797eb85, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1190852707908525786, guid: 47138409e9865b044a96bdaea797eb85, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1190852707908525786, guid: 47138409e9865b044a96bdaea797eb85, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1190852707908525786, guid: 47138409e9865b044a96bdaea797eb85, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1190852707908525786, guid: 47138409e9865b044a96bdaea797eb85, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1190852707908525788, guid: 47138409e9865b044a96bdaea797eb85, type: 3}
+      propertyPath: Flags
+      value: 2561
+      objectReference: {fileID: 0}
+    - target: {fileID: 1190852707908525788, guid: 47138409e9865b044a96bdaea797eb85, type: 3}
+      propertyPath: NetworkGuid.RawGuidValue.Array.data[0]
+      value: -3869080272262272842
+      objectReference: {fileID: 0}
+    - target: {fileID: 1190852707908525788, guid: 47138409e9865b044a96bdaea797eb85, type: 3}
+      propertyPath: NetworkGuid.RawGuidValue.Array.data[1]
+      value: 6991806749865542313
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 47138409e9865b044a96bdaea797eb85, type: 3}
 --- !u!1001 &299885004
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10839,7 +10908,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 849756994}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Coisor_digonal_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13552,7 +13621,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1009462475}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Colisao Predes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15552,7 +15621,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1214479658}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Coisor_digonal_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16057,7 +16126,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1251960789}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Coisor_digonal_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -23378,6 +23447,18 @@ PrefabInstance:
     - target: {fileID: 1096194526856973587, guid: 49d3033f38780004592a616a8996d9e9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7828795293188821932, guid: 49d3033f38780004592a616a8996d9e9, type: 3}
+      propertyPath: Flags
+      value: 2561
+      objectReference: {fileID: 0}
+    - target: {fileID: 7828795293188821932, guid: 49d3033f38780004592a616a8996d9e9, type: 3}
+      propertyPath: NetworkGuid.RawGuidValue.Array.data[0]
+      value: -7689862468623389256
+      objectReference: {fileID: 0}
+    - target: {fileID: 7828795293188821932, guid: 49d3033f38780004592a616a8996d9e9, type: 3}
+      propertyPath: NetworkGuid.RawGuidValue.Array.data[1]
+      value: 6274363250640094626
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49d3033f38780004592a616a8996d9e9, type: 3}

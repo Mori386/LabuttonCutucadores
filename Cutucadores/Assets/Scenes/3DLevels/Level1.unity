@@ -9961,7 +9961,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 321018751}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: L_Collider_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12194,7 +12194,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 391593905}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: L_Collider_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12479,7 +12479,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 398805589}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13921,7 +13921,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 457803508}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: L_Collider_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19760,6 +19760,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7828795293188821932, guid: 49d3033f38780004592a616a8996d9e9, type: 3}
+      propertyPath: Flags
+      value: 2561
+      objectReference: {fileID: 0}
+    - target: {fileID: 7828795293188821932, guid: 49d3033f38780004592a616a8996d9e9, type: 3}
+      propertyPath: NetworkGuid.RawGuidValue.Array.data[0]
+      value: 2255500793769225995
+      objectReference: {fileID: 0}
+    - target: {fileID: 7828795293188821932, guid: 49d3033f38780004592a616a8996d9e9, type: 3}
+      propertyPath: NetworkGuid.RawGuidValue.Array.data[1]
+      value: 1298794174180111490
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49d3033f38780004592a616a8996d9e9, type: 3}
 --- !u!1 &661452484
@@ -22519,7 +22531,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 744242194}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: T_Collider_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24408,7 +24420,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 825637771}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: T_Collider_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24450,7 +24462,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 830692001}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Parede_Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -27145,6 +27157,75 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5773532113746444101, guid: 02e1aa46e3a36eb4b8844a651984ddc3, type: 3}
   m_PrefabInstance: {fileID: 893086309}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &893606055
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1190852707908525785, guid: 47138409e9865b044a96bdaea797eb85, type: 3}
+      propertyPath: m_Name
+      value: InBetweenScenesManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 1190852707908525786, guid: 47138409e9865b044a96bdaea797eb85, type: 3}
+      propertyPath: m_RootOrder
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 1190852707908525786, guid: 47138409e9865b044a96bdaea797eb85, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1190852707908525786, guid: 47138409e9865b044a96bdaea797eb85, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1190852707908525786, guid: 47138409e9865b044a96bdaea797eb85, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1190852707908525786, guid: 47138409e9865b044a96bdaea797eb85, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1190852707908525786, guid: 47138409e9865b044a96bdaea797eb85, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1190852707908525786, guid: 47138409e9865b044a96bdaea797eb85, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1190852707908525786, guid: 47138409e9865b044a96bdaea797eb85, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1190852707908525786, guid: 47138409e9865b044a96bdaea797eb85, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1190852707908525786, guid: 47138409e9865b044a96bdaea797eb85, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1190852707908525786, guid: 47138409e9865b044a96bdaea797eb85, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1190852707908525788, guid: 47138409e9865b044a96bdaea797eb85, type: 3}
+      propertyPath: Flags
+      value: 2561
+      objectReference: {fileID: 0}
+    - target: {fileID: 1190852707908525788, guid: 47138409e9865b044a96bdaea797eb85, type: 3}
+      propertyPath: NetworkGuid.RawGuidValue.Array.data[0]
+      value: 6290333145899213154
+      objectReference: {fileID: 0}
+    - target: {fileID: 1190852707908525788, guid: 47138409e9865b044a96bdaea797eb85, type: 3}
+      propertyPath: NetworkGuid.RawGuidValue.Array.data[1]
+      value: -4822182939498856306
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 47138409e9865b044a96bdaea797eb85, type: 3}
 --- !u!4 &894021056 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 765263920818053537, guid: 0284bdea3169a6a43b8575abeaf32c76, type: 3}
@@ -36844,7 +36925,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1195740654}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: T_Collider_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -37227,7 +37308,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1203901197}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Meio_Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -51212,7 +51293,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1687122447}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: T_Collider_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -56714,7 +56795,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1861747466}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: L_Collider_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
