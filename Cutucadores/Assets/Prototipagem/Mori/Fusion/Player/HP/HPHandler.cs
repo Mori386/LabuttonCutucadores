@@ -20,6 +20,7 @@ public class HPHandler : NetworkBehaviour
     public NetworkVisualHandler networkVisualHandler;
     public NetworkCharacterDrillController drillController;
 
+    [Networked] public bool isInvulnerable { get; set; }
     [Networked] public TickTimer InvulnerabilityTimer { get; set; }
     private void Awake()
     {
@@ -36,11 +37,29 @@ public class HPHandler : NetworkBehaviour
     public void OnTakeDamage(byte damageAmount)
     {
         if(isDead) return;
-        HP -= damageAmount;
+        if (!isInvulnerable)
+        {
+            HP -= damageAmount;
+            isInvulnerable = true;
+            StartCoroutine(CheckForInvulnerability());
+            InvulnerabilityTimer = TickTimer.CreateFromSeconds(Runner, 0.5f);
+        }
         if (HP<=0)
         {
             isDead = true;
         }
+    }
+    public IEnumerator CheckForInvulnerability()
+    {
+        InvulnerabilityTimer = TickTimer.CreateFromSeconds(Runner, 0.5f);
+        while (!InvulnerabilityTimer.Expired(Runner))
+        {
+            yield return null;
+        }
+        InvulnerabilityTimer = TickTimer.None;
+        isInvulnerable = false;
+
+
     }
     public void UpdateHpUI()
     {

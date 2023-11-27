@@ -47,13 +47,25 @@ public class NetworkVisualHandler : NetworkBehaviour
     }
     public void LoadCharacterVisual()
     {
-        Instantiate(BetweenScenesPlayerInfos.Instance.GetDataFromPlayerID(0).visualPrefab, characterDrillController.visual);
+        Transform drill = 
+        Instantiate(BetweenScenesPlayerInfos.Instance.GetDataFromPlayerID(0).visualPrefab, characterDrillController.visual).transform;
+
+        drill = drill.GetChild(1).GetChild(0);
+        if (drill != null) drillVisual = drill;
+        else Debug.LogError("Error in finding drill mesh");
+        animator.enabled = true;
+        animator.Rebind();
+
+    }
+    public void RotateWheel(float direction)
+    {
+        animator.SetFloat("movementTurn", direction);
     }
     [Networked]
     [HideInInspector] public float rotationDirection { get; set; }
     public void RotateDrill()
     {
-        //drillVisual.Rotate((2.5f + rotationDirection * characterDrillController.Velocity.magnitude / 40f), 0, 0, Space.Self);
+        drillVisual.Rotate(0,(2.5f + rotationDirection * characterDrillController.Velocity.magnitude / 40f), 0, Space.Self);
     }
     public void PlayPowerUpVfx()
     {

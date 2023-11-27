@@ -231,5 +231,6 @@ public class NetworkCharacterDrillController : NetworkTransform
     {
         //rb.AddTorque(transform.up * direction * characterData.rotationSpeed * Runner.DeltaTime*30f, ForceMode.Acceleration);
         rb.rotation = transform.rotation * Quaternion.Euler(0, direction * Runner.DeltaTime * characterData.rotationSpeed * (0.85f + activeSpeedMultiplier * 0.15f) * 10f, 0);
+        visualHandler.RotateWheel(direction);
     }
 }
