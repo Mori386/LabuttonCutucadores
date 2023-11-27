@@ -12,16 +12,16 @@ public class CursorController : MonoBehaviour
     public Camera mainCamera;
 
     [Header("OBJETOS DO LIVRO")]
-    public GameObject config;
-    public GameObject inicialMenu;
+    public GameObject[] config;
+    public GameObject[] inicialMenu;
     public GameObject roles;
     public GameObject roleClientHost;
-    public GameObject Blueprint;
-    public GameObject credits;
+    public GameObject[] credits;
     public Transform targetObject, targetObject2, targetObject3, Book; // O objeto 3D para onde o cursor 3D será movido
     public Animator animHand, animBook, animPage; // animações da mão e caderno
 
     [Header("OBJETOS DO BLUEPRINT")]
+    public GameObject Blueprint;
     public GameObject[] Okays;
     public GameObject[] Polaroids;
     public Material[] tanksMaterial;
@@ -37,6 +37,9 @@ public class CursorController : MonoBehaviour
     public float moveTime = 2f; // Tempo total (tempo que o cursor fica na posição de destino + tempo de deslocamento)
     public float pauseTime = 1.5f; // Tempo que o cursor fica na posição de destino
     public float smoothTime = 0.5f;
+
+    public RectTransform canvasRect;
+    public RectTransform blueprintRect;
 
     private float moveDuration; // Tempo de deslocamento
     private float timer = 0.0f; // verificação de tempo max
@@ -73,7 +76,7 @@ public class CursorController : MonoBehaviour
         {
             // Atualiza a posição do cursor 3D para seguir o mouse
             mousePosition = Input.mousePosition;
-            mousePosition.z = 2.7f; // Distância do cursor em relação à câmera
+            mousePosition.z = 2.8f; // Distância do cursor em relação à câmera
             cursorObject.transform.position = mainCamera.ScreenToWorldPoint(mousePosition);
             mira.transform.position = mainCamera.ScreenToWorldPoint(mousePosition);
 
@@ -81,7 +84,7 @@ public class CursorController : MonoBehaviour
             {
                 // atualiza a posição de cursorObject2 para seguir o mouse
                 cursorObject2.SetActive(true);
-                mousePosition.z = 1f;
+                mousePosition.z = 1.5f;
                 cursorObject2.transform.position = mainCamera.ScreenToWorldPoint(mousePosition);
             }
 
@@ -197,23 +200,23 @@ public class CursorController : MonoBehaviour
         roleClientHost.SetActive(false);
         Luz.SetActive(true);
         Lampada.SetActive(false);
+        StartCoroutine(MoveBlue());
+       
 
-        // Movimentar blueprint para perto da camera.
-        Vector3 posicaoAtual = Blueprint.transform.localPosition;
-        posicaoAtual.z = -179f; // posição do obj
-
-        Blueprint.transform.localPosition = posicaoAtual;
         isChange = true;
         isReturn = false;
     }
 
+   
+
     public void ReturnBlueprintSelect() // sair do blue de seleção
     {
-        Blueprint.SetActive(false);
         tanques.SetActive(false);
         Luz.SetActive(false);
         Lampada.SetActive(true);
         roleClientHost.SetActive(true);
+        StartCoroutine(ReturnBlue());
+
         isReturn = true;
         isChange = false;
     }
@@ -302,11 +305,18 @@ public class CursorController : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         animPage.Play("FolhaVirando");
 
-        yield return new WaitForSeconds(0.15f);
-        inicialMenu.SetActive(false);
+        yield return new WaitForSeconds(0.06f);
+        inicialMenu[0].SetActive(false);
+
+        yield return new WaitForSeconds(0.3f);
+        inicialMenu[1].SetActive(false);
 
         yield return new WaitForSeconds(0.10f);
-        config.SetActive(true);
+        config[0].SetActive(true);
+
+        yield return new WaitForSeconds(0.08f);
+        config[1].SetActive(true);
+
 
         StartCoroutine(LockMousePosition(cursorObject.transform, moveTime));
     }
@@ -318,11 +328,17 @@ public class CursorController : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         animPage.Play("FolhaVirando");
 
-        yield return new WaitForSeconds(0.15f);
-        config.SetActive(false);
+        yield return new WaitForSeconds(0.06f);
+        config[0].SetActive(false);
+
+        yield return new WaitForSeconds(0.03f);
+        config[1].SetActive(false);
 
         yield return new WaitForSeconds(0.10f);
-        credits.SetActive(true);
+        credits[1].SetActive(true);
+
+        yield return new WaitForSeconds(0.15f);
+        credits[0].SetActive(true);
 
         StartCoroutine(LockMousePosition(cursorObject.transform, moveTime));
     }
@@ -334,11 +350,17 @@ public class CursorController : MonoBehaviour
         yield return new WaitForSeconds(0.15f);
         animPage.Play("FolhaVirando 0 0");
 
-        yield return new WaitForSeconds(0.15f);
-        config.SetActive(true);
+        yield return new WaitForSeconds(0.06f);
+        credits[0].SetActive(false);
 
-        yield return new WaitForSeconds(0.10f);
-        credits.SetActive(false);
+        yield return new WaitForSeconds(0.05f);
+        credits[1].SetActive(false);
+
+        yield return new WaitForSeconds(0.15f);
+        config[1].SetActive(true);
+
+        yield return new WaitForSeconds(0.5f);
+        config[0].SetActive(true);
 
         StartCoroutine(LockMousePosition(cursorObject.transform, moveTime));
     }
@@ -350,11 +372,18 @@ public class CursorController : MonoBehaviour
         yield return new WaitForSeconds(0.15f);
         animPage.Play("FolhaVirando 0");
 
-        yield return new WaitForSeconds(0.15f);
-        config.SetActive(false);
+        yield return new WaitForSeconds(0.06f);
+        config[0].SetActive(false);
 
-        yield return new WaitForSeconds(0.10f);
-        inicialMenu.SetActive(true);
+        yield return new WaitForSeconds(0.05f);
+        config[1].SetActive(false);
+
+        yield return new WaitForSeconds(0.15f);
+        inicialMenu[1].SetActive(true);
+
+        yield return new WaitForSeconds(0.5f);
+        inicialMenu[0].SetActive(true);
+
         StartCoroutine(LockMousePosition(cursorObject.transform, moveTime));
     }
 
@@ -367,7 +396,8 @@ public class CursorController : MonoBehaviour
 
         yield return new WaitForSeconds(0.25f);
         roles.SetActive(false);
-        inicialMenu.SetActive(false);
+        inicialMenu[1].SetActive(false);
+        inicialMenu[0].SetActive(false);
 
         yield return new WaitForSeconds(0.25f);
         roleClientHost.SetActive(true);
@@ -387,7 +417,8 @@ public class CursorController : MonoBehaviour
 
         yield return new WaitForSeconds(0.25f);
         roles.SetActive(true);
-        inicialMenu.SetActive(true);
+        inicialMenu[0].SetActive(true);
+        inicialMenu[0].SetActive(true);
         StartCoroutine(LockMousePosition(cursorObject.transform, moveTime));
 
     }
@@ -417,8 +448,42 @@ public class CursorController : MonoBehaviour
         animPage.Play("FolhaVirando");
 
         yield return new WaitForSeconds(0.45f);
-        inicialMenu.SetActive(true);
+        inicialMenu[0].SetActive(true);
 
+        yield return new WaitForSeconds(0.20f);
+        inicialMenu[1].SetActive(true);
+
+    }
+
+    IEnumerator MoveBlue()
+    {
+    
+        Vector3 posicaoCentroCanvas = new Vector3(0f, blueprintRect.localPosition.y, blueprintRect.localPosition.z);
+
+        while (Vector2.Distance(blueprintRect.localPosition, new Vector2(posicaoCentroCanvas.x, posicaoCentroCanvas.y)) > 0.1f)
+        {
+            // Move suavemente o objeto em direção ao centro do canvas usando a interpolação linear
+            blueprintRect.localPosition = Vector3.Lerp(blueprintRect.localPosition, posicaoCentroCanvas, Time.deltaTime * 10);
+
+            yield return null;
+        }
+
+        blueprintRect.localPosition = posicaoCentroCanvas;
+    }
+
+    IEnumerator ReturnBlue()
+    {
+        Vector3 posicaoCentroCanvas = new Vector3(1656f, blueprintRect.localPosition.y, blueprintRect.localPosition.z);
+
+        while (Vector2.Distance(blueprintRect.localPosition, new Vector2(posicaoCentroCanvas.x, posicaoCentroCanvas.y)) > 0.1f)
+        {
+            // Move suavemente o objeto em direção ao centro do canvas usando a interpolação linear
+            blueprintRect.localPosition = Vector3.Lerp(blueprintRect.localPosition, posicaoCentroCanvas, Time.deltaTime * 10);
+
+            yield return null;
+        }
+
+        blueprintRect.localPosition = posicaoCentroCanvas;
     }
 
     IEnumerator LockMousePosition(Transform armPosition, float duration) // retornar o mouse suavimente para a posição
