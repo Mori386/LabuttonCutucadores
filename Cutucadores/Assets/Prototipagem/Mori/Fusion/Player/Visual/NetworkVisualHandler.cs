@@ -47,7 +47,7 @@ public class NetworkVisualHandler : NetworkBehaviour
     }
     public void LoadCharacterVisual()
     {
-        if(Object.HasInputAuthority)Instantiate(BetweenScenesPlayerInfos.Instance.GetDataFromPlayerID(0).visualPrefab, characterDrillController.visual);
+        Instantiate(BetweenScenesPlayerInfos.Instance.GetDataFromPlayerID(0).visualPrefab, characterDrillController.visual);
     }
     [Networked]
     [HideInInspector] public float rotationDirection { get; set; }
