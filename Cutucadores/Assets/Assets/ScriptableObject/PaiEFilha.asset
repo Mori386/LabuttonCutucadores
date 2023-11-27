@@ -10,13 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 69e89a2142198a34a9a79b7a7096f6ae, type: 3}
-  m_Name: Char03
+  m_Name: PaiEFilha
   m_EditorClassIdentifier: 
-  characterName: IsadoraPiuPiu
-  character: 0
-  weight: 20
-  acceleration: 10
-  braking: 1
-  maxSpeed: 2
-  rotationSpeed: 15
-  visualPrefab: {fileID: 0}
+  characterName: Pai e Filha
+  character: 2
+  visualPrefab: {fileID: 7181685900013928869, guid: 891485453721963499ad980e492d335d, type: 3}

@@ -2,6 +2,7 @@ Shader "Unlit/BlueprintShader"
 {
     Properties
     {
+        _BlueprintApplyMap("Blueprint Effect Map",2D) = "white" {}
         _WireframeColor("Wireframe color", color) = (1.0, 1.0, 1.0, 1.0)
         _WireframeWidth("Wireframe width", float) = 1
     }
@@ -10,7 +11,7 @@ Shader "Unlit/BlueprintShader"
         Tags { "RenderType" = "Opaque" "Queue" = "Transparent"}
         LOD 100
         Blend SrcAlpha OneMinusSrcAlpha
-        Cull Back
+        Cull back
 
 
 
@@ -43,16 +44,17 @@ Shader "Unlit/BlueprintShader"
             struct g2f {
                 float4 pos : SV_POSITION;
                 float3 barycentric : TEXCOORD0;
+                float2 uv : TEXCOORD1;
             };
 
-            sampler2D _MainTex;
-            float4 _MainTex_ST;
+            sampler2D _BlueprintApplyMap;
+            float4 _BlueprintApplyMap_ST;
 
             v2f vert(appdata v)
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
-                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+                o.uv = TRANSFORM_TEX(v.uv, _BlueprintApplyMap);
                 UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
             }
@@ -63,12 +65,17 @@ Shader "Unlit/BlueprintShader"
                 g2f o;
                 o.pos = IN[0].vertex;
                 o.barycentric = float3(1.0, 0.0, 0.0);
+                o.uv = IN[0].uv;
                 triStream.Append(o);
+
                 o.pos = IN[1].vertex;
                 o.barycentric = float3(0.0, 1.0, 0.0);
+                o.uv = IN[1].uv;
                 triStream.Append(o);
+
                 o.pos = IN[2].vertex;
                 o.barycentric = float3(0.0, 0.0, 1.0);
+                o.uv = IN[2].uv;
                 triStream.Append(o);
             }
 
@@ -88,7 +95,8 @@ Shader "Unlit/BlueprintShader"
                 float3 edge = step(unitWidth * _WireframeWidth, i.barycentric);
                 // Set alpha to 1 if within edge width, else 0.
                 float alpha = 1 - min(edge.x, min(edge.y, edge.z));
-                if(random(i.pos)>0.75)alpha = 0;
+                fixed4 blueprintEffectMap = tex2D(_BlueprintApplyMap, i.uv);
+                alpha = alpha * (1-blueprintEffectMap.x);
                 // Set to our backwards facing wireframe colour.
                 return fixed4(_WireframeColor.r, _WireframeColor.g, _WireframeColor.b, alpha);
             }

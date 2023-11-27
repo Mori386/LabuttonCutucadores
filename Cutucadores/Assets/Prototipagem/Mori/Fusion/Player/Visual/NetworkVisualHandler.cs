@@ -6,6 +6,7 @@ using Fusion;
 public class NetworkVisualHandler : NetworkBehaviour
 {
     NetworkMecanimAnimator mecanimAnimator;
+    Animator animator;
     NetworkCharacterDrillController characterDrillController;
     ExplosionHandler explosionHandler;
 
@@ -24,12 +25,10 @@ public class NetworkVisualHandler : NetworkBehaviour
         mecanimAnimator = GetComponent<NetworkMecanimAnimator>();
         characterDrillController = GetComponent<NetworkCharacterDrillController>();
         explosionHandler = GetComponentInChildren<ExplosionHandler>();
+        animator = mecanimAnimator.Animator;
         powerUpSpeedLineRenderer.positionCount = pointsCount + 1;
         powerUpSpeedLineRenderer.widthMultiplier = 0;
-    }
-    void Start()
-    {
-        //Load character visual
+
     }
     public void OndDeath()
     {
@@ -38,13 +37,23 @@ public class NetworkVisualHandler : NetworkBehaviour
     public override void Spawned()
     {
         base.Spawned();
+        LoadCharacterVisual();
         StartCoroutine(RotateDrillCoroutine());
+    }
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    void RPC_RequestLoadVisual(int playerID,RpcInfo info = default)
+    {
+        LoadCharacterVisual();
+    }
+    public void LoadCharacterVisual()
+    {
+        Instantiate(BetweenScenesPlayerInfos.Instance.GetDataFromPlayerID(0).visualPrefab, characterDrillController.visual);
     }
     [Networked]
     [HideInInspector] public float rotationDirection { get; set; }
     public void RotateDrill()
     {
-        drillVisual.Rotate((2.5f + rotationDirection * characterDrillController.Velocity.magnitude / 40f), 0, 0, Space.Self);
+        //drillVisual.Rotate((2.5f + rotationDirection * characterDrillController.Velocity.magnitude / 40f), 0, 0, Space.Self);
     }
     public void PlayPowerUpVfx()
     {

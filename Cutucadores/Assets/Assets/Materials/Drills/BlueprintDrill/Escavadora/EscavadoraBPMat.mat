@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: BlueprintMat
+  m_Name: EscavadoraBPMat
   m_Shader: {fileID: 4800000, guid: 31b15879cb53bb443a9de8c50fe1732e, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
@@ -20,6 +20,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _BlueprintApplyMap:
+        m_Texture: {fileID: 2800000, guid: 36abc33353de10d4586009465c17b043, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}

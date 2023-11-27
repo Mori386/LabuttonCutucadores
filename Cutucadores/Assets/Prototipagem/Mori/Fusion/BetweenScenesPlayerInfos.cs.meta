@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 9e7eb610fb9bc494cb8e63b14ab912ce
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - escavadorCharData: {fileID: 11400000, guid: e0c801f6955c2ce44b0c7084bb0cc8bd, type: 2}
+  - mineradorCharData: {fileID: 11400000, guid: e0c801f6955c2ce44b0c7084bb0cc8bd, type: 2}
+  - PaiEFilhaCharData: {fileID: 11400000, guid: ab04a114b8282004eadcf7c54ab1e8fa, type: 2}
+  - VovoCharData: {fileID: 11400000, guid: 3662c15058c43774b8ac834204ff377b, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

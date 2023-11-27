@@ -33,6 +33,7 @@ public class NetworkCharacterDrillController : NetworkTransform
     [HideInInspector] public CharacterInputHandler characterInputHandler;
     [HideInInspector] public HPHandler hpHandler;
     [HideInInspector] public NetworkVisualHandler visualHandler;
+    [HideInInspector] public AudioPlayerHandler audioHandler;
 
     [HideInInspector] public Collider[] playerColliders;
     protected override void Awake()
@@ -70,6 +71,7 @@ public class NetworkCharacterDrillController : NetworkTransform
             arrayLocation++;
         }
         if (hpHandler == null) hpHandler = GetComponent<HPHandler>();
+        if (audioHandler == null) audioHandler = GetComponent<AudioPlayerHandler>();
 
     }
     public void CalculateVelocity()
@@ -82,6 +84,7 @@ public class NetworkCharacterDrillController : NetworkTransform
         Vector3 moveForce = transform.forward * direction * 50 * characterData.maxSpeed * deltaTime * activeSpeedMultiplier;
         rb.AddForce(moveForce, ForceMode.Acceleration);
         visualHandler.rotationDirection = direction;
+        audioHandler.wheelVolume = Mathf.Abs(direction);
     }
     public virtual void Knockback(Vector3 contactPoint, bool considerWeight)
     {

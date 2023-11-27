@@ -7,7 +7,7 @@ using UnityEngine;
 public class SpeedPickUp : NetworkBehaviour
 {
     private CapsuleCollider pickupCollider;
-
+    public AudioSource playAudioSourceSpeedPickUp;
     [Header("Respawn")]
     public readonly float respawnTime = 15f;
     [Header("Item")]
@@ -55,6 +55,7 @@ public class SpeedPickUp : NetworkBehaviour
         pickupCollider.enabled = false;
         itemVisual.gameObject.SetActive(false);
         pickupAreaVisual.gameObject.SetActive(false);
+        PlayOnPickUpAudio();
         respawnTickTimer = TickTimer.CreateFromSeconds(Runner, respawnTime);
     }
 
@@ -80,5 +81,10 @@ public class SpeedPickUp : NetworkBehaviour
         itemVisual.gameObject.SetActive(true);
         pickupCollider.enabled = true;
         respawningTickTimer = TickTimer.None;
+    }
+
+    public virtual void PlayOnPickUpAudio()
+    {
+        playAudioSourceSpeedPickUp.Play();
     }
 }

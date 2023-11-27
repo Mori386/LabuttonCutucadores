@@ -10,13 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 69e89a2142198a34a9a79b7a7096f6ae, type: 3}
-  m_Name: Char00
+  m_Name: Vovo
   m_EditorClassIdentifier: 
-  characterName: Roberto
-  character: 0
-  weight: 20
-  acceleration: 10
-  braking: 1
-  maxSpeed: 2
-  rotationSpeed: 15
-  visualPrefab: {fileID: 0}
+  characterName: "Vov\xF3"
+  character: 3
+  visualPrefab: {fileID: 6852556854852110867, guid: fd2d6c6bd9fe5694dab13892ba46f7d1, type: 3}

@@ -36,7 +36,7 @@ public class NetworkRunnerHandler : MonoBehaviour
             GameMode = gameMode,
             Address = address,
             Scene = scene,
-            SessionName = "TestRoom",
+            SessionName = "MoriTestRoom",
             Initialized = initialized,
             SceneManager = sceneManager
         });

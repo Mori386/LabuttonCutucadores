@@ -10,13 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 69e89a2142198a34a9a79b7a7096f6ae, type: 3}
-  m_Name: Char01
+  m_Name: Escavador
   m_EditorClassIdentifier: 
-  characterName: Gledsene
+  characterName: Escavador
   character: 0
-  weight: 20
-  acceleration: 10
-  braking: 1
-  maxSpeed: 2
-  rotationSpeed: 15
-  visualPrefab: {fileID: 0}
+  visualPrefab: {fileID: 828989296237455402, guid: 257e00fb337de7c4a951d6428c759eec, type: 3}

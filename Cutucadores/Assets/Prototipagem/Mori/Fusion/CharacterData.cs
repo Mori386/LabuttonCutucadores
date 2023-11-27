@@ -10,18 +10,18 @@ public class CharacterData : ScriptableObject
     public string characterName;
     public enum Character
     {
-        Char0 = 0,
-        Char1 = 1,
-        Char2 = 2,
-        Char3 = 3,
+        Escavador = 0,
+        Minerador = 1,
+        PaiEFilha = 2,
+        Vovo = 3,
     }
     public Character character;
 
-    [Header("------Stats------")]
-    public InGameCharacterData characterData;
+    //[Header("------Stats------")]
+    //public InGameCharacterData characterData;
 
     [Header("------Model Info------"), Space(10)]
-    public Animator visualPrefab; 
+    public GameObject visualPrefab; 
 }
 [Serializable]
 public class InGameCharacterData

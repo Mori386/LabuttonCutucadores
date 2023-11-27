@@ -2,15 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
+using Fusion;
 using Unity.VisualScripting;
 
-public class GameManager : MonoBehaviour
+public class GameManager : NetworkBehaviour
 {
     public static GameManager Instance {  get; private set; }
     public CinemachineVirtualCamera virtualCamera;
     [HideInInspector]public CinemachineBasicMultiChannelPerlin virtualCameraNoiseChannel;
     public Transform[] playerSpawnpoints;
     public ParticleSystem onDrillHitParticlePrefab,onBodyHitParticlePrefab;
+    [Space]
+    public AudioSource onHitAudioSource;
+    public AudioClip[] onHitPlayerAudios;
+    private int lastPlayedAudio = -1;
 
     public readonly float onBodyHitCameraShakeAmplitude = 20f;
     public readonly float onDrillHitCameraShakeAmplitude = 15f;
@@ -28,13 +33,23 @@ public class GameManager : MonoBehaviour
     {
         virtualCameraNoiseChannel = virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
     }
+    public virtual void PlayDrillHitAudio(Vector3 position)
+    {
+        int randomAudioID;
+        randomAudioID = Random.Range(0, onHitPlayerAudios.Length);
+        while (randomAudioID == lastPlayedAudio) randomAudioID = Random.Range(0, onHitPlayerAudios.Length);
+        onHitAudioSource.transform.position = position;
+        onHitAudioSource.PlayOneShot(onHitPlayerAudios[randomAudioID]);
+    }
     public void PlayOnBodyHitParticle(Vector3 position)
     {
+        PlayDrillHitAudio(position);
         onBodyHitParticlePrefab.transform.position = position;
         onBodyHitParticlePrefab.Play();
     }
     public void PlayOnDrillHitParticle(Vector3 position)
     {
+        PlayDrillHitAudio(position);
         onDrillHitParticlePrefab.transform.position = position;
         onDrillHitParticlePrefab.Play();
     }
