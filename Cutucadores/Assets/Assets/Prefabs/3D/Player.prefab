@@ -481,6 +481,7 @@ MonoBehaviour:
   hpText: {fileID: 528173328059072990}
   networkVisualHandler: {fileID: 0}
   drillController: {fileID: 0}
+  _isInvulnerable: 0
 --- !u!114 &3553782799364510862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11326,8 +11327,8 @@ Light:
   m_Type: 0
   m_Shape: 0
   m_Color: {r: 0.99230814, g: 1, b: 0.8537736, a: 1}
-  m_Intensity: 1591.5493
-  m_Range: 50
+  m_Intensity: 3180.96
+  m_Range: 60
   m_SpotAngle: 120
   m_InnerSpotAngle: 1
   m_CookieSize: 10
@@ -11369,7 +11370,7 @@ Light:
   m_LightShadowCasterMode: 2
   m_AreaSize: {x: 0.5, y: 0.5}
   m_BounceIntensity: 0
-  m_ColorTemperature: 7701
+  m_ColorTemperature: 4500
   m_UseColorTemperature: 1
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
@@ -11388,14 +11389,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a68c43fe1f2a47cfa234b5eeaa98012, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Intensity: 5000
+  m_Intensity: 1600
   m_EnableSpotReflector: 1
-  m_LuxAtDistance: 1
+  m_LuxAtDistance: 1.41
   m_InnerSpotPercent: 0
   m_SpotIESCutoffPercent: 100
   m_LightDimmer: 1
   m_VolumetricDimmer: 1
-  m_LightUnit: 0
+  m_LightUnit: 2
   m_FadeDistance: 10000
   m_VolumetricFadeDistance: 10000
   m_AffectDiffuse: 1
