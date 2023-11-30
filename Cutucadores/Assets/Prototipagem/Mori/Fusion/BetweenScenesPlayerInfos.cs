@@ -9,7 +9,6 @@ public class BetweenScenesPlayerInfos : NetworkBehaviour
     static public BetweenScenesPlayerInfos Instance;
     private void Awake()
     {
-        playerIDToCharacter.Add(0, Character.Escavador);
         if (Instance == null)
         {
             Instance = this;
@@ -19,13 +18,17 @@ public class BetweenScenesPlayerInfos : NetworkBehaviour
     }
     [SerializeField] private CharacterData escavadorCharData, mineradorCharData, PaiEFilhaCharData, VovoCharData;
 
-    public Dictionary<int, Character> playerIDToCharacter = new Dictionary<int, Character>();
+    [Networked]
+    [Capacity(4)] // Sets the fixed capacity of the collection
+    NetworkArray<int> playerIDArray { get; }
+
+    [Networked, Capacity(4)] public NetworkDictionary<int, PlayerData> playerIDToPlayerData => default;
 
     public CharacterData GetDataFromPlayerID(int playerID)
     {
-        if (playerIDToCharacter.TryGetValue(playerID, out Character character))
+        if (playerIDToPlayerData.TryGet(playerID, out PlayerData playerData))
         {
-            switch (character)
+            switch (playerData.character)
             {
                 case Character.Escavador:
                 default:
@@ -44,4 +47,11 @@ public class BetweenScenesPlayerInfos : NetworkBehaviour
             return null;
         }
     }
+}
+public struct PlayerData : INetworkStruct
+{
+    public PlayerRef playerRef;
+    public NetworkString<_16> username;
+    public Character character;
+    public NetworkBool characterLocked;
 }
