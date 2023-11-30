@@ -48,7 +48,7 @@ public class NetworkVisualHandler : NetworkBehaviour
     public void LoadCharacterVisual()
     {
         Transform drill = 
-        Instantiate(BetweenScenesPlayerInfos.Instance.GetDataFromPlayerID(Object.InputAuthority.PlayerId).visualPrefab, characterDrillController.visual).transform;
+        Instantiate(BetweenScenesPlayerInfos.Instance.GetDataFromPlayerID(Runner.SessionInfo.PlayerCount - 1).visualPrefab, characterDrillController.visual).transform;
 
         drill = drill.GetChild(1).GetChild(0);
         if (drill != null) drillVisual = drill;
