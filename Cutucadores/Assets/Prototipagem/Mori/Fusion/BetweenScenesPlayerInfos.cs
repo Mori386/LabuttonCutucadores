@@ -6,7 +6,6 @@ using static CharacterData;
 
 public class BetweenScenesPlayerInfos : NetworkBehaviour
 {
-    public Character characterChosen;
     static public BetweenScenesPlayerInfos Instance;
     private void Awake()
     {
@@ -66,21 +65,6 @@ public class BetweenScenesPlayerInfos : NetworkBehaviour
         {
             Debug.LogError("Error in search to find " + playerID + " inCharacterID");
             return null;
-        }
-    }
-    public CharacterData GetDataFromCharEnum()
-    {
-        switch (characterChosen)
-        {
-            case Character.Escavador:
-            default:
-                return escavadorCharData;
-            case Character.Minerador:
-                return mineradorCharData;
-            case Character.PaiEFilha:
-                return PaiEFilhaCharData;
-            case Character.Vovo:
-                return VovoCharData;
         }
     }
 }
