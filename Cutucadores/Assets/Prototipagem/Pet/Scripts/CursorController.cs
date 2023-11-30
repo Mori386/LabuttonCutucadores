@@ -40,6 +40,8 @@ public class CursorController : MonoBehaviour
     public Sprite[] mapPreviewImages;
     private int mapInPreviewID = 0;
     public CanvasGroup createJoinPaper;
+    public CanvasGroup createJoinPaperDefaultGroup;
+    public CanvasGroup createJoinPaperLoadingGroup;
 
     [Header("OBJETOS DO LIVRO")]
     public GameObject[] config;
@@ -292,6 +294,8 @@ public class CursorController : MonoBehaviour
 
     public void HostOrCreateSession()
     {
+        createJoinPaperDefaultGroup.gameObject.SetActive(false);
+        createJoinPaperLoadingGroup.gameObject.SetActive(true);
         if (selectedHost) StartHost();
         else StartClient();
     }
