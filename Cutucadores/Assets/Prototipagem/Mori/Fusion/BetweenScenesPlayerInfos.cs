@@ -6,7 +6,7 @@ using static CharacterData;
 
 public class BetweenScenesPlayerInfos : NetworkBehaviour
 {
-    public int idSelf;
+    public Character characterChosen;
     static public BetweenScenesPlayerInfos Instance;
     private void Awake()
     {
@@ -47,7 +47,7 @@ public class BetweenScenesPlayerInfos : NetworkBehaviour
 
     public CharacterData GetDataFromPlayerID(int playerID)
     {
-        if (playerIDToPlayerData.TryGetValue(idSelf, out PlayerData playerData))
+        if (playerIDToPlayerData.TryGetValue(playerID, out PlayerData playerData))
         {
             switch (playerData.character)
             {
