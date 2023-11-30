@@ -37,15 +37,15 @@ public class NetworkVisualHandler : NetworkBehaviour
     public override void Spawned()
     {
         base.Spawned();
-        if (Object.HasInputAuthority) RPC_RequestLoadVisual(Runner.LocalPlayer.PlayerId);
+        LoadCharacterVisual();
         StartCoroutine(RotateDrillCoroutine());
     }
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     void RPC_RequestLoadVisual(int playerID,RpcInfo info = default)
     {
-        LoadCharacterVisual(playerID);
+        LoadCharacterVisual();
     }
-    public void LoadCharacterVisual(int id)
+    public void LoadCharacterVisual()
     {
         Transform drill = 
         Instantiate(BetweenScenesPlayerInfos.Instance.GetDataFromCharEnum().visualPrefab, characterDrillController.visual).transform;
