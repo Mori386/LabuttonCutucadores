@@ -16,6 +16,7 @@ public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
         {
             Debug.Log("OnPlayerJoined we are server, spawning player");
             Transform spawnpointTransform = GameManager.Instance.playerSpawnpoints[runner.SessionInfo.PlayerCount - 1];
+            if (runner.LocalPlayer == player) BetweenScenesPlayerInfos.Instance.idSelf = player.PlayerId;
             runner.Spawn(playerPrefab, spawnpointTransform.position, spawnpointTransform.rotation, player);
         }
         else Debug.Log("OnPlayerJoined");

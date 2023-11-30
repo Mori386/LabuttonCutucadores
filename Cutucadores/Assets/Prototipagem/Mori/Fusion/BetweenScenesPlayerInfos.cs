@@ -6,9 +6,30 @@ using static CharacterData;
 
 public class BetweenScenesPlayerInfos : NetworkBehaviour
 {
+    public int idSelf;
     static public BetweenScenesPlayerInfos Instance;
     private void Awake()
     {
+        playerIDToPlayerData.Add(9, new PlayerData
+        {
+            character = Character.Escavador,
+            username = "Player0"
+        });
+        playerIDToPlayerData.Add(0, new PlayerData
+        {
+            character = Character.Minerador,
+            username = "Player1"
+        });
+        playerIDToPlayerData.Add(1, new PlayerData
+        {
+            character = Character.PaiEFilha,
+            username = "Player2"
+        });
+        playerIDToPlayerData.Add(2, new PlayerData
+        {
+            character = Character.Vovo,
+            username = "Player3"
+        });
         if (Instance == null)
         {
             Instance = this;
@@ -20,13 +41,13 @@ public class BetweenScenesPlayerInfos : NetworkBehaviour
 
     [Networked]
     [Capacity(4)] // Sets the fixed capacity of the collection
-    NetworkArray<int> playerIDArray { get; }
+    public NetworkLinkedList<int> playerIDLinkedList { get; }
 
-    [Networked, Capacity(4)] public NetworkDictionary<int, PlayerData> playerIDToPlayerData => default;
+    public Dictionary<int, PlayerData> playerIDToPlayerData = new Dictionary<int, PlayerData>();
 
     public CharacterData GetDataFromPlayerID(int playerID)
     {
-        if (playerIDToPlayerData.TryGet(playerID, out PlayerData playerData))
+        if (playerIDToPlayerData.TryGetValue(idSelf, out PlayerData playerData))
         {
             switch (playerData.character)
             {
@@ -53,5 +74,4 @@ public struct PlayerData : INetworkStruct
     public PlayerRef playerRef;
     public NetworkString<_16> username;
     public Character character;
-    public NetworkBool characterLocked;
 }

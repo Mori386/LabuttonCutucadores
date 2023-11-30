@@ -11,7 +11,13 @@ public class NetworkRunnerReceiver : MonoBehaviour, INetworkRunnerCallbacks
     {
         if (runner.IsServer)
         {
-            Debug.Log(player.PlayerId);
+            if (runner.SessionInfo.PlayerCount >= 5) runner.Disconnect(player);
+            BetweenScenesPlayerInfos.Instance.playerIDLinkedList.Add(player.PlayerId);
+            BetweenScenesPlayerInfos.Instance.playerIDToPlayerData.Add(player.PlayerId,new PlayerData
+            {
+                playerRef = player,
+            });
+            if (runner.LocalPlayer == player) BetweenScenesPlayerInfos.Instance.idSelf = player.PlayerId;
         }
         else Debug.Log("OnPlayerJoined");
     }
