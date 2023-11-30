@@ -17,7 +17,7 @@ public class NetworkRunnerReceiver : MonoBehaviour, INetworkRunnerCallbacks
             {
                 playerRef = player,
             });
-            if (runner.LocalPlayer == player) BetweenScenesPlayerInfos.Instance.idSelf = player.PlayerId;
+            // (runner.LocalPlayer == player) BetweenScenesPlayerInfos.Instance.idSelf = player.PlayerId;
         }
         else Debug.Log("OnPlayerJoined");
     }
