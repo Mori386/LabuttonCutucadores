@@ -68,6 +68,21 @@ public class BetweenScenesPlayerInfos : NetworkBehaviour
             return null;
         }
     }
+    public CharacterData GetDataFromCharEnum()
+    {
+        switch (characterChosen)
+        {
+            case Character.Escavador:
+            default:
+                return escavadorCharData;
+            case Character.Minerador:
+                return mineradorCharData;
+            case Character.PaiEFilha:
+                return PaiEFilhaCharData;
+            case Character.Vovo:
+                return VovoCharData;
+        }
+    }
 }
 public struct PlayerData : INetworkStruct
 {
