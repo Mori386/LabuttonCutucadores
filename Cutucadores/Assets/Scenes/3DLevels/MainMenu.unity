@@ -4983,7 +4983,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &445764225
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6467,7 +6467,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &610940960
 Transform:
   m_ObjectHideFlags: 0
@@ -7529,7 +7529,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &712475579
 Transform:
   m_ObjectHideFlags: 0
@@ -15099,13 +15099,14 @@ GameObject:
   m_Component:
   - component: {fileID: 1473415195}
   - component: {fileID: 1473415194}
+  - component: {fileID: 1473415196}
   m_Layer: 5
   m_Name: MenuLoading
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!222 &1473415194
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -15131,6 +15132,18 @@ Transform:
   m_Father: {fileID: 712475579}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!225 &1473415196
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1473415190}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1482223066
 GameObject:
   m_ObjectHideFlags: 0
@@ -16222,7 +16235,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -450, y: 0}
+  m_AnchoredPosition: {x: -450, y: 125}
   m_SizeDelta: {x: 400, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1606882446
@@ -17771,6 +17784,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 4528ae5ceb8357d428c949a899c91762, type: 3}
   - {fileID: 21300000, guid: 600299f251c12b042b86ace96cbfc021, type: 3}
   createJoinPaper: {fileID: 712475580}
+  createJoinPaperDefaultGroup: {fileID: 2099909981}
+  createJoinPaperLoadingGroup: {fileID: 1473415196}
   config:
   - {fileID: 2052320439}
   - {fileID: 1849833005}
@@ -20440,13 +20455,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2099909980}
+  - component: {fileID: 2099909981}
   m_Layer: 5
   m_Name: MenuDefault
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2099909980
 Transform:
   m_ObjectHideFlags: 0
@@ -20466,6 +20482,18 @@ Transform:
   m_Father: {fileID: 712475579}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!225 &2099909981
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2099909979}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &2105489801
 GameObject:
   m_ObjectHideFlags: 0
