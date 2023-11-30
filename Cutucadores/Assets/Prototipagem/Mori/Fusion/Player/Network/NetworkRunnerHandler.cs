@@ -18,7 +18,7 @@ public class NetworkRunnerHandler : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
     }
     public Task StartNetworkRunner(string sessionName,GameMode gamemode)
     {

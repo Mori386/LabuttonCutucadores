@@ -295,7 +295,7 @@ GameObject:
   - component: {fileID: 4880860095109254421}
   - component: {fileID: 6737788527968781165}
   m_Layer: 6
-  m_Name: Player
+  m_Name: PlayerEscavadeira
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -538,7 +538,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
-  drillVisual: {fileID: 0}
+  drillVisual: {fileID: 8652157209092782636}
   powerUpSpeedParticleSystem:
   - {fileID: 7773407691132084432}
   - {fileID: 3756545817192912800}
@@ -10708,6 +10708,7 @@ Transform:
   - {fileID: 4661451715565284286}
   - {fileID: 6107300520513821697}
   - {fileID: 3322359775462190390}
+  - {fileID: 4632340879835464291}
   m_Father: {fileID: 1877149326463046054}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -16469,3 +16470,70 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c55a3ebbdf716d344b1f344676e6880f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1001 &4648726981858881779
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 2640686690361192542}
+    m_Modifications:
+    - target: {fileID: 57132771501798032, guid: 257e00fb337de7c4a951d6428c759eec, type: 3}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 57132771501798032, guid: 257e00fb337de7c4a951d6428c759eec, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 57132771501798032, guid: 257e00fb337de7c4a951d6428c759eec, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 57132771501798032, guid: 257e00fb337de7c4a951d6428c759eec, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 57132771501798032, guid: 257e00fb337de7c4a951d6428c759eec, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 57132771501798032, guid: 257e00fb337de7c4a951d6428c759eec, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 57132771501798032, guid: 257e00fb337de7c4a951d6428c759eec, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 57132771501798032, guid: 257e00fb337de7c4a951d6428c759eec, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 57132771501798032, guid: 257e00fb337de7c4a951d6428c759eec, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 57132771501798032, guid: 257e00fb337de7c4a951d6428c759eec, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 57132771501798032, guid: 257e00fb337de7c4a951d6428c759eec, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 828989296237455402, guid: 257e00fb337de7c4a951d6428c759eec, type: 3}
+      propertyPath: m_Name
+      value: DrillEscavadorVisualPrefab
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 257e00fb337de7c4a951d6428c759eec, type: 3}
+--- !u!4 &4632340879835464291 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 57132771501798032, guid: 257e00fb337de7c4a951d6428c759eec, type: 3}
+  m_PrefabInstance: {fileID: 4648726981858881779}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8652157209092782636 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4076104750481246943, guid: 257e00fb337de7c4a951d6428c759eec, type: 3}
+  m_PrefabInstance: {fileID: 4648726981858881779}
+  m_PrefabAsset: {fileID: 0}

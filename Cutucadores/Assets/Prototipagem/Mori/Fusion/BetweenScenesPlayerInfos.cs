@@ -9,22 +9,22 @@ public class BetweenScenesPlayerInfos : NetworkBehaviour
     static public BetweenScenesPlayerInfos Instance;
     private void Awake()
     {
-        playerIDToPlayerData.Add(9, new PlayerData
+        playerIDToPlayerData.Add(0, new PlayerData
         {
             character = Character.Escavador,
             username = "Player0"
         });
-        playerIDToPlayerData.Add(0, new PlayerData
+        playerIDToPlayerData.Add(1, new PlayerData
         {
             character = Character.Minerador,
             username = "Player1"
         });
-        playerIDToPlayerData.Add(1, new PlayerData
+        playerIDToPlayerData.Add(2, new PlayerData
         {
             character = Character.PaiEFilha,
             username = "Player2"
         });
-        playerIDToPlayerData.Add(2, new PlayerData
+        playerIDToPlayerData.Add(3, new PlayerData
         {
             character = Character.Vovo,
             username = "Player3"
@@ -36,6 +36,10 @@ public class BetweenScenesPlayerInfos : NetworkBehaviour
         }
         else Destroy(this);
     }
+    public override void Spawned()
+    {
+        base.Spawned();
+    }
     [SerializeField] private CharacterData escavadorCharData, mineradorCharData, PaiEFilhaCharData, VovoCharData;
 
     [Networked]
@@ -43,6 +47,10 @@ public class BetweenScenesPlayerInfos : NetworkBehaviour
     public NetworkLinkedList<int> playerIDLinkedList { get; }
 
     public Dictionary<int, PlayerData> playerIDToPlayerData = new Dictionary<int, PlayerData>();
+
+    [Networked]
+    [Capacity(4)]
+    public NetworkDictionary<string, int> userIDToPlayerOrder { get; }
 
     public CharacterData GetDataFromPlayerID(int playerID)
     {

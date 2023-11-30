@@ -37,7 +37,6 @@ public class NetworkVisualHandler : NetworkBehaviour
     public override void Spawned()
     {
         base.Spawned();
-        LoadCharacterVisual();
         StartCoroutine(RotateDrillCoroutine());
     }
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
@@ -47,8 +46,8 @@ public class NetworkVisualHandler : NetworkBehaviour
     }
     public void LoadCharacterVisual()
     {
-        Transform drill = 
-        Instantiate(BetweenScenesPlayerInfos.Instance.GetDataFromPlayerID(Runner.SessionInfo.PlayerCount - 1).visualPrefab, characterDrillController.visual).transform;
+        Transform drill =
+        Instantiate(BetweenScenesPlayerInfos.Instance.GetDataFromPlayerID(BetweenScenesPlayerInfos.Instance.userIDToPlayerOrder[Runner.GetPlayerUserId(Object.InputAuthority)]).visualPrefab, characterDrillController.visual).transform;
 
         drill = drill.GetChild(1).GetChild(0);
         if (drill != null) drillVisual = drill;

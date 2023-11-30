@@ -7,7 +7,7 @@ using System;
 
 public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
 {
-    public NetworkPlayer playerPrefab;
+    public NetworkPlayer[] playerPrefab;
 
     CharacterInputHandler characterInputHandler;
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
@@ -16,7 +16,8 @@ public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
         {
             Debug.Log("OnPlayerJoined we are server, spawning player");
             Transform spawnpointTransform = GameManager.Instance.playerSpawnpoints[runner.SessionInfo.PlayerCount - 1];
-            runner.Spawn(playerPrefab, spawnpointTransform.position, spawnpointTransform.rotation, player);
+            runner.Spawn(playerPrefab[runner.SessionInfo.PlayerCount - 1], spawnpointTransform.position, spawnpointTransform.rotation, player);
+
         }
         else Debug.Log("OnPlayerJoined");
     }
