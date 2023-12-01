@@ -14,21 +14,27 @@ public class AudioPlayerHandler : NetworkBehaviour
     }
 
     [Networked(OnChanged = nameof(ChangeWheelAudioSourceVolume)), HideInInspector] public float wheelVolume { get; set; }
-    [HideInInspector]public float defaultVolumeMultiplier;
+    public float defaultAudioSourceVolumeMultiplier;
     static public void ChangeWheelAudioSourceVolume(Changed<AudioPlayerHandler> changed)
     {
-        if (changed.Behaviour.wheelAudioSource != null) changed.Behaviour.wheelAudioSource.volume = changed.Behaviour.wheelVolume* changed.Behaviour.defaultVolumeMultiplier;
+        if (changed.Behaviour.wheelAudioSource != null)
+        {
+            changed.Behaviour.DefineAudioValues();
+        }
     }
-
+    public void DefineAudioValues()
+    {
+        wheelAudioSource.volume = wheelVolume * defaultAudioSourceVolumeMultiplier * 0.5f;
+        motorAudioSource.volume = (0.5f + 0.5f * (1 - wheelVolume)) * defaultAudioSourceVolumeMultiplier;
+    }
     private void Awake()
     {
-        defaultVolumeMultiplier = wheelAudioSource.volume;
     }
     public override void Spawned()
     {
         base.Spawned();
-        defaultVolumeMultiplier = wheelAudioSource.volume;
         wheelVolume = 0;
         wheelAudioSource.volume = 0;
+        motorAudioSource.volume = 1 * defaultAudioSourceVolumeMultiplier;
     }
 }

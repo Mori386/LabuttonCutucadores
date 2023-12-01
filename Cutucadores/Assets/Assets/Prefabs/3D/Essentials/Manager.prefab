@@ -72,7 +72,7 @@ MonoBehaviour:
   onBodyHitParticlePrefab: {fileID: 1957029974893773408, guid: 670dbeacd63e6164a9fc0e303875a073, type: 3}
   onHitAudioSource: {fileID: 1263604954371624278}
   onHitPlayerAudios:
-  - {fileID: 8300000, guid: b0e1b16de9d279045b6d528c42bbdee2, type: 3}
+  - {fileID: 8300000, guid: 434d44b14d2d742428171f06a4e59ab6, type: 3}
   - {fileID: 8300000, guid: e473ead7d66bf9744a223d81d200fd62, type: 3}
   - {fileID: 8300000, guid: 7af198226e2afad49a5f6273857136b2, type: 3}
   - {fileID: 8300000, guid: efb12c1c45f01b84a881498a9024a8f6, type: 3}

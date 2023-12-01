@@ -11,8 +11,8 @@ public class CursorController : MonoBehaviour
     [HideInInspector] public Camera mainCamera;
 
     readonly private float animSpeedUpMultiplier = 2f; // Valor de multiplicacao de velocidade quando o jogador acelerar as animacoes
-    [Header("Mão")]
     [Header("|----- Main Menu -----|")]
+    [Header("Mão")]
     public Transform mainMenuHand;
     [Header("Livro")]
     public Transform bookOnTableTransform;
@@ -26,8 +26,8 @@ public class CursorController : MonoBehaviour
     [Header("Cursor")]
     public Transform mira;
     public GameObject cursorObject2;
-    [Header("Host and client page")]
     [Header("|----- Host Client Menu-----|")]
+    [Header("Host and client page")]
     public TMP_InputField nicknameInputField;
     public CanvasGroup clientHostCanvas; // continuar daki mexer ele 
     public CanvasGroup clientHostPaper;
