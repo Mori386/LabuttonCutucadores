@@ -10,7 +10,10 @@ public class MenuConfig : MonoBehaviour
 
     // Variável para armazenar o volume atual
     private float currentVolume = 1.0f; // 1.0f representa o volume máximo
-
+    public void Exit()
+    {
+        Application.Quit();
+    }
     private void Start()
     {
         // Carregar o valor do volume salvo (se existir)
@@ -77,7 +80,7 @@ public class MenuConfig : MonoBehaviour
 
     public void Janela(bool kitten)
     {
-        Screen.SetResolution(1280, 720, true);
+        Screen.SetResolution(1280, 720, false);
         
     }
 }
