@@ -197,45 +197,39 @@ public class CursorController : MonoBehaviour
     }
 
     // todos os voids abaixo são chamados através de botões na cena, de acordo com os seus respectivos nomes
-    public void NextPage(bool kitten)  // passar pag
+    public void NextPageGoToConfigs()  // passar pag
     {
         // Inicializa a posição de início e destino
-        startPosition = mainMenuHand.position;
-        targetPosition = animHandStartingPoint.position;
-
-        isMoving = true;
+        StopHandFollowCursor();
+        StartMoveCursorObject(mainMenuHand, moveDuration, animHandStartingPoint.position);
         StartCoroutine(DelayNextPage());
-        timer = 0.0f;
     }
 
     public void Credits(bool kitten) // menu creditos
     {
-        startPosition = mainMenuHand.position;
-        targetPosition = animHandStartingPoint.position;
-
-        isMoving = true;
+        StopHandFollowCursor();
+        StartMoveCursorObject(mainMenuHand, moveDuration, animHandStartingPoint.position);
         StartCoroutine(DelayCredits());
-        timer = 0.0f;
     }
-
+    public void Controls()
+    {
+        StopHandFollowCursor();
+        StartMoveCursorObject(mainMenuHand, moveDuration, animHandStartingPoint.position);
+        StartCoroutine(DelayCredits());
+    }
     public void ReturnCredits(bool kitten) // sair do menu de creditos
     {
-        startPosition = mainMenuHand.position;
-        targetPosition = animHandStartingPoint.position;
-
-        isMoving = true;
+        StopHandFollowCursor();
+        StartMoveCursorObject(mainMenuHand, moveDuration, animHandStartingPoint.position);
         StartCoroutine(DelayReturnCredits());
-        timer = 0.0f;
     }
 
+    //Return to main menu
     public void ReturnPage(bool kitten) // anim para retorno
     {
-        startPosition = mainMenuHand.position;
-        targetPosition = animHandStartingPoint.position;
-
-        isMoving = true;
+        StopHandFollowCursor();
+        StartMoveCursorObject(mainMenuHand, moveDuration, animHandStartingPoint.position);
         StartCoroutine(DelayPreviousPage());
-        timer = 0.0f;
     }
 
     //Quando pressiona o play
@@ -332,7 +326,6 @@ public class CursorController : MonoBehaviour
         isReturn = true;
         isChange = false;
     }
-
     public void ChangeMaterial(Material newMaterial, GameObject Tank, GameObject Drill)
     {
         Renderer renderer1 = Tank.GetComponent<Renderer>();
@@ -488,94 +481,197 @@ public class CursorController : MonoBehaviour
         pageLeaving.gameObject.SetActive(false);
     }
 
+    //Next page animation
     IEnumerator DelayNextPage()
     {
-        yield return new WaitForSeconds(0.25f);
-        animHand.Play("arm_AMT|VirarPag");
-
-        yield return new WaitForSeconds(0.5f);
+        StartAccelerateAnimatorSpeedByMouseInput(animHand, animSpeedUpMultiplier);
+        StartAccelerateAnimatorSpeedByMouseInput(animFolhaDoCaderno, animSpeedUpMultiplier);
+        float timerDelay = 0;
+        while (timerDelay < 0.25f)
+        {
+            timerDelay += Time.deltaTime * animHand.speed;
+            yield return null;
+        }
+        animHand.Play("VirarPaginaEsquerda");
+        timerDelay = 0;
+        while (timerDelay < 0.5f)
+        {
+            timerDelay += Time.deltaTime * animHand.speed;
+            yield return null;
+        }
         animFolhaDoCaderno.Play("FolhaVirando");
-
-        yield return new WaitForSeconds(0.06f);
+        timerDelay = 0;
+        while (timerDelay < 0.06f)
+        {
+            timerDelay += Time.deltaTime * animFolhaDoCaderno.speed;
+            yield return null;
+        }
         playCanvasLayer.gameObject.SetActive(false);
-
-        yield return new WaitForSeconds(0.3f);
+        timerDelay = 0;
+        while (timerDelay < 0.3f)
+        {
+            timerDelay += Time.deltaTime * animFolhaDoCaderno.speed;
+            yield return null;
+        }
         logoCanvasLayer.gameObject.SetActive(false);
-
-        yield return new WaitForSeconds(0.10f);
+        timerDelay = 0;
+        while (timerDelay < 0.1f)
+        {
+            timerDelay += Time.deltaTime * animFolhaDoCaderno.speed;
+            yield return null;
+        }
         config[0].SetActive(true);
-
-        yield return new WaitForSeconds(0.08f);
+        timerDelay = 0;
+        while (timerDelay < 0.08f)
+        {
+            timerDelay += Time.deltaTime * animFolhaDoCaderno.speed;
+            yield return null;
+        }
         config[1].SetActive(true);
-
-
-        StartCoroutine(LockMousePosition(mainMenuHand, moveTime));
+        StopAccelerateAnimatorSpeedByMouseInput(animHand);
+        StopAccelerateAnimatorSpeedByMouseInput(animFolhaDoCaderno);
+        StartHandFollowCursor();
     }
     IEnumerator DelayCredits()
     {
-        yield return new WaitForSeconds(0.25f);
-        animHand.Play("arm_AMT|VirarPag");
-
-        yield return new WaitForSeconds(0.5f);
+        StartAccelerateAnimatorSpeedByMouseInput(animHand, animSpeedUpMultiplier);
+        StartAccelerateAnimatorSpeedByMouseInput(animFolhaDoCaderno, animSpeedUpMultiplier);
+        float timerDelay = 0;
+        while (timerDelay < 0.25f)
+        {
+            timerDelay += Time.deltaTime * animHand.speed;
+            yield return null;
+        }
+        animHand.Play("VirarPaginaEsquerda");
+        timerDelay = 0;
+        while (timerDelay < 0.5f)
+        {
+            timerDelay += Time.deltaTime * animHand.speed;
+            yield return null;
+        }
         animFolhaDoCaderno.Play("FolhaVirando");
-
-        yield return new WaitForSeconds(0.06f);
+        timerDelay = 0;
+        while (timerDelay < 0.06f)
+        {
+            timerDelay += Time.deltaTime * animFolhaDoCaderno.speed;
+            yield return null;
+        }
         config[0].SetActive(false);
-
-        yield return new WaitForSeconds(0.03f);
+        timerDelay = 0;
+        while (timerDelay < 0.03f)
+        {
+            timerDelay += Time.deltaTime * animFolhaDoCaderno.speed;
+            yield return null;
+        }
         config[1].SetActive(false);
-
-        yield return new WaitForSeconds(0.10f);
+        timerDelay = 0;
+        while (timerDelay < 0.1f)
+        {
+            timerDelay += Time.deltaTime * animFolhaDoCaderno.speed;
+            yield return null;
+        }
         credits[1].SetActive(true);
-
-        yield return new WaitForSeconds(0.15f);
+        timerDelay = 0;
+        while (timerDelay < 0.15f)
+        {
+            timerDelay += Time.deltaTime * animFolhaDoCaderno.speed;
+            yield return null;
+        }
         credits[0].SetActive(true);
 
-        StartCoroutine(LockMousePosition(mainMenuHand, moveTime));
+        StopAccelerateAnimatorSpeedByMouseInput(animHand);
+        StopAccelerateAnimatorSpeedByMouseInput(animFolhaDoCaderno);
+        StartHandFollowCursor();
     }
 
     IEnumerator DelayReturnCredits()
     {
-        animHand.Play("arm_AMT|VirarPag 0");
-
-        yield return new WaitForSeconds(0.15f);
-        animFolhaDoCaderno.Play("FolhaVirando 0 0");
-
-        yield return new WaitForSeconds(0.06f);
+        StartAccelerateAnimatorSpeedByMouseInput(animHand, animSpeedUpMultiplier);
+        StartAccelerateAnimatorSpeedByMouseInput(animFolhaDoCaderno, animSpeedUpMultiplier);
+        animHand.Play("VirarPaginaDireita");
+        float timerDelay = 0;
+        while (timerDelay < 0.15f)
+        {
+            timerDelay += Time.deltaTime * animHand.speed;
+            yield return null;
+        }
+        animFolhaDoCaderno.Play("FolhaVirandoInverse");
+        timerDelay = 0;
+        while (timerDelay < 0.06f)
+        {
+            timerDelay += Time.deltaTime * animFolhaDoCaderno.speed;
+            yield return null;
+        }
         credits[0].SetActive(false);
-
-        yield return new WaitForSeconds(0.05f);
+        timerDelay = 0;
+        while (timerDelay < 0.05f)
+        {
+            timerDelay += Time.deltaTime * animFolhaDoCaderno.speed;
+            yield return null;
+        }
         credits[1].SetActive(false);
-
-        yield return new WaitForSeconds(0.15f);
+        timerDelay = 0;
+        while (timerDelay < 0.15f)
+        {
+            timerDelay += Time.deltaTime * animFolhaDoCaderno.speed;
+            yield return null;
+        }
         config[1].SetActive(true);
-
-        yield return new WaitForSeconds(0.5f);
+        timerDelay = 0;
+        while (timerDelay < 0.5f)
+        {
+            timerDelay += Time.deltaTime * animFolhaDoCaderno.speed;
+            yield return null;
+        }
         config[0].SetActive(true);
-
-        StartCoroutine(LockMousePosition(mainMenuHand, moveTime));
+        StopAccelerateAnimatorSpeedByMouseInput(animHand);
+        StopAccelerateAnimatorSpeedByMouseInput(animFolhaDoCaderno);
+        StartHandFollowCursor();
     }
 
     IEnumerator DelayPreviousPage()
     {
-        animHand.Play("arm_AMT|VirarPag 0");
-
-        yield return new WaitForSeconds(0.15f);
-        animFolhaDoCaderno.Play("FolhaVirando 0");
-
-        yield return new WaitForSeconds(0.06f);
+        StartAccelerateAnimatorSpeedByMouseInput(animHand, animSpeedUpMultiplier);
+        StartAccelerateAnimatorSpeedByMouseInput(animFolhaDoCaderno, animSpeedUpMultiplier);
+        animHand.Play("VirarPaginaDireita");
+        float timerDelay = 0;
+        while (timerDelay < 0.15f)
+        {
+            timerDelay += Time.deltaTime * animHand.speed;
+            yield return null;
+        }
+        animFolhaDoCaderno.Play("FolhaVirandoInverse");
+        timerDelay = 0;
+        while (timerDelay < 0.06f)
+        {
+            timerDelay += Time.deltaTime * animFolhaDoCaderno.speed;
+            yield return null;
+        }
         config[0].SetActive(false);
-
-        yield return new WaitForSeconds(0.05f);
+        timerDelay = 0;
+        while (timerDelay < 0.05f)
+        {
+            timerDelay += Time.deltaTime * animFolhaDoCaderno.speed;
+            yield return null;
+        }
         config[1].SetActive(false);
-
-        yield return new WaitForSeconds(0.15f);
+        timerDelay = 0;
+        while (timerDelay < 0.15f)
+        {
+            timerDelay += Time.deltaTime * animFolhaDoCaderno.speed;
+            yield return null;
+        }
         logoCanvasLayer.gameObject.SetActive(true);
-
-        yield return new WaitForSeconds(0.5f);
+        timerDelay = 0;
+        while (timerDelay < 0.5f)
+        {
+            timerDelay += Time.deltaTime * animFolhaDoCaderno.speed;
+            yield return null;
+        }
         playCanvasLayer.gameObject.SetActive(true);
-
-        StartCoroutine(LockMousePosition(mainMenuHand, moveTime));
+        StopAccelerateAnimatorSpeedByMouseInput(animHand);
+        StopAccelerateAnimatorSpeedByMouseInput(animFolhaDoCaderno);
+        StartHandFollowCursor();
     }
 
     IEnumerator DelayCloseBook()
