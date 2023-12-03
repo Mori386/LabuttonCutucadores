@@ -10,12 +10,6 @@ public class NetworkRunnerReceiver : MonoBehaviour, INetworkRunnerCallbacks
     public GameObject stampPlayerPrefab;
     public GameObject networkBetweenScenesManager;
 
-    [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.All)]
-    public void Rpc_DefineCarimbo([RpcTarget] PlayerRef player, NetworkObject carimbo)
-    {
-        Debug.Log(carimbo);
-        CursorController.Instance.carimbo = carimbo.gameObject;
-    }
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {

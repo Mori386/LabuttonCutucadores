@@ -396,7 +396,9 @@ public class CursorController : MonoBehaviour
         }
         createJoinPaperLoadingText.text = "Conectado";
         while (carimbo == null) yield return new WaitForFixedUpdate();
+        Debug.Log("Carimbo carregado");
         while (NetworkBetweenScenesManager.Instance.spawned == false) yield return new WaitForFixedUpdate();
+        Debug.Log("NetworkBetweenScenesManager carregado");
         yield return new WaitForSeconds(1);
         BlueprintEnter();
     }
@@ -981,7 +983,8 @@ public class CursorController : MonoBehaviour
         }
         blueprintRect.localPosition = bpCenterPos;
         carimbo.SetActive(true);
-        StartStampFollowCursor();
+        //StartStampFollowCursor();
+        Cursor.visible = true;
     }
 
     IEnumerator ReturnBlue()

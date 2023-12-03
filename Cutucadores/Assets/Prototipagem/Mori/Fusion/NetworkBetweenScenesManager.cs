@@ -8,6 +8,19 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
     public string selfUserID;
     public bool spawned;
     public static NetworkBetweenScenesManager Instance;
+
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    public void Rpc_UserIDDictionary(string nickname)
+    {
+        userIDList.Add(Runner.UserId);
+        userIDToPlayerData.Add(Runner.UserId, new PlayerData
+        {
+            username = nickname
+            ,
+            character = Character.Null
+        });
+    }
+
     private void Awake()
     {
         if (Instance == null)
@@ -64,8 +77,8 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
         }
     }
 
-    [Rpc(RpcSources.All, RpcTargets.All)]
-    public void RPC_LockCharacter(string userID, Character character, RpcInfo info = default)
+    [Rpc(RpcSources.All, RpcTargets.All,Channel = RpcChannel.Reliable,InvokeLocal = true)]
+    public void RPC_LockCharacter(string userID, Character character)
     {
         BPCharacter thisCharacterBP;
         switch (character)
