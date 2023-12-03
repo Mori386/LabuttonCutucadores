@@ -107,6 +107,7 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
             {
                 thisCharacterBP.characterAnimator[i].SetTrigger("isSelected");
             }
+            userIDToPlayerData.Set(userID, myPlayerData);
             StartCoroutine(ChangeTankMaterial(thisCharacterBP));
         }
         RPC_CheckForPlayerReady();
@@ -154,17 +155,19 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
     {
         int playerInSession = userIDToPlayerData.Count;
         int playersReady=0;
-        for(int i = 0; i < userIDList.Count; i++)
+        if (playerInSession > 1)
         {
-            if (userIDToPlayerData.TryGet(userIDList[i], out PlayerData myPlayerData))
+            for (int i = 0; i < userIDList.Count; i++)
             {
-                if(myPlayerData.character != Character.Null) playersReady++;
+                if (userIDToPlayerData.TryGet(userIDList[i], out PlayerData myPlayerData))
+                {
+                    if (myPlayerData.character != Character.Null) playersReady++;
+                }
             }
+            Debug.Log(playersReady);
+            CursorController.Instance.hostStartGameButton.gameObject.SetActive(playersReady >= playerInSession);
         }
-        if(playersReady>= playerInSession)
-        {
-            CursorController.Instance.hostStartGameButton.gameObject.SetActive(true);
-        }
+        else CursorController.Instance.hostStartGameButton.gameObject.SetActive(false);
     }
 }
 public struct PlayerData : INetworkStruct

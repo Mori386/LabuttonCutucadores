@@ -28,6 +28,7 @@ public class NetworkRunnerReceiver : MonoBehaviour, INetworkRunnerCallbacks
             //    Rpc_DefineCarimbo(player, NObject);
             //}
             // (runner.LocalPlayer == player) BetweenScenesPlayerInfos.Instance.idSelf = player.PlayerId;
+            NetworkBetweenScenesManager.Instance.RPC_CheckForPlayerReady();
         }
         else Debug.Log("OnPlayerJoined");
         if (runner.LocalPlayer == player)
