@@ -7,6 +7,9 @@ using UnityEngine.SceneManagement;
 using static CharacterData;
 public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
 {
+    [Networked]public NetworkBool isInGameplay { get; set; }
+
+
     public string selfUserID;
     public bool spawned;
     public static NetworkBetweenScenesManager Instance;
@@ -239,7 +242,7 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
             }
             if (isAllPlayersLoaded) break;
         }
-        NetworkRunnerReceiver.Instance.isInGameplay = true;
+        isInGameplay = true;
         for (int i = 0; i < userIDList.Count; i++)
         {
             if (userIDToPlayerData.TryGet(userIDList[i], out PlayerData thisPlayerData))

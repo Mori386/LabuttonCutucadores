@@ -7,7 +7,6 @@ using UnityEngine;
 
 public class NetworkRunnerReceiver : MonoBehaviour, INetworkRunnerCallbacks
 {
-    public bool isInGameplay;
     public static NetworkRunnerReceiver Instance;
     public GameObject stampPlayerPrefab;
     public GameObject networkBetweenScenesManager;
@@ -41,7 +40,7 @@ public class NetworkRunnerReceiver : MonoBehaviour, INetworkRunnerCallbacks
     }
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
-        if (isInGameplay)
+        if (NetworkBetweenScenesManager.Instance.isInGameplay)
         {
             if (characterInputHandler == null)
             {

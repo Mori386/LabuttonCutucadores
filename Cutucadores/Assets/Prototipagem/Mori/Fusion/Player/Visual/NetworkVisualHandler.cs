@@ -65,7 +65,7 @@ public class NetworkVisualHandler : NetworkBehaviour
     [HideInInspector] public float rotationDirection { get; set; }
     public void RotateDrill()
     {
-        drillVisual.Rotate(0,(2.5f + rotationDirection * characterDrillController.Velocity.magnitude / 40f), 0, Space.Self);
+        if(drillVisual!=null) drillVisual.Rotate(0,(2.5f + rotationDirection * characterDrillController.Velocity.magnitude / 40f), 0, Space.Self);
     }
     public void PlayPowerUpVfx()
     {
