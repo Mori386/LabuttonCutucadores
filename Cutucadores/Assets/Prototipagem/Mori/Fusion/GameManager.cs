@@ -33,7 +33,6 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
     private void Start()
     {
         virtualCameraNoiseChannel = virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
-        StartCoroutine(LoadPlayerInfo());
     }
     public override void Spawned()
     {
