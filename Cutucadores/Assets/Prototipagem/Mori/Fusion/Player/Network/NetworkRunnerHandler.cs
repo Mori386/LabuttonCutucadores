@@ -15,6 +15,7 @@ public class NetworkRunnerHandler : MonoBehaviour
 
     private NetworkRunner networkRunner;
     private NetworkRunnerReceiver networkRunnerReceiver;
+    public NetworkSceneManagerDefault networkSceneManager;
     private void Awake()
     {
         Instance = this;
@@ -44,7 +45,8 @@ public class NetworkRunnerHandler : MonoBehaviour
         INetworkSceneManager sceneManager = runner.GetComponents(typeof(MonoBehaviour)).OfType<INetworkSceneManager>().FirstOrDefault();
         if (sceneManager == null)
         {
-            sceneManager = runner.gameObject.AddComponent<NetworkSceneManagerDefault>();
+            networkSceneManager = runner.gameObject.AddComponent<NetworkSceneManagerDefault>();
+            sceneManager = networkSceneManager;
         }
         runner.ProvideInput = true;
         return runner.StartGame(new StartGameArgs

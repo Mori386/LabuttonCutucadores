@@ -2,6 +2,7 @@ using Fusion;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static CharacterData;
 public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
 {
@@ -9,8 +10,12 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
     public bool spawned;
     public static NetworkBetweenScenesManager Instance;
 
-
-    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All, Channel = RpcChannel.Reliable)]
+    public void Rpc_DefineNextLoadScene(string userID,int sceneIndex)
+    {
+        
+    }
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
     public void Rpc_UserIDDictionary(string userID,string nickname)
     {
         userIDList.Add(userID);
@@ -174,4 +179,5 @@ public struct PlayerData : INetworkStruct
 {
     public NetworkString<_16> username;
     public Character character;
+    public NetworkBool loaded;
 }

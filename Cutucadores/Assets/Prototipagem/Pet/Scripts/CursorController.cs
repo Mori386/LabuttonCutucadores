@@ -1,3 +1,4 @@
+using Fusion;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -410,7 +411,7 @@ public class CursorController : MonoBehaviour
     }
     public void StartMatch()
     {
-
+        StartCoroutine(MapLoader.Load("Level1"));
     }
     public void ReturnBlueprintSelect() // sair do blue de seleção
     {
@@ -984,8 +985,8 @@ public class CursorController : MonoBehaviour
         }
         blueprintRect.localPosition = bpCenterPos;
         carimbo.SetActive(true);
-        StartStampFollowCursor();
-        //Cursor.visible = true;
+        //StartStampFollowCursor();
+        Cursor.visible = true;
     }
 
     IEnumerator ReturnBlue()
