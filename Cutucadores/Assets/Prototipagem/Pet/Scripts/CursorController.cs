@@ -410,7 +410,7 @@ public class CursorController : MonoBehaviour
     }
     public void StartMatch()
     {
-        
+
     }
     public void ReturnBlueprintSelect() // sair do blue de seleção
     {
@@ -984,8 +984,8 @@ public class CursorController : MonoBehaviour
         }
         blueprintRect.localPosition = bpCenterPos;
         carimbo.SetActive(true);
-        //StartStampFollowCursor();
-        Cursor.visible = true;
+        StartStampFollowCursor();
+        //Cursor.visible = true;
     }
 
     IEnumerator ReturnBlue()
