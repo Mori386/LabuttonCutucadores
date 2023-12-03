@@ -411,7 +411,18 @@ public class CursorController : MonoBehaviour
     }
     public void StartMatch()
     {
-        StartCoroutine(MapLoader.Load("Level1"));
+        switch(mapInPreviewID)
+        {
+            case 0:
+                NetworkBetweenScenesManager.Instance.Rpc_LoadMap("Level1");
+                break;
+            case 1:
+                NetworkBetweenScenesManager.Instance.Rpc_LoadMap("Level2");
+                break;
+            case 2:
+                NetworkBetweenScenesManager.Instance.Rpc_LoadMap("Level3");
+                break;
+        }
     }
     public void ReturnBlueprintSelect() // sair do blue de seleção
     {

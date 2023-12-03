@@ -10,10 +10,10 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
     public bool spawned;
     public static NetworkBetweenScenesManager Instance;
 
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All, Channel = RpcChannel.Reliable)]
-    public void Rpc_DefineNextLoadScene(string userID,int sceneIndex)
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All, Channel = RpcChannel.Reliable,InvokeLocal = true)]
+    public void Rpc_LoadMap(string mapName)
     {
-        
+        StartCoroutine(MapLoader.Load("Level1"));
     }
     [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
     public void Rpc_UserIDDictionary(string userID,string nickname)
