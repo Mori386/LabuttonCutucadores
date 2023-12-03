@@ -20,8 +20,8 @@ public class BPPlayer : NetworkBehaviour , IAfterSpawned
     {
         if (Object.HasInputAuthority)
         {
-            NetworkBetweenScenesManager.Instance.RPC_UnlockCharacter(Runner.UserId);
-            NetworkBetweenScenesManager.Instance.Rpc_RemoveUserID(Runner.UserId);
+            NetworkBetweenScenesManager.Instance.RPC_UnlockCharacter(NetworkBetweenScenesManager.Instance.selfUserID);
+            NetworkBetweenScenesManager.Instance.Rpc_RemoveUserID(NetworkBetweenScenesManager.Instance.selfUserID);
         }
     }
 }
