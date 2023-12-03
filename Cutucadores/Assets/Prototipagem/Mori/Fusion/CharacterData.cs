@@ -14,8 +14,9 @@ public class CharacterData : ScriptableObject
         Minerador = 1,
         PaiEFilha = 2,
         Vovo = 3,
+        Null = 99
     }
-    public Character character;
+    public Character character = Character.Null;
 
     //[Header("------Stats------")]
     //public InGameCharacterData characterData;

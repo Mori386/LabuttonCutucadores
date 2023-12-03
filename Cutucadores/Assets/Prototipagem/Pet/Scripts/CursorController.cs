@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -5,9 +6,11 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using static CharacterData;
 
 public class CursorController : MonoBehaviour
 {
+    public static CursorController Instance;
     [HideInInspector] public Camera mainCamera;
 
     readonly private float animSpeedUpMultiplier = 2f; // Valor de multiplicacao de velocidade quando o jogador acelerar as animacoes
@@ -25,7 +28,8 @@ public class CursorController : MonoBehaviour
     public CanvasGroup playCanvasLayer;
     [Header("Cursor")]
     public Transform mira;
-    public GameObject cursorObject2;
+    public GameObject carimbo;
+
     [Header("|----- Host Client Menu-----|")]
     [Header("Host and client page")]
     public TMP_InputField nicknameInputField;
@@ -42,6 +46,14 @@ public class CursorController : MonoBehaviour
     public CanvasGroup createJoinPaper;
     public CanvasGroup createJoinPaperDefaultGroup;
     public CanvasGroup createJoinPaperLoadingGroup;
+    public TextMeshProUGUI createJoinPaperLoadingText;
+
+    [Header("|----- Blueprint -----|")]
+    public Button hostStartGameButton;
+    public BPCharacter escavadorCharBP;
+    [Space] public BPCharacter mineradorCharBP;
+    [Space] public BPCharacter paiEFilhaCharBP;
+    [Space] public BPCharacter vovoCharBP;
 
     [Header("OBJETOS DO LIVRO")]
     public GameObject[] config;
@@ -81,6 +93,10 @@ public class CursorController : MonoBehaviour
     [Header("VETORES")]
     private Vector3 startPosition;
     private Vector3 targetPosition;
+    private void Awake()
+    {
+        Instance = this;
+    }
     void Start()
     {
         mainCamera = Camera.main;
@@ -90,13 +106,12 @@ public class CursorController : MonoBehaviour
 
         startPosition = mainMenuHand.transform.position; //para retorno da posição inicial
         moveDuration = moveTime - pauseTime; // valor do tempo de deslocamento
-        cursorObject2.SetActive(false);
         StartCoroutine(MoveBookSmoothly());
 
     }
     public void StartHandFollowCursor()
     {
-        if (CalculateMousePosInWorldCoroutine == null) CalculateMousePosInWorldCoroutine = StartCoroutine(CalculateMousePosInWorld());
+        if (CalculateMousePosInWorldCoroutine == null) CalculateMousePosInWorldCoroutine = StartCoroutine(CalculateMousePosInWorld(2.8f));
         if (HandFollowCursorCoroutine == null) HandFollowCursorCoroutine = StartCoroutine(HandFollowCursor());
         if (AimFollowCursorCoroutine == null) AimFollowCursorCoroutine = StartCoroutine(AimFollowCursor());
     }
@@ -123,13 +138,13 @@ public class CursorController : MonoBehaviour
     //Get MousePosition in World Coordinates
     private Vector3 mousePosInWorld;
     public Coroutine CalculateMousePosInWorldCoroutine;
-    public IEnumerator CalculateMousePosInWorld()
+    public IEnumerator CalculateMousePosInWorld(float distance)
     {
         Vector3 mousePosition;
         while (true)
         {
             mousePosition = Input.mousePosition;
-            mousePosition.z = 2.8f;
+            mousePosition.z = distance;
             mousePosInWorld = mainCamera.ScreenToWorldPoint(mousePosition);
             yield return null;
         }
@@ -170,7 +185,39 @@ public class CursorController : MonoBehaviour
         }
     }
 
-
+    public void StartStampFollowCursor()
+    {
+        if (CalculateMousePosInWorldCoroutine == null) CalculateMousePosInWorldCoroutine = StartCoroutine(CalculateMousePosInWorld(1.3f));
+        if (StampFollowCursorCoroutine == null) StampFollowCursorCoroutine = StartCoroutine(StampFollowCursor());
+    }
+    public void StopStampFollowCursor()
+    {
+        if (CalculateMousePosInWorldCoroutine != null)
+        {
+            StopCoroutine(CalculateMousePosInWorldCoroutine);
+            CalculateMousePosInWorldCoroutine = null;
+        }
+        if (StampFollowCursorCoroutine != null)
+        {
+            StopCoroutine(StampFollowCursorCoroutine);
+            StampFollowCursorCoroutine = null;
+        }
+    }
+    public Coroutine StampFollowCursorCoroutine;
+    public IEnumerator StampFollowCursor()
+    {
+        Vector3 newMousePos;
+        float carimboYPos = carimbo.transform.position.y;
+        while (true)
+        {
+            if (!IsMouseOutOffApp())
+            {
+                newMousePos = Vector3.Lerp(carimbo.transform.position, mousePosInWorld, 50f / 10f * Time.fixedDeltaTime);
+                carimbo.transform.position = new Vector3(newMousePos.x, carimboYPos, newMousePos.z);
+            }
+            yield return new WaitForFixedUpdate();
+        }
+    }
     //Move objet to target position
     public void StartMoveCursorObject(Transform objectTransform, float duration, Vector3 targetPosition)
     {
@@ -259,18 +306,53 @@ public class CursorController : MonoBehaviour
         mapPreview.sprite = mapPreviewImages[mapInPreviewID];
     }
 
-    public void BlueprintSelect() // anim para blueprint de seleção
+    public void BlueprintLoadInfos()
     {
+        for (int i = 0; i < NetworkBetweenScenesManager.Instance.userIDList.Count; i++)
+        {
+            if (NetworkBetweenScenesManager.Instance.userIDToPlayerData.TryGet(NetworkBetweenScenesManager.Instance.userIDList.Get(i), out PlayerData playerData))
+            {
+                if (playerData.character != Character.Null)
+                {
+                    BPCharacter characterBpInfos;
+                    switch (playerData.character)
+                    {
+                        default:
+                        case Character.Escavador:
+                            characterBpInfos = escavadorCharBP;
+                            break;
+                        case Character.Minerador:
+                            characterBpInfos = mineradorCharBP;
+                            break;
+                        case Character.PaiEFilha:
+                            characterBpInfos = paiEFilhaCharBP;
+                            break;
+                        case Character.Vovo:
+                            characterBpInfos = vovoCharBP;
+                            break;
+                    }
+                    characterBpInfos.selectButton.interactable = false;
+                    characterBpInfos.drillBodyMeshRenderer.material = characterBpInfos.defaultMaterial;
+                    characterBpInfos.drillHeadMeshRenderer.material = characterBpInfos.defaultMaterial;
+                    characterBpInfos.usernameText.text = playerData.username.ToString();
+                }
+            }
+        }
+    }
+    public void SelectCharacter(Character charSelected)
+    {
+        NetworkBetweenScenesManager.Instance.RPC_LockCharacter(NetworkBetweenScenesManager.Instance.selfUserID, charSelected);
+        escavadorCharBP.selectButton.interactable = false;
+        mineradorCharBP.selectButton.interactable = false;
+        paiEFilhaCharBP.selectButton.interactable = false;
+        vovoCharBP.selectButton.interactable = false;
+    }
+    public void BlueprintEnter() // anim para blueprint de seleção
+    {
+        StopHandFollowCursor();
+        BlueprintLoadInfos();
         Blueprint.SetActive(true);
-        tanques.SetActive(true);
-        clientHostCanvas.gameObject.SetActive(false);
-        Luz.SetActive(true);
-        Lampada.SetActive(false);
         StartCoroutine(MoveBlue());
-
-
-        isChange = true;
-        isReturn = false;
     }
 
     public void ChangeToCreateJoinPage(bool isHosting)
@@ -300,20 +382,32 @@ public class CursorController : MonoBehaviour
     }
     public IEnumerator WaitForHostToConnectToServer(Task task)
     {
-        while(task.Status != TaskStatus.RanToCompletion)
+        while (task.Status != TaskStatus.RanToCompletion)
         {
             Debug.Log(task.Status);
-            if (task.Status == TaskStatus.Canceled ||  task.Status == TaskStatus.Faulted)
+            if (task.Status == TaskStatus.Canceled || task.Status == TaskStatus.Faulted)
             {
-                Debug.LogError("Error type"+ task.Status);
+                createJoinPaperLoadingText.text = "Erro ao conectar";
+                yield return new WaitForSeconds(2);
+                createJoinPaperDefaultGroup.gameObject.SetActive(true);
+                createJoinPaperLoadingGroup.gameObject.SetActive(false);
             }
             yield return null;
         }
-        Debug.Log("Server Created");
+        createJoinPaperLoadingText.text = "Conectado";
+        while (carimbo == null) yield return new WaitForFixedUpdate();
+        while (NetworkBetweenScenesManager.Instance.spawned == false) yield return new WaitForFixedUpdate();
+        yield return new WaitForSeconds(1);
+        BlueprintEnter();
     }
     private void StartClient()
     {
-        NetworkRunnerHandler.Instance.StartNetworkRunner(sessionNameInputfield.name, Fusion.GameMode.Client);
+        Task task = NetworkRunnerHandler.Instance.StartNetworkRunner(sessionNameInputfield.name, Fusion.GameMode.Client);
+        StartCoroutine(WaitForHostToConnectToServer(task));
+    }
+    public void StartMatch()
+    {
+
     }
     public void ReturnBlueprintSelect() // sair do blue de seleção
     {
@@ -348,39 +442,35 @@ public class CursorController : MonoBehaviour
         switch (playerNumber) // vinculado a cada highligthed em cena
         {
             case 0:
-                Debug.Log("Anim roda");
-                startPosition = cursorObject2.transform.position;
-                targetPosition = Okays[0].transform.position;
-                Polaroids[0].SetActive(false);
-                ChangeMaterial(tanksMaterial[0], tankMesh[0], tankDrill[0]);
-                isMoving = true;
-                timer = 0.4f;
-                SetActiveWithDelay(Okays[0], true, 0.8f);
+                SelectCharacter(Character.Escavador);
                 break;
 
             case 1:
-                startPosition = cursorObject2.transform.position;
-                targetPosition = Okays[1].transform.position;
-                isMoving = true;
-                timer = 0.4f;
-                SetActiveWithDelay(Okays[1], true, 0.8f);
+                SelectCharacter(Character.Minerador);
+                //startPosition = carimbo.transform.position;
+                //targetPosition = Okays[1].transform.position;
+                //isMoving = true;
+                //timer = 0.4f;
+                //SetActiveWithDelay(Okays[1], true, 0.8f);
                 break;
 
             case 2:
-                startPosition = cursorObject2.transform.position;
-                targetPosition = Okays[2].transform.position;
-                isMoving = true;
-                timer = 0.4f;
-                SetActiveWithDelay(Okays[2], true, 0.8f);
+                SelectCharacter(Character.PaiEFilha);
+                //startPosition = carimbo.transform.position;
+                //targetPosition = Okays[2].transform.position;
+                //isMoving = true;
+                //timer = 0.4f;
+                //SetActiveWithDelay(Okays[2], true, 0.8f);
                 break;
 
             case 3:
-                startPosition = cursorObject2.transform.position;
-                targetPosition = Okays[3].transform.position;
-                Polaroids[4].SetActive(false);
-                isMoving = true;
-                timer = 0.4f;
-                SetActiveWithDelay(Okays[3], true, 0.8f);
+                SelectCharacter(Character.Vovo);
+                //startPosition = carimbo.transform.position;
+                //targetPosition = Okays[3].transform.position;
+                //Polaroids[4].SetActive(false);
+                //isMoving = true;
+                //timer = 0.4f;
+                //SetActiveWithDelay(Okays[3], true, 0.8f);
                 break;
 
             default:
@@ -878,18 +968,20 @@ public class CursorController : MonoBehaviour
 
     IEnumerator MoveBlue()
     {
-
-        Vector3 posicaoCentroCanvas = new Vector3(0f, blueprintRect.localPosition.y, blueprintRect.localPosition.z);
-
-        while (Vector2.Distance(blueprintRect.localPosition, new Vector2(posicaoCentroCanvas.x, posicaoCentroCanvas.y)) > 0.1f)
+        Vector3 bpCenterPos = new Vector3(0f, blueprintRect.localPosition.y, blueprintRect.localPosition.z);
+        float timerDelay = 0f;
+        float duration = 0.5f;
+        Vector3 bpStartPos = Blueprint.transform.localPosition;
+        while (timerDelay < duration)
         {
-            // Move suavemente o objeto em direção ao centro do canvas usando a interpolação linear
-            blueprintRect.localPosition = Vector3.Lerp(blueprintRect.localPosition, posicaoCentroCanvas, Time.deltaTime * 10);
-
+            blueprintRect.localPosition = Vector3.Lerp(bpStartPos, bpCenterPos, timerDelay / duration);
+            timerDelay += Time.deltaTime;
+            if (Input.GetMouseButton(0)) timerDelay += Time.deltaTime * (animSpeedUpMultiplier - 1);
             yield return null;
         }
-
-        blueprintRect.localPosition = posicaoCentroCanvas;
+        blueprintRect.localPosition = bpCenterPos;
+        carimbo.SetActive(true);
+        StartStampFollowCursor();
     }
 
     IEnumerator ReturnBlue()
@@ -925,4 +1017,22 @@ public struct AnimatorAcceleratorCoroutine
 {
     public Coroutine coroutine;
     public float originalSpeed;
+}
+[Serializable]
+public struct BPCharacter
+{
+    [Header("Drill")]
+    public SkinnedMeshRenderer drillBodyMeshRenderer;
+    public MeshRenderer drillHeadMeshRenderer;
+    public RotateObject rotateObjectScript;
+    public ParticleSystem onMatChangeParticle;
+    [Header("Characters")]
+    public Animator[] characterAnimator;
+    [Header("Materials")]
+    public Material defaultMaterial;
+    public Material BpEffectMaterial;
+    [Header("Ui Elements")]
+    public Button selectButton;
+    public Image OkayImage;
+    public TextMeshProUGUI usernameText;
 }

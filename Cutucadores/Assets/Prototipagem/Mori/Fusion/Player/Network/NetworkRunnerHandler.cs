@@ -22,18 +22,21 @@ public class NetworkRunnerHandler : MonoBehaviour
     }
     public Task StartNetworkRunner(string sessionName,GameMode gamemode)
     {
-        networkRunner = Instantiate(networkRunnerPrefab);
-        networkRunnerReceiver = networkRunner.GetComponent<NetworkRunnerReceiver>();
-        networkRunner.name = "Network Runner";
+        if(networkRunner == null)
+        {
+            networkRunner = Instantiate(networkRunnerPrefab);
+            networkRunnerReceiver = networkRunner.GetComponent<NetworkRunnerReceiver>();
+            networkRunner.name = "Network Runner";
+        }
         return InitializeNetworkRunner(networkRunner, gamemode, NetAddress.Any(), SceneManager.GetActiveScene().buildIndex, null, sessionName);
     }
     void Start()
     {
-        networkRunner = Instantiate(networkRunnerPrefab);
-        networkRunner.name = "Network Runner";
+        //networkRunner = Instantiate(networkRunnerPrefab);
+        //networkRunner.name = "Network Runner";
 
-        Task clientTask = InitializeNetworkRunner(networkRunner,GameMode.AutoHostOrClient,NetAddress.Any(),SceneManager.GetActiveScene().buildIndex,null,"TestRoom");
-        Debug.Log($"Server NetworkRunner started.");
+        //Task clientTask = InitializeNetworkRunner(networkRunner,GameMode.AutoHostOrClient,NetAddress.Any(),SceneManager.GetActiveScene().buildIndex,null,"MoriTestRoom");
+        //Debug.Log($"Server NetworkRunner started.");
     }
     
     protected virtual Task InitializeNetworkRunner(NetworkRunner runner, GameMode gameMode, NetAddress address,SceneRef scene, Action<NetworkRunner> initialized,string sessionName)

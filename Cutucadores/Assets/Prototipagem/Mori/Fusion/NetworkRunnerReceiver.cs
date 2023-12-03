@@ -7,19 +7,27 @@ using UnityEngine;
 
 public class NetworkRunnerReceiver : MonoBehaviour, INetworkRunnerCallbacks
 {
+    public GameObject stampPlayerPrefab;
+    public GameObject networkBetweenScenesManager;
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
         if (runner.IsServer)
         {
             if (runner.SessionInfo.PlayerCount >= 5) runner.Disconnect(player);
-            BetweenScenesPlayerInfos.Instance.playerIDLinkedList.Add(player.PlayerId);
-            BetweenScenesPlayerInfos.Instance.playerIDToPlayerData.Add(player.PlayerId,new PlayerData
+            if (runner.LocalPlayer == player)
             {
-                playerRef = player,
-            });
+                runner.Spawn(networkBetweenScenesManager, networkBetweenScenesManager.transform.position, networkBetweenScenesManager.transform.rotation);
+            }
+            NetworkObject NObject = runner.Spawn(stampPlayerPrefab, stampPlayerPrefab.transform.position, stampPlayerPrefab.transform.rotation, player);
+            CursorController.Instance.carimbo = NObject.gameObject;
             // (runner.LocalPlayer == player) BetweenScenesPlayerInfos.Instance.idSelf = player.PlayerId;
         }
         else Debug.Log("OnPlayerJoined");
+        if (runner.LocalPlayer == player)
+        {
+            NetworkBetweenScenesManager.Instance.userIDToPlayerData.Add(runner.UserId,new PlayerData());
+            NetworkBetweenScenesManager.Instance.selfUserID= runner.UserId;
+        }
     }
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
