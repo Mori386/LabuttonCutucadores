@@ -54,8 +54,11 @@ public class NetworkRunnerReceiver : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
-        thisBpPlayer.OnPlayerLeave();
-        runner.Despawn(thisBpPlayer.GetComponent<NetworkObject>());
+        if (runner.LocalPlayer == player)
+        {
+            thisBpPlayer.OnPlayerLeave();
+            runner.Despawn(thisBpPlayer.GetComponent<NetworkObject>());
+        }
     }
 
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input)
