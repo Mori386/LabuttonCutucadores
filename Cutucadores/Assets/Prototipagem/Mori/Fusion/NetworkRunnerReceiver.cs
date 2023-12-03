@@ -9,6 +9,13 @@ public class NetworkRunnerReceiver : MonoBehaviour, INetworkRunnerCallbacks
 {
     public GameObject stampPlayerPrefab;
     public GameObject networkBetweenScenesManager;
+
+    [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.All)]
+    public void Rpc_DefineCarimbo([RpcTarget] PlayerRef player, GameObject carimbo)
+    {
+        CursorController.Instance.carimbo = carimbo;
+    }
+
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
         if (runner.IsServer)
@@ -19,14 +26,15 @@ public class NetworkRunnerReceiver : MonoBehaviour, INetworkRunnerCallbacks
                 runner.Spawn(networkBetweenScenesManager, networkBetweenScenesManager.transform.position, networkBetweenScenesManager.transform.rotation);
             }
             NetworkObject NObject = runner.Spawn(stampPlayerPrefab, stampPlayerPrefab.transform.position, stampPlayerPrefab.transform.rotation, player);
-            CursorController.Instance.carimbo = NObject.gameObject;
+            if (runner.LocalPlayer == player) CursorController.Instance.carimbo = NObject.gameObject;
+            else Rpc_DefineCarimbo(player, NObject.gameObject);
             // (runner.LocalPlayer == player) BetweenScenesPlayerInfos.Instance.idSelf = player.PlayerId;
         }
         else Debug.Log("OnPlayerJoined");
         if (runner.LocalPlayer == player)
         {
-            NetworkBetweenScenesManager.Instance.userIDToPlayerData.Add(runner.UserId,new PlayerData());
-            NetworkBetweenScenesManager.Instance.selfUserID= runner.UserId;
+            NetworkBetweenScenesManager.Instance.userIDToPlayerData.Add(runner.UserId, new PlayerData());
+            NetworkBetweenScenesManager.Instance.selfUserID = runner.UserId;
         }
     }
     public void OnInput(NetworkRunner runner, NetworkInput input)
