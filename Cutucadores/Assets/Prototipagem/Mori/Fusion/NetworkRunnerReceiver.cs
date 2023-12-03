@@ -40,7 +40,7 @@ public class NetworkRunnerReceiver : MonoBehaviour, INetworkRunnerCallbacks
     }
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
-        if (NetworkBetweenScenesManager.Instance.isInGameplay)
+        if (NetworkBetweenScenesManager.Instance!=null && NetworkBetweenScenesManager.Instance.isInGameplay)
         {
             if (characterInputHandler == null)
             {
