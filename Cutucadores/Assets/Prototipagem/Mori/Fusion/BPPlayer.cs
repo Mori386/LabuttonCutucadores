@@ -18,6 +18,7 @@ public class BPPlayer : NetworkBehaviour , IAfterSpawned
                 character = Character.Null
             });
             Debug.Log(NetworkBetweenScenesManager.Instance.userIDToPlayerData[Runner.UserId]);
+            CursorController.Instance.carimbo = gameObject;
         }
     }
 }
