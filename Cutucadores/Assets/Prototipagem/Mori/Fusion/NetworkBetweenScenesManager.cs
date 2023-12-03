@@ -27,6 +27,12 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
             character = Character.Null
         });
     }
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
+    public void Rpc_RemoveUserID(string userID)
+    {
+        if(userIDList.Contains(userID)) userIDList.Remove(userID);
+        if (userIDToPlayerData.ContainsKey(userID)) userIDToPlayerData.Remove(userID);
+    }
 
     private void Awake()
     {
@@ -114,11 +120,39 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
                 thisCharacterBP.characterAnimator[i].SetTrigger("isSelected");
             }
             userIDToPlayerData.Set(userID, myPlayerData);
-            StartCoroutine(ChangeTankMaterial(thisCharacterBP));
+            StartCoroutine(ChangeTankMaterial(thisCharacterBP,thisCharacterBP.defaultMaterial));
         }
         RPC_CheckForPlayerReady();
     }
-    public IEnumerator ChangeTankMaterial(BPCharacter bPCharacter)
+    public void RPC_UnlockCharacter(string userID)
+    {
+        if (userIDToPlayerData.TryGet(userID, out PlayerData myPlayerData))
+        {
+            BPCharacter thisCharacterBP;
+            switch (myPlayerData.character)
+            {
+                default:
+                case Character.Escavador:
+                    thisCharacterBP = CursorController.Instance.escavadorCharBP;
+                    break;
+                case Character.Minerador:
+                    thisCharacterBP = CursorController.Instance.mineradorCharBP;
+                    break;
+                case Character.PaiEFilha:
+                    thisCharacterBP = CursorController.Instance.paiEFilhaCharBP;
+                    break;
+                case Character.Vovo:
+                    thisCharacterBP = CursorController.Instance.vovoCharBP;
+                    break;
+            }
+            thisCharacterBP.selectButton.interactable = true;
+            myPlayerData.character = Character.Null;
+            thisCharacterBP.usernameText.text = "Nome do jogador";
+            userIDToPlayerData.Set(userID, myPlayerData);
+            StartCoroutine(ChangeTankMaterial(thisCharacterBP, thisCharacterBP.BpEffectMaterial));
+        }
+    }
+    public IEnumerator ChangeTankMaterial(BPCharacter bPCharacter,Material newMat)
     {
         float timer = 0f;
         float duration = 0.75f;
@@ -142,8 +176,8 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
         bPCharacter.rotateObjectScript.transform.localScale = startScale * 0.1f;
 
         bPCharacter.onMatChangeParticle.Play();
-        bPCharacter.drillBodyMeshRenderer.material = bPCharacter.defaultMaterial;
-        bPCharacter.drillHeadMeshRenderer.material = bPCharacter.defaultMaterial;
+        bPCharacter.drillBodyMeshRenderer.material = newMat;
+        bPCharacter.drillHeadMeshRenderer.material = newMat;
         timer = 0;
         while (timer < (duration / 3))
         {

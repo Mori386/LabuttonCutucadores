@@ -13,6 +13,15 @@ public class BPPlayer : NetworkBehaviour , IAfterSpawned
             NetworkBetweenScenesManager.Instance.Rpc_UserIDDictionary(Runner.UserId,CursorController.Instance.nicknameInputField.text);
             //Debug.Log(NetworkBetweenScenesManager.Instance.userIDToPlayerData[Runner.UserId]);
             CursorController.Instance.carimbo = gameObject;
+            NetworkRunnerReceiver.Instance.thisBpPlayer = this;
+        }
+    }
+    public void OnPlayerLeave()
+    {
+        if (Object.HasInputAuthority)
+        {
+            NetworkBetweenScenesManager.Instance.RPC_UnlockCharacter(Runner.UserId);
+            NetworkBetweenScenesManager.Instance.Rpc_RemoveUserID(Runner.UserId);
         }
     }
 }
