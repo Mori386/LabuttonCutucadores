@@ -61,10 +61,10 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
     }
     [Networked]
     [Capacity(4)]
-    public NetworkLinkedList<NetworkString<_64>> userIDList { get; }
+    public NetworkLinkedList<NetworkString<_256>> userIDList { get; }
     [Networked]
     [Capacity(4)]
-    public NetworkDictionary<NetworkString<_64>, PlayerData> userIDToPlayerData { get; }
+    public NetworkDictionary<NetworkString<_256>, PlayerData> userIDToPlayerData { get; }
     public CharacterData GetDataFromUserID(string userID)
     {
         if (userIDToPlayerData.TryGet(userID, out PlayerData playerData))
@@ -226,6 +226,9 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
                 }
             }
             Debug.Log(isAllPlayersLoaded);
+        }
+        if(isAllPlayersLoaded)
+        {
         }
     }
 }
