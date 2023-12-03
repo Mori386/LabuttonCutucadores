@@ -121,6 +121,8 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
             timer += Time.deltaTime;
             yield return null;
         }
+        bPCharacter.rotateObjectScript.rotate = startRotationSpeed * 5f;
+
         timer = 0;
         while (timer < (duration / 3))
         {
@@ -128,6 +130,8 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
             timer += Time.deltaTime;
             yield return null;
         }
+        bPCharacter.rotateObjectScript.transform.localScale = startScale * 0.1f;
+
         bPCharacter.onMatChangeParticle.Play();
         bPCharacter.drillBodyMeshRenderer.material = bPCharacter.defaultMaterial;
         bPCharacter.drillHeadMeshRenderer.material = bPCharacter.defaultMaterial;
@@ -139,6 +143,8 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
             timer += Time.deltaTime;
             yield return null;
         }
+        bPCharacter.rotateObjectScript.rotate = startRotationSpeed;
+        bPCharacter.rotateObjectScript.transform.localScale = startScale;
     }
 }
 public struct PlayerData : INetworkStruct
