@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static CharacterData;
 
@@ -377,7 +378,7 @@ public class CursorController : MonoBehaviour
     }
     private void StartHost()
     {
-        Task task = NetworkRunnerHandler.Instance.StartNetworkRunner(sessionNameInputfield.name, Fusion.GameMode.Host);
+        Task task = NetworkRunnerHandler.Instance.StartNetworkRunner(sessionNameInputfield.text, Fusion.GameMode.Host);
         StartCoroutine(WaitForHostToConnectToServer(task));
     }
     public IEnumerator WaitForHostToConnectToServer(Task task)
@@ -404,12 +405,12 @@ public class CursorController : MonoBehaviour
     }
     private void StartClient()
     {
-        Task task = NetworkRunnerHandler.Instance.StartNetworkRunner(sessionNameInputfield.name, Fusion.GameMode.Client);
+        Task task = NetworkRunnerHandler.Instance.StartNetworkRunner(sessionNameInputfield.text, Fusion.GameMode.Client);
         StartCoroutine(WaitForHostToConnectToServer(task));
     }
     public void StartMatch()
     {
-
+        
     }
     public void ReturnBlueprintSelect() // sair do blue de seleção
     {
