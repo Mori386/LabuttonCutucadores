@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
-
+using static CharacterData;
 public class NetworkVisualHandler : NetworkBehaviour
 {
     NetworkMecanimAnimator mecanimAnimator;
@@ -37,18 +37,18 @@ public class NetworkVisualHandler : NetworkBehaviour
     public override void Spawned()
     {
         base.Spawned();
-        RPC_RequestLoadVisual();
+        RPC_RequestLoadVisual(NetworkBetweenScenesManager.Instance.selfUserID);
         StartCoroutine(RotateDrillCoroutine());
     }
-    [Rpc(RpcSources.InputAuthority, RpcTargets.All,InvokeLocal = true)]
-    void RPC_RequestLoadVisual(RpcInfo info = default)
+    [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
+    void RPC_RequestLoadVisual(string userID,RpcInfo info = default)
     {
-        LoadCharacterVisual();
+        LoadCharacterVisual(userID);
     }
-    public void LoadCharacterVisual()
+    public void LoadCharacterVisual(string userID)
     {
         Transform drill = 
-        Instantiate(NetworkBetweenScenesManager.Instance.GetDataFromUserID(NetworkBetweenScenesManager.Instance.selfUserID).visualPrefab, characterDrillController.visual).transform;
+        Instantiate(NetworkBetweenScenesManager.Instance.GetDataFromUserID(userID).visualPrefab, characterDrillController.visual).transform;
 
         drill = drill.GetChild(1).GetChild(0);
         if (drill != null) drillVisual = drill;
