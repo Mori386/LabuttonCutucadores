@@ -15,7 +15,8 @@ public class NetworkRunnerHandler : MonoBehaviour
 
     private NetworkRunner networkRunner;
     private NetworkRunnerReceiver networkRunnerReceiver;
-    public NetworkSceneManagerDefault networkSceneManager;
+
+    private MapLoader mapLoader;
     private void Awake()
     {
         Instance = this;
@@ -29,7 +30,8 @@ public class NetworkRunnerHandler : MonoBehaviour
             networkRunnerReceiver = networkRunner.GetComponent<NetworkRunnerReceiver>();
             networkRunner.name = "Network Runner";
         }
-        return InitializeNetworkRunner(networkRunner, gamemode, NetAddress.Any(), SceneManager.GetActiveScene().buildIndex, null, sessionName);
+        if(mapLoader == null) mapLoader = MapLoader.Instance;
+        return InitializeNetworkRunner(networkRunner, gamemode, NetAddress.Any(), SceneManager.GetActiveScene().buildIndex, null, sessionName, mapLoader);
     }
     void Start()
     {
@@ -40,14 +42,8 @@ public class NetworkRunnerHandler : MonoBehaviour
         //Debug.Log($"Server NetworkRunner started.");
     }
     
-    protected virtual Task InitializeNetworkRunner(NetworkRunner runner, GameMode gameMode, NetAddress address,SceneRef scene, Action<NetworkRunner> initialized,string sessionName)
+    protected virtual Task InitializeNetworkRunner(NetworkRunner runner, GameMode gameMode, NetAddress address,SceneRef scene, Action<NetworkRunner> initialized,string sessionName,INetworkSceneManager sceneManager)
     {
-        INetworkSceneManager sceneManager = runner.GetComponents(typeof(MonoBehaviour)).OfType<INetworkSceneManager>().FirstOrDefault();
-        if (sceneManager == null)
-        {
-            networkSceneManager = runner.gameObject.AddComponent<NetworkSceneManagerDefault>();
-            sceneManager = networkSceneManager;
-        }
         runner.ProvideInput = true;
         return runner.StartGame(new StartGameArgs
         {

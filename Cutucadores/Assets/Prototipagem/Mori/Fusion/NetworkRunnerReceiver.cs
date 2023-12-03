@@ -52,6 +52,7 @@ public class NetworkRunnerReceiver : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
+        Debug.Log(player);
         NetworkBetweenScenesManager.Instance.RPC_UnlockCharacter(runner.GetPlayerUserId(player));
         NetworkBetweenScenesManager.Instance.Rpc_RemoveUserID(runner.GetPlayerUserId(player));
     }

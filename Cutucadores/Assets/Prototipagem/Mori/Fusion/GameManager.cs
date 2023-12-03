@@ -5,13 +5,13 @@ using Cinemachine;
 using Fusion;
 using Unity.VisualScripting;
 
-public class GameManager : NetworkBehaviour
+public class GameManager : NetworkBehaviour, IAfterSpawned
 {
-    public static GameManager Instance {  get; private set; }
+    public static GameManager Instance { get; private set; }
     public CinemachineVirtualCamera virtualCamera;
-    [HideInInspector]public CinemachineBasicMultiChannelPerlin virtualCameraNoiseChannel;
+    [HideInInspector] public CinemachineBasicMultiChannelPerlin virtualCameraNoiseChannel;
     public Transform[] playerSpawnpoints;
-    public ParticleSystem onDrillHitParticlePrefab,onBodyHitParticlePrefab;
+    public ParticleSystem onDrillHitParticlePrefab, onBodyHitParticlePrefab;
     [Space]
     public AudioSource onHitAudioSource;
     public AudioClip[] onHitPlayerAudios;
@@ -32,6 +32,20 @@ public class GameManager : NetworkBehaviour
     private void Start()
     {
         virtualCameraNoiseChannel = virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+    }
+    public override void Spawned()
+    {
+        base.Spawned();
+        Debug.Log("Spawned");
+    }
+    void IAfterSpawned.AfterSpawned()
+    {
+        if (NetworkBetweenScenesManager.Instance.userIDToPlayerData.TryGet(NetworkBetweenScenesManager.Instance.selfUserID, out PlayerData myPlayerData))
+        {
+            myPlayerData.loaded= true;
+            NetworkBetweenScenesManager.Instance.userIDToPlayerData.Set(NetworkBetweenScenesManager.Instance.selfUserID, myPlayerData);
+            NetworkBetweenScenesManager.Instance.RPC_CheckForPlayerLoaded();
+        }
     }
     public virtual void PlayDrillHitAudio(Vector3 position)
     {
@@ -55,17 +69,17 @@ public class GameManager : NetworkBehaviour
     }
     public void ShakeCamera(float amplitude)
     {
-        if(shakeCameraCoroutine != null)
+        if (shakeCameraCoroutine != null)
         {
             StopCoroutine(shakeCameraCoroutine);
         }
         shakeCameraCoroutine = StartCoroutine(ShakeCameraTimer(0.25f, amplitude));
     }
     public Coroutine shakeCameraCoroutine;
-    public IEnumerator ShakeCameraTimer(float duration,float amplitude)
+    public IEnumerator ShakeCameraTimer(float duration, float amplitude)
     {
         float timer = 0f;
-        while (timer<duration)
+        while (timer < duration)
         {
             virtualCameraNoiseChannel.m_AmplitudeGain = Mathf.Lerp(amplitude, 0, timer / duration);
             timer += Time.deltaTime;
@@ -75,15 +89,15 @@ public class GameManager : NetworkBehaviour
         shakeCameraCoroutine = null;
     }
 
-    [HideInInspector]public List<NetworkCharacterDrillController> playersControllers = new List<NetworkCharacterDrillController>();
+    [HideInInspector] public List<NetworkCharacterDrillController> playersControllers = new List<NetworkCharacterDrillController>();
     public void CheckIfThereIsWinner()
     {
         int totalPlayersAlive = 0;
-        for(int i = 0; i < playersControllers.Count; i++)
+        for (int i = 0; i < playersControllers.Count; i++)
         {
-            if(!playersControllers[i].hpHandler.isDead) totalPlayersAlive++;
+            if (!playersControllers[i].hpHandler.isDead) totalPlayersAlive++;
         }
-        if(totalPlayersAlive <=1)
+        if (totalPlayersAlive <= 1)
         {
             Debug.Log("Alguem ganhou");
         }

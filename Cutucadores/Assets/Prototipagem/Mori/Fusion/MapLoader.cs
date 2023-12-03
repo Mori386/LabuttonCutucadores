@@ -11,28 +11,44 @@ public class MapLoader : NetworkSceneManagerBase
     private void Awake()
     {
         if (Instance != null) Destroy(gameObject);
-        else Instance = this;
+        else
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
     }
-    public static IEnumerator Load(string sceneName)
+    public static IEnumerator Load(string sceneName, int mapInt)
     {
         Scene oldScene = SceneManager.GetActiveScene();
 
         AsyncOperation ao = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
-        while(! ao.isDone && ao != null)
+        while (!ao.isDone && ao != null)
         {
             yield return null;
         }
-        SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
-    }    
+        //SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
+
+        Instance.mapIndex = mapInt;
+        Instance.Runner.SetActiveScene(sceneName);
+    }
     protected override IEnumerator SwitchScene(SceneRef prevScene, SceneRef newScene, FinishedLoadingDelegate finished)
     {
-        
-        List<NetworkObject> sceneObjects = new List<NetworkObject>();
-        yield return SceneManager.LoadSceneAsync(mapIndex, LoadSceneMode.Single);
-        Scene loadedScene = SceneManager.GetSceneByBuildIndex(mapIndex);
-        sceneObjects = FindNetworkObjects(loadedScene, disable: false);
+        if (prevScene != SceneRef.None)
+        {
+            List<NetworkObject> sceneObjects = new List<NetworkObject>();
+            yield return SceneManager.LoadSceneAsync(mapIndex, LoadSceneMode.Single);
+            sceneObjects = FindNetworkObjects(SceneManager.GetActiveScene(), disable: false);
 
-        yield return null;
-        finished(sceneObjects);
+            yield return null;
+            finished(sceneObjects);
+        }
+        else
+        {
+            List<NetworkObject> sceneObjects = new List<NetworkObject>();
+            sceneObjects = FindNetworkObjects(SceneManager.GetActiveScene(), disable: false);
+
+            yield return null;
+            finished(sceneObjects);
+        }
     }
 }

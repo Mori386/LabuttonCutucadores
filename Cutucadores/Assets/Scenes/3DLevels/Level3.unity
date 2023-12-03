@@ -982,7 +982,8 @@ PrefabInstance:
       propertyPath: NetworkGuid.RawGuidValue.Array.data[1]
       value: -3566740647486389601
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1096194526856973584, guid: 49d3033f38780004592a616a8996d9e9, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 49d3033f38780004592a616a8996d9e9, type: 3}
 --- !u!4 &104212304 stripped
 Transform:

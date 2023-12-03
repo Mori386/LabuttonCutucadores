@@ -10,14 +10,13 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
     public bool spawned;
     public static NetworkBetweenScenesManager Instance;
 
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All, Channel = RpcChannel.Reliable,InvokeLocal = true)]
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = true)]
     public void Rpc_LoadMap(string mapName, int mapIndex)
     {
-        MapLoader.Instance.mapIndex = mapIndex;
-        StartCoroutine(MapLoader.Load(mapName));
+        StartCoroutine(MapLoader.Load(mapName, mapIndex));
     }
     [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
-    public void Rpc_UserIDDictionary(string userID,string nickname)
+    public void Rpc_UserIDDictionary(string userID, string nickname)
     {
         userIDList.Add(userID);
         userIDToPlayerData.Add(userID, new PlayerData
@@ -30,7 +29,7 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
     [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
     public void Rpc_RemoveUserID(string userID)
     {
-        if(userIDList.Contains(userID)) userIDList.Remove(userID);
+        if (userIDList.Contains(userID)) userIDList.Remove(userID);
         if (userIDToPlayerData.ContainsKey(userID)) userIDToPlayerData.Remove(userID);
     }
 
@@ -90,7 +89,7 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
         }
     }
 
-    [Rpc(RpcSources.All, RpcTargets.All,Channel = RpcChannel.Reliable,InvokeLocal = true)]
+    [Rpc(RpcSources.All, RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = true)]
     public void RPC_LockCharacter(string userID, Character character)
     {
         BPCharacter thisCharacterBP;
@@ -120,7 +119,7 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
                 thisCharacterBP.characterAnimator[i].SetTrigger("isSelected");
             }
             userIDToPlayerData.Set(userID, myPlayerData);
-            StartCoroutine(ChangeTankMaterial(thisCharacterBP,thisCharacterBP.defaultMaterial));
+            StartCoroutine(ChangeTankMaterial(thisCharacterBP, thisCharacterBP.defaultMaterial));
         }
         RPC_CheckForPlayerReady();
     }
@@ -154,7 +153,7 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
             StartCoroutine(ChangeTankMaterial(thisCharacterBP, thisCharacterBP.BpEffectMaterial));
         }
     }
-    public IEnumerator ChangeTankMaterial(BPCharacter bPCharacter,Material newMat)
+    public IEnumerator ChangeTankMaterial(BPCharacter bPCharacter, Material newMat)
     {
         float timer = 0f;
         float duration = 0.75f;
@@ -196,7 +195,7 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
     public void RPC_CheckForPlayerReady()
     {
         int playerInSession = userIDToPlayerData.Count;
-        int playersReady=0;
+        int playersReady = 0;
         if (playerInSession > 1)
         {
             for (int i = 0; i < userIDList.Count; i++)
@@ -211,10 +210,28 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
         }
         else CursorController.Instance.hostStartGameButton.gameObject.SetActive(false);
     }
+
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
+    public void RPC_CheckForPlayerLoaded()
+    {
+        bool isAllPlayersLoaded = true;
+        for (int i = 0; i < userIDList.Count; i++)
+        {
+            if (userIDToPlayerData.TryGet(userIDList[i], out PlayerData thisPlayerData))
+            {
+                if (!thisPlayerData.loaded)
+                {
+                    isAllPlayersLoaded = false;
+                    break;
+                }
+            }
+            Debug.Log(isAllPlayersLoaded);
+        }
+    }
 }
-public struct PlayerData : INetworkStruct
-{
-    public NetworkString<_16> username;
-    public Character character;
-    public NetworkBool loaded;
-}
+    public struct PlayerData : INetworkStruct
+    {
+        public NetworkString<_16> username;
+        public Character character;
+        public NetworkBool loaded;
+    }
