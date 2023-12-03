@@ -22,7 +22,8 @@ public class CharacterData : ScriptableObject
     //public InGameCharacterData characterData;
 
     [Header("------Model Info------"), Space(10)]
-    public GameObject visualPrefab; 
+    public GameObject visualPrefab;
+
 }
 [Serializable]
 public class InGameCharacterData

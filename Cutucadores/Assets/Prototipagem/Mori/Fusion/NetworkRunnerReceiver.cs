@@ -7,9 +7,12 @@ using UnityEngine;
 
 public class NetworkRunnerReceiver : MonoBehaviour, INetworkRunnerCallbacks
 {
+    public bool isInGameplay;
     public static NetworkRunnerReceiver Instance;
     public GameObject stampPlayerPrefab;
     public GameObject networkBetweenScenesManager;
+
+    CharacterInputHandler characterInputHandler;
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -38,7 +41,17 @@ public class NetworkRunnerReceiver : MonoBehaviour, INetworkRunnerCallbacks
     }
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
-
+        if (isInGameplay)
+        {
+            if (characterInputHandler == null)
+            {
+                if (NetworkPlayer.Local != null) characterInputHandler = NetworkPlayer.Local.GetComponent<CharacterInputHandler>();
+            }
+            else
+            {
+                input.Set(characterInputHandler.GetNetworkInput());
+            }
+        }
     }
     public void OnConnectedToServer(NetworkRunner runner)
     {

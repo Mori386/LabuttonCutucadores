@@ -1,4 +1,5 @@
 using Fusion;
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,14 +17,15 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
         StartCoroutine(MapLoader.Load(mapName, mapIndex));
     }
     [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
-    public void Rpc_UserIDDictionary(string userID, string nickname)
+    public void Rpc_UserIDDictionary(string userID, string nickname,PlayerRef playerReference)
     {
         userIDList.Add(userID);
         userIDToPlayerData.Add(userID, new PlayerData
         {
-            username = nickname
-            ,
-            character = Character.Null
+            username = nickname,
+            character = Character.Null,
+            playerRef = playerReference,
+            loaded = false
         });
     }
     [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
@@ -220,7 +222,7 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
         {
             if (userIDToPlayerData.TryGet(userIDList[i], out PlayerData thisPlayerData))
             {
-                if (!thisPlayerData.loaded)
+                if (thisPlayerData.loaded == false)
                 {
                     isAllPlayersLoaded = false;
                     break;
@@ -230,11 +232,22 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
         }
         if(isAllPlayersLoaded)
         {
+            for (int i = 0; i < userIDList.Count; i++)
+            {
+                if (userIDToPlayerData.TryGet(userIDList[i], out PlayerData thisPlayerData))
+                {
+                    Transform spawnpointTransform = GameManager.Instance.playerSpawnpoints[i];
+                    Runner.Spawn(GameManager.Instance.playerPrefab, spawnpointTransform.position, spawnpointTransform.rotation, thisPlayerData.playerRef);
+                    NetworkRunnerReceiver.Instance.isInGameplay = true;
+                }
+            }
+
         }
     }
 }
     public struct PlayerData : INetworkStruct
     {
+        public PlayerRef playerRef;
         public NetworkString<_16> username;
         public Character character;
         public NetworkBool loaded;

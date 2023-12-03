@@ -47,6 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
+  playerPrefab: {fileID: 1877149326463046058, guid: ec632613a285a274ea9ade7002e9404c, type: 3}
   virtualCamera: {fileID: 0}
   virtualCameraNoiseChannel: {fileID: 0}
   playerSpawnpoints:

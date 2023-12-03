@@ -8,6 +8,7 @@ using Unity.VisualScripting;
 public class GameManager : NetworkBehaviour, IAfterSpawned
 {
     public static GameManager Instance { get; private set; }
+    public GameObject playerPrefab;
     public CinemachineVirtualCamera virtualCamera;
     [HideInInspector] public CinemachineBasicMultiChannelPerlin virtualCameraNoiseChannel;
     public Transform[] playerSpawnpoints;
