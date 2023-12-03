@@ -217,19 +217,27 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
     [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
     public void RPC_CheckForPlayerLoaded()
     {
+        if (CheckForPlayersLoadedCoroutine == null) CheckForPlayersLoadedCoroutine = StartCoroutine(LoopCheckForPlayersLoaded());
+    }
+    public Coroutine CheckForPlayersLoadedCoroutine;
+    public IEnumerator LoopCheckForPlayersLoaded()
+    {
         bool isAllPlayersLoaded = true;
-        for (int i = 0; i < userIDList.Count; i++)
+        while(true)
         {
-            if (userIDToPlayerData.TryGet(userIDList[i], out PlayerData thisPlayerData))
+            for (int i = 0; i < userIDList.Count; i++)
             {
-                if (thisPlayerData.loaded == false)
+                if (userIDToPlayerData.TryGet(userIDList[i], out PlayerData thisPlayerData))
                 {
-                    isAllPlayersLoaded = false;
-                    break;
+                    if (thisPlayerData.loaded == false)
+                    {
+                        isAllPlayersLoaded = false;
+                    }
                 }
+                yield return null;
             }
+            if (isAllPlayersLoaded) break;
         }
-        Debug.Log(isAllPlayersLoaded);
         if (isAllPlayersLoaded)
         {
             for (int i = 0; i < userIDList.Count; i++)
@@ -241,7 +249,6 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
                     NetworkRunnerReceiver.Instance.isInGameplay = true;
                 }
             }
-
         }
     }
 }
