@@ -228,9 +228,9 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
                     break;
                 }
             }
-            Debug.Log(isAllPlayersLoaded);
         }
-        if(isAllPlayersLoaded)
+        Debug.Log(isAllPlayersLoaded);
+        if (isAllPlayersLoaded)
         {
             for (int i = 0; i < userIDList.Count; i++)
             {
