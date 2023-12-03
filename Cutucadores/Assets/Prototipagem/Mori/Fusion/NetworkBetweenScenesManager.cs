@@ -239,16 +239,13 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
             }
             if (isAllPlayersLoaded) break;
         }
-        if (isAllPlayersLoaded)
+        for (int i = 0; i < userIDList.Count; i++)
         {
-            for (int i = 0; i < userIDList.Count; i++)
+            if (userIDToPlayerData.TryGet(userIDList[i], out PlayerData thisPlayerData))
             {
-                if (userIDToPlayerData.TryGet(userIDList[i], out PlayerData thisPlayerData))
-                {
-                    Transform spawnpointTransform = GameManager.Instance.playerSpawnpoints[i];
-                    Runner.Spawn(GameManager.Instance.playerPrefab, spawnpointTransform.position, spawnpointTransform.rotation, thisPlayerData.playerRef);
-                    NetworkRunnerReceiver.Instance.isInGameplay = true;
-                }
+                Transform spawnpointTransform = GameManager.Instance.playerSpawnpoints[i];
+                Runner.Spawn(GameManager.Instance.playerPrefab, spawnpointTransform.position, spawnpointTransform.rotation, thisPlayerData.playerRef);
+                NetworkRunnerReceiver.Instance.isInGameplay = true;
             }
         }
     }
