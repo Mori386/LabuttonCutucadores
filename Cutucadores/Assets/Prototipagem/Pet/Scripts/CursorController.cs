@@ -414,13 +414,13 @@ public class CursorController : MonoBehaviour
         switch(mapInPreviewID)
         {
             case 0:
-                NetworkBetweenScenesManager.Instance.Rpc_LoadMap("Level1");
+                NetworkBetweenScenesManager.Instance.Rpc_LoadMap("Level1",1);
                 break;
             case 1:
-                NetworkBetweenScenesManager.Instance.Rpc_LoadMap("Level2");
+                NetworkBetweenScenesManager.Instance.Rpc_LoadMap("Level2",2);
                 break;
             case 2:
-                NetworkBetweenScenesManager.Instance.Rpc_LoadMap("Level3");
+                NetworkBetweenScenesManager.Instance.Rpc_LoadMap("Level3",3);
                 break;
         }
     }
