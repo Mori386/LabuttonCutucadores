@@ -64,8 +64,8 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
         }
     }
 
-    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true, InvokeResim = true, TickAligned = false)]
-    public void RPC_LockCharacter(string userID, Character character)
+    [Rpc(RpcSources.All, RpcTargets.All)]
+    public void RPC_LockCharacter(string userID, Character character, RpcInfo info = default)
     {
         BPCharacter thisCharacterBP;
         switch (character)
@@ -84,7 +84,7 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
                 thisCharacterBP = CursorController.Instance.vovoCharBP;
                 break;
         }
-        if (userIDToPlayerData.TryGet(selfUserID, out PlayerData myPlayerData))
+        if (userIDToPlayerData.TryGet(userID, out PlayerData myPlayerData))
         {
             thisCharacterBP.selectButton.interactable = false;
             myPlayerData.character = character;
