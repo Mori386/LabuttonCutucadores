@@ -10,8 +10,6 @@ public class NetworkRunnerReceiver : MonoBehaviour, INetworkRunnerCallbacks
     public static NetworkRunnerReceiver Instance;
     public GameObject stampPlayerPrefab;
     public GameObject networkBetweenScenesManager;
-
-    public BPPlayer thisBpPlayer;
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -54,6 +52,8 @@ public class NetworkRunnerReceiver : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
+        NetworkBetweenScenesManager.Instance.RPC_UnlockCharacter(runner.GetPlayerUserId(player));
+        NetworkBetweenScenesManager.Instance.Rpc_RemoveUserID(runner.GetPlayerUserId(player));
     }
 
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input)

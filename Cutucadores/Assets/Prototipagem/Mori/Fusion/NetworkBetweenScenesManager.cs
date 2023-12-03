@@ -124,6 +124,8 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
         }
         RPC_CheckForPlayerReady();
     }
+
+    [Rpc(RpcSources.All, RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = true)]
     public void RPC_UnlockCharacter(string userID)
     {
         if (userIDToPlayerData.TryGet(userID, out PlayerData myPlayerData))
