@@ -43,14 +43,11 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
     {
         
     }
-    public IEnumerator LoadPlayerInfo()
+    public void LoadPlayerInfo()
     {
         if (NetworkBetweenScenesManager.Instance.userIDToPlayerData.TryGet(NetworkBetweenScenesManager.Instance.selfUserID, out PlayerData myPlayerData))
         {
-            PlayerData thisPlayerData = myPlayerData;
-            thisPlayerData.loaded = true;
-            NetworkBetweenScenesManager.Instance.userIDToPlayerData.Set(NetworkBetweenScenesManager.Instance.selfUserID, thisPlayerData);
-            yield return null;
+            NetworkBetweenScenesManager.Instance.RPC_SetPlayerLoaded(NetworkBetweenScenesManager.Instance.selfUserID);
             NetworkBetweenScenesManager.Instance.RPC_CheckForPlayerLoaded();
             Debug.Log(NetworkBetweenScenesManager.Instance.userIDToPlayerData.Get(NetworkBetweenScenesManager.Instance.selfUserID).username+" "+
                 NetworkBetweenScenesManager.Instance.userIDToPlayerData.Get(NetworkBetweenScenesManager.Instance.selfUserID).loaded);

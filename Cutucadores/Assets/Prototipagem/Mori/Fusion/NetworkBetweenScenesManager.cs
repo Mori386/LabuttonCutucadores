@@ -17,7 +17,7 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
         StartCoroutine(MapLoader.Load(mapName, mapIndex));
     }
     [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
-    public void Rpc_UserIDDictionary(string userID, string nickname,PlayerRef playerReference)
+    public void Rpc_UserIDDictionary(string userID, string nickname, PlayerRef playerReference)
     {
         userIDList.Add(userID);
         userIDToPlayerData.Add(userID, new PlayerData
@@ -223,7 +223,7 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
     public IEnumerator LoopCheckForPlayersLoaded()
     {
         bool isAllPlayersLoaded = true;
-        while(true)
+        while (true)
         {
             for (int i = 0; i < userIDList.Count; i++)
             {
@@ -231,6 +231,7 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
                 {
                     if (thisPlayerData.loaded == false)
                     {
+                        Debug.Log(thisPlayerData.username + " " + thisPlayerData.loaded);
                         isAllPlayersLoaded = false;
                     }
                 }
@@ -251,11 +252,21 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
             }
         }
     }
-}
-    public struct PlayerData : INetworkStruct
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
+    public void RPC_SetPlayerLoaded(string userID)
     {
-        public PlayerRef playerRef;
-        public NetworkString<_16> username;
-        public Character character;
-        public NetworkBool loaded;
+        if (userIDToPlayerData.TryGet(userID, out PlayerData myPlayerData))
+        {
+            PlayerData thisPlayerData = myPlayerData;
+            thisPlayerData.loaded = true;
+            userIDToPlayerData.Set(userID, thisPlayerData);
+        }
     }
+}
+public struct PlayerData : INetworkStruct
+{
+    public PlayerRef playerRef;
+    public NetworkString<_16> username;
+    public Character character;
+    public NetworkBool loaded;
+}
