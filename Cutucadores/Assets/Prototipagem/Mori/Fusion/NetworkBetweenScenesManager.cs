@@ -10,10 +10,10 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
     public static NetworkBetweenScenesManager Instance;
 
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    public void Rpc_UserIDDictionary(string nickname)
+    public void Rpc_UserIDDictionary(string userID,string nickname)
     {
-        userIDList.Add(Runner.UserId);
-        userIDToPlayerData.Add(Runner.UserId, new PlayerData
+        userIDList.Add(userID);
+        userIDToPlayerData.Add(userID, new PlayerData
         {
             username = nickname
             ,
