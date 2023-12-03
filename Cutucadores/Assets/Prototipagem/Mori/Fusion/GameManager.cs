@@ -52,7 +52,8 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
             NetworkBetweenScenesManager.Instance.userIDToPlayerData.Set(NetworkBetweenScenesManager.Instance.selfUserID, thisPlayerData);
             yield return null;
             NetworkBetweenScenesManager.Instance.RPC_CheckForPlayerLoaded();
-            Debug.Log(NetworkBetweenScenesManager.Instance.userIDToPlayerData.Get(NetworkBetweenScenesManager.Instance.selfUserID).loaded);
+            Debug.Log(NetworkBetweenScenesManager.Instance.userIDToPlayerData.Get(NetworkBetweenScenesManager.Instance.selfUserID).username+" "+
+                NetworkBetweenScenesManager.Instance.userIDToPlayerData.Get(NetworkBetweenScenesManager.Instance.selfUserID).loaded);
         }
 
     }
