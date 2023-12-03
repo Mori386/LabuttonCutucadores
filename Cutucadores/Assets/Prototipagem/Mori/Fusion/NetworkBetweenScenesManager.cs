@@ -9,6 +9,7 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
     public bool spawned;
     public static NetworkBetweenScenesManager Instance;
 
+
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void Rpc_UserIDDictionary(string userID,string nickname)
     {
@@ -108,6 +109,7 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
             }
             StartCoroutine(ChangeTankMaterial(thisCharacterBP));
         }
+        RPC_CheckForPlayerReady();
     }
     public IEnumerator ChangeTankMaterial(BPCharacter bPCharacter)
     {
@@ -145,6 +147,24 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
         }
         bPCharacter.rotateObjectScript.rotate = startRotationSpeed;
         bPCharacter.rotateObjectScript.transform.localScale = startScale;
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable, InvokeLocal = true)]
+    public void RPC_CheckForPlayerReady()
+    {
+        int playerInSession = userIDToPlayerData.Count;
+        int playersReady=0;
+        for(int i = 0; i < userIDList.Count; i++)
+        {
+            if (userIDToPlayerData.TryGet(userIDList[i], out PlayerData myPlayerData))
+            {
+                if(myPlayerData.character != Character.Null) playersReady++;
+            }
+        }
+        if(playersReady>= playerInSession)
+        {
+            CursorController.Instance.hostStartGameButton.gameObject.SetActive(true);
+        }
     }
 }
 public struct PlayerData : INetworkStruct
