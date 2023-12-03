@@ -10,7 +10,7 @@ public class BPPlayer : NetworkBehaviour , IAfterSpawned
     {
         if (Object.HasInputAuthority)
         {
-            NetworkBetweenScenesManager.Instance.Rpc_UserIDDictionary(Runner.UserId,CursorController.Instance.nicknameInputField.text);
+            NetworkBetweenScenesManager.Instance.Rpc_UserIDDictionary(Runner.GetPlayerUserId(Object.InputAuthority),CursorController.Instance.nicknameInputField.text);
             //Debug.Log(NetworkBetweenScenesManager.Instance.userIDToPlayerData[Runner.UserId]);
             CursorController.Instance.carimbo = gameObject;
         }
