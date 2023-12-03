@@ -10,6 +10,13 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
     public bool spawned;
     public static NetworkBetweenScenesManager Instance;
 
+
+    [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.All)]
+    public void Rpc_TargetedSendPlayerInfo([RpcTarget] PlayerRef player, string userID)
+    {
+        selfUserID = userID;
+    }
+
     [Rpc(RpcSources.StateAuthority, RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = true)]
     public void Rpc_LoadMap(string mapName, int mapIndex)
     {
@@ -121,6 +128,7 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
             userIDToPlayerData.Set(userID, myPlayerData);
             StartCoroutine(ChangeTankMaterial(thisCharacterBP, thisCharacterBP.defaultMaterial));
         }
+        else Debug.Log("Exception: " + userID);
         RPC_CheckForPlayerReady();
     }
 

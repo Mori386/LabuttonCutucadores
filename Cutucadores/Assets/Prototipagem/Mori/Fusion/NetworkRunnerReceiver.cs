@@ -32,14 +32,11 @@ public class NetworkRunnerReceiver : MonoBehaviour, INetworkRunnerCallbacks
             //    Rpc_DefineCarimbo(player, NObject);
             //}
             // (runner.LocalPlayer == player) BetweenScenesPlayerInfos.Instance.idSelf = player.PlayerId;
+            NetworkBetweenScenesManager.Instance.Rpc_TargetedSendPlayerInfo(player, runner.GetPlayerUserId(player));
+
             NetworkBetweenScenesManager.Instance.RPC_CheckForPlayerReady();
         }
         else Debug.Log("OnPlayerJoined");
-        if (runner.LocalPlayer == player)
-        {
-            NetworkBetweenScenesManager.Instance.userIDToPlayerData.Add(runner.UserId, new PlayerData());
-            NetworkBetweenScenesManager.Instance.selfUserID = runner.UserId;
-        }
     }
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
