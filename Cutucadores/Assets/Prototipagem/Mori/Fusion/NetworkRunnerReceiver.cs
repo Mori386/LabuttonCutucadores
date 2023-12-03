@@ -10,10 +10,11 @@ public class NetworkRunnerReceiver : MonoBehaviour, INetworkRunnerCallbacks
     public GameObject stampPlayerPrefab;
     public GameObject networkBetweenScenesManager;
 
-    [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.All)]
-    public void Rpc_DefineCarimbo([RpcTarget] PlayerRef player, GameObject carimbo)
+    [Rpc(sources: RpcSources.All, targets: RpcTargets.All)]
+    public void Rpc_DefineCarimbo([RpcTarget] PlayerRef player, NetworkObject carimbo)
     {
-        CursorController.Instance.carimbo = carimbo;
+        Debug.Log(carimbo);
+        CursorController.Instance.carimbo = carimbo.gameObject;
     }
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
@@ -27,7 +28,11 @@ public class NetworkRunnerReceiver : MonoBehaviour, INetworkRunnerCallbacks
             }
             NetworkObject NObject = runner.Spawn(stampPlayerPrefab, stampPlayerPrefab.transform.position, stampPlayerPrefab.transform.rotation, player);
             if (runner.LocalPlayer == player) CursorController.Instance.carimbo = NObject.gameObject;
-            else Rpc_DefineCarimbo(player, NObject.gameObject);
+            else
+            {
+                Debug.Log("Send carimbo go");
+                Rpc_DefineCarimbo(player, NObject);
+            }
             // (runner.LocalPlayer == player) BetweenScenesPlayerInfos.Instance.idSelf = player.PlayerId;
         }
         else Debug.Log("OnPlayerJoined");
