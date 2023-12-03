@@ -16,9 +16,10 @@ public class BPPlayer : NetworkBehaviour , IAfterSpawned
             NetworkRunnerReceiver.Instance.thisBpPlayer = this;
         }
     }
-    public void OnPlayerLeave()
+    public override void Despawned(NetworkRunner runner, bool hasState)
     {
-        if (Object.HasInputAuthority)
+        base.Despawned(runner, hasState);
+        if (Object.InputAuthority == null)
         {
             NetworkBetweenScenesManager.Instance.RPC_UnlockCharacter(NetworkBetweenScenesManager.Instance.selfUserID);
             NetworkBetweenScenesManager.Instance.Rpc_RemoveUserID(NetworkBetweenScenesManager.Instance.selfUserID);
