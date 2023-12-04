@@ -144,14 +144,15 @@ public class WinScreenHandler : NetworkBehaviour
         EnableCharacter();
         winScreenParent.SetActive(true);
         mainCamera.gameObject.SetActive(false);
-        PlayCharacterAnimations();
         timer = 0f;
+        duration = 0.5f;
         while (timer < duration)
         {
             fadeInEffect.alpha = 1-(timer / duration);
             timer += Time.deltaTime;
             yield return null;
         }
+        PlayCharacterAnimations();
         yield return new WaitForSeconds(8f);
 
         var sacrificialGo = new GameObject("Sacrificial Lamb");
