@@ -4878,6 +4878,7 @@ GameObject:
   - component: {fileID: 9204315150059028812}
   - component: {fileID: 9204315150059028813}
   - component: {fileID: 90934935481260624}
+  - component: {fileID: 1197504691396423837}
   m_Layer: 5
   m_Name: VidaPlayerCanvas
   m_TagString: Untagged
@@ -5036,3 +5037,16 @@ MonoBehaviour:
     - {fileID: 4399207721373112902}
     - {fileID: 196555930580347072}
     deathEffect: {fileID: 2164941602878650781}
+  loaded: 0
+--- !u!225 &1197504691396423837
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9204315150059028815}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0

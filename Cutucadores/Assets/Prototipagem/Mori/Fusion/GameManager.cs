@@ -101,7 +101,7 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
     [HideInInspector] public List<NetworkCharacterDrillController> playersControllers = new List<NetworkCharacterDrillController>();
 
 
-    [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
     public void RPC_CheckForPlayersDead()
     {
         int totalPlayersAlive = 0;
@@ -119,6 +119,7 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
             PlayerRef playerRef;
             if (totalPlayersAlive > 0) playerRef = playerAlive.Object.InputAuthority;
             else playerRef = PlayerRef.None;
+            Debug.Log(Runner.GetPlayerUserId(playerRef));
             playerAlive.Object.RemoveInputAuthority();
             DefineWinner(totalPlayersAlive,playerRef);
             Debug.Log("Alguem ganhou");
