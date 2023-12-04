@@ -63,6 +63,7 @@ public class HPHandler : NetworkBehaviour
     }
     public void UpdateHpUI()
     {
+
         hpText.text = HP.ToString();
     }
     static void OnHPChanged(Changed<HPHandler> changed)
