@@ -1284,10 +1284,10 @@ MonoBehaviour:
   fadeInEffect: {fileID: 1478685000798725919}
   music: {fileID: 2614174261188027811}
   winScreenParent: {fileID: 1337539674761553963}
-  mineradorLight: {fileID: 3965428639786864753}
-  escavadoraLight: {fileID: 3965428640443282313}
-  paiEFilhaLight: {fileID: 3965428640350298665}
-  vovoLight: {fileID: 3965428641334485406}
+  mineradorLight: {fileID: 3965428641334485406}
+  escavadoraLight: {fileID: 3965428639786864753}
+  paiEFilhaLight: {fileID: 3965428640443282313}
+  vovoLight: {fileID: 3965428640350298665}
   winScreenCamera: {fileID: 3965428641307230733}
   mineradorAnim: {fileID: 3965428639717960540}
   escavadoraAnim: {fileID: 7377632859593312658}

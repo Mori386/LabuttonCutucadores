@@ -131,6 +131,7 @@ public class WinScreenHandler : NetworkBehaviour
             GameManager.Instance.gameplayMusic.volume = Mathf.Lerp(gameplayVolumeStartValue,0,timer/duration);
             fadeInEffect.alpha = timer/duration;
             timer += Time.deltaTime;
+            yield return null;
         }
         GameManager.Instance.gameplayMusic.volume = 0;
         fadeInEffect.alpha = 1;
@@ -144,6 +145,7 @@ public class WinScreenHandler : NetworkBehaviour
         {
             fadeInEffect.alpha = 1-(timer / duration);
             timer += Time.deltaTime;
+            yield return null;
         }
         yield return new WaitForSeconds(5f);
 
