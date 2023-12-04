@@ -36,7 +36,7 @@ public class HPBarHandler : NetworkBehaviour
                     //Self
                     p1HPBar.profilePicture.sprite = GetCharacterPfp(playerData.character);
                     p1HPBar.username.text = playerData.username.ToString();
-                    userIDToPlayerHPBars.Add(NetworkBetweenScenesManager.Instance.selfUserID, p1HPBar);
+                    userIDToPlayerHPBars.Add(NetworkBetweenScenesManager.Instance.userIDList[i].ToString(), p1HPBar);
                     p1HPBar.hpBar.SetActive(true);
                 }
                 else
@@ -57,7 +57,7 @@ public class HPBarHandler : NetworkBehaviour
                     }
                     playerHPBar.profilePicture.sprite = GetCharacterPfp(playerData.character);
                     playerHPBar.username.text = playerData.username.ToString();
-                    userIDToPlayerHPBars.Add(NetworkBetweenScenesManager.Instance.selfUserID, playerHPBar);
+                    userIDToPlayerHPBars.Add(NetworkBetweenScenesManager.Instance.userIDList[i].ToString(), playerHPBar);
                     playerHPBar.hpBar.SetActive(true);
                     playersPlaced++;
                 }
