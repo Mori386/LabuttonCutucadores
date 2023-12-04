@@ -23,7 +23,7 @@ public class HPBarHandler : NetworkBehaviour
     {
         Instance = this;
     }
-    private void Start()
+    public void LoadPlayerInfos()
     {
         NetworkBetweenScenesManager betweenScenesManager = NetworkBetweenScenesManager.Instance;
         int playersPlaced = 1;
