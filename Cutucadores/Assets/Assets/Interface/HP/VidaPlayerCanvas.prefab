@@ -4878,7 +4878,6 @@ GameObject:
   - component: {fileID: 9204315150059028812}
   - component: {fileID: 9204315150059028813}
   - component: {fileID: 90934935481260624}
-  - component: {fileID: 5310010935416166450}
   m_Layer: 5
   m_Name: VidaPlayerCanvas
   m_TagString: Untagged
@@ -4981,7 +4980,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f95f5b9d6b16bf447b7ce7edc1332525, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _interpolationDataSource: 0
   pfpEscavadeira: {fileID: 21300000, guid: ebe57476248316c4587b24f59d1f0d6c, type: 3}
   pfpMinerador: {fileID: 21300000, guid: 105d0afd0f7afe04494ff4df2af922ac, type: 3}
   pfpPaiEFilha: {fileID: 21300000, guid: d2f67500ae55d2d48865a0a55f4ca149, type: 3}
@@ -5038,27 +5036,3 @@ MonoBehaviour:
     - {fileID: 4399207721373112902}
     - {fileID: 196555930580347072}
     deathEffect: {fileID: 2164941602878650781}
---- !u!114 &5310010935416166450
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9204315150059028815}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObjectInterest: 1
-  DefaultInterestGroups: []
-  DestroyWhenStateAuthorityLeaves: 0
-  AllowStateAuthorityOverride: 1
-  AoiPositionSource: {fileID: 0}
-  Flags: 2305
-  NetworkGuid:
-    RawGuidValue: 2538fb0a6ea8b2447bcbed259c14087f
-  NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 90934935481260624}
-  SimulationBehaviours: []

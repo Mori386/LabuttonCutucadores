@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using static CharacterData;
 
-public class HPBarHandler : NetworkBehaviour
+public class HPBarHandler : MonoBehaviour
 {
     public Sprite pfpEscavadeira, pfpMinerador, pfpPaiEFilha, pfpVovo;
     [Space]
