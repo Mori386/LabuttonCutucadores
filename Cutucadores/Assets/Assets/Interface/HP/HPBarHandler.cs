@@ -69,6 +69,21 @@ public class HPBarHandler : MonoBehaviour
             }
         }
     }
+
+    public void UpdateHp(string userID,int newHpAmount)
+    {
+        if(userIDToPlayerHPBars.TryGetValue(userID,out PlayerHPBar playerHPBar))
+        {
+            playerHPBar.ChangeHpSlots(newHpAmount);
+        }
+    }
+    public void UpdateState(string userID, bool isDead)
+    {
+        if (userIDToPlayerHPBars.TryGetValue(userID, out PlayerHPBar playerHPBar))
+        {
+            playerHPBar.deathEffect.gameObject.SetActive(isDead);
+        }
+    }
     public Sprite GetCharacterPfp(Character character)
     {
         switch (character)

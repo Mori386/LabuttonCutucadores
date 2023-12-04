@@ -64,7 +64,7 @@ public class HPHandler : NetworkBehaviour
     }
     public void UpdateHpUI()
     {
-
+        HPBarHandler.Instance.UpdateHp(NetworkBetweenScenesManager.Instance.selfUserID, HP);
         hpText.text = HP.ToString();
     }
     static void OnHPChanged(Changed<HPHandler> changed)
@@ -90,6 +90,7 @@ public class HPHandler : NetworkBehaviour
     {
         if(changed.Behaviour.isDead)
         {
+            HPBarHandler.Instance.UpdateState(NetworkBetweenScenesManager.Instance.selfUserID, true);
             changed.Behaviour.drillController.Die();
         }
     }
