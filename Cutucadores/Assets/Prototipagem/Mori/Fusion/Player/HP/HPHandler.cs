@@ -62,7 +62,6 @@ public class HPHandler : NetworkBehaviour
 
 
     }
-    [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
     public void UpdateHpUI()
     {
         HPBarHandler.Instance.UpdateHp(Object.InputAuthority, HP);
