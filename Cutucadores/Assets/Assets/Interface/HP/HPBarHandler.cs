@@ -23,43 +23,48 @@ public class HPBarHandler : MonoBehaviour
     {
         Instance = this;
     }
+    public bool loaded;
     public void LoadPlayerInfos()
     {
-        NetworkBetweenScenesManager betweenScenesManager = NetworkBetweenScenesManager.Instance;
-        int playersPlaced = 1;
-        for (int i = 0; i < betweenScenesManager.userIDList.Count; i++)
+        if (!loaded)
         {
-            if (betweenScenesManager.userIDToPlayerData.TryGet(betweenScenesManager.userIDList[i], out PlayerData playerData))
+            loaded = true;
+            NetworkBetweenScenesManager betweenScenesManager = NetworkBetweenScenesManager.Instance;
+            int playersPlaced = 1;
+            for (int i = 0; i < betweenScenesManager.userIDList.Count; i++)
             {
-                if (NetworkBetweenScenesManager.Instance.selfUserID == NetworkBetweenScenesManager.Instance.userIDList[i])
+                if (betweenScenesManager.userIDToPlayerData.TryGet(betweenScenesManager.userIDList[i], out PlayerData playerData))
                 {
-                    //Self
-                    p1HPBar.profilePicture.sprite = GetCharacterPfp(playerData.character);
-                    p1HPBar.username.text = playerData.username.ToString();
-                    userIDToPlayerHPBars.Add(NetworkBetweenScenesManager.Instance.userIDList[i].ToString(), p1HPBar);
-                    p1HPBar.hpBar.SetActive(true);
-                }
-                else
-                {
-                    PlayerHPBar playerHPBar;
-                    switch (playersPlaced)
+                    if (NetworkBetweenScenesManager.Instance.selfUserID == NetworkBetweenScenesManager.Instance.userIDList[i])
                     {
-                        default:
-                        case 1:
-                            playerHPBar = p2HPBar;
-                            break;
-                        case 2:
-                            playerHPBar = p3HPBar;
-                            break;
-                        case 3:
-                            playerHPBar = p4HPBar;
-                            break;
+                        //Self
+                        p1HPBar.profilePicture.sprite = GetCharacterPfp(playerData.character);
+                        p1HPBar.username.text = playerData.username.ToString();
+                        userIDToPlayerHPBars.Add(NetworkBetweenScenesManager.Instance.userIDList[i].ToString(), p1HPBar);
+                        p1HPBar.hpBar.SetActive(true);
                     }
-                    playerHPBar.profilePicture.sprite = GetCharacterPfp(playerData.character);
-                    playerHPBar.username.text = playerData.username.ToString();
-                    userIDToPlayerHPBars.Add(NetworkBetweenScenesManager.Instance.userIDList[i].ToString(), playerHPBar);
-                    playerHPBar.hpBar.SetActive(true);
-                    playersPlaced++;
+                    else
+                    {
+                        PlayerHPBar playerHPBar;
+                        switch (playersPlaced)
+                        {
+                            default:
+                            case 1:
+                                playerHPBar = p2HPBar;
+                                break;
+                            case 2:
+                                playerHPBar = p3HPBar;
+                                break;
+                            case 3:
+                                playerHPBar = p4HPBar;
+                                break;
+                        }
+                        playerHPBar.profilePicture.sprite = GetCharacterPfp(playerData.character);
+                        playerHPBar.username.text = playerData.username.ToString();
+                        userIDToPlayerHPBars.Add(NetworkBetweenScenesManager.Instance.userIDList[i].ToString(), playerHPBar);
+                        playerHPBar.hpBar.SetActive(true);
+                        playersPlaced++;
+                    }
                 }
             }
         }
