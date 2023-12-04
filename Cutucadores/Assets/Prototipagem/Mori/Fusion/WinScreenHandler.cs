@@ -124,7 +124,7 @@ public class WinScreenHandler : NetworkBehaviour
     public IEnumerator WinScreenAnimations(string textToApper)
     {
         float timer = 0f;
-        float duration = 0.25f;
+        float duration = 1;
         float gameplayVolumeStartValue = GameManager.Instance.gameplayMusic.volume;
         while (timer<duration)
         {
@@ -147,7 +147,7 @@ public class WinScreenHandler : NetworkBehaviour
             timer += Time.deltaTime;
             yield return null;
         }
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(10f);
 
         var sacrificialGo = new GameObject("Sacrificial Lamb");
         Runner.Shutdown();
