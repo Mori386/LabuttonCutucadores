@@ -101,7 +101,7 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
     [HideInInspector] public List<NetworkCharacterDrillController> playersControllers = new List<NetworkCharacterDrillController>();
 
 
-    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
     public void RPC_CheckForPlayersDead()
     {
         int totalPlayersAlive = 0;
