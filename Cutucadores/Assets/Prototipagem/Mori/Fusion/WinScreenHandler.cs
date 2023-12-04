@@ -3,12 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using static CharacterData;
 
 public class WinScreenHandler : NetworkBehaviour
 {
     Camera mainCamera;
     public static WinScreenHandler Instance;
+    [SerializeField] private CanvasGroup fadeInEffect;
+    [SerializeField] private AudioSource music;
     [SerializeField] private GameObject winScreenParent;
     [SerializeField] private Light mineradorLight, escavadoraLight, paiEFilhaLight, vovoLight;
     [SerializeField] private Camera winScreenCamera;
@@ -120,14 +123,32 @@ public class WinScreenHandler : NetworkBehaviour
     }
     public IEnumerator WinScreenAnimations(string textToApper)
     {
+        float timer = 0f;
+        float duration = 0.25f;
+        float gameplayVolumeStartValue = GameManager.Instance.gameplayMusic.volume;
+        while (timer<duration)
+        {
+            GameManager.Instance.gameplayMusic.volume = Mathf.Lerp(gameplayVolumeStartValue,0,timer/duration);
+            fadeInEffect.alpha = timer/duration;
+            timer += Time.deltaTime;
+        }
+        GameManager.Instance.gameplayMusic.volume = 0;
+        fadeInEffect.alpha = 1;
+        music.Play();
         EnableCharacter();
         winScreenParent.SetActive(true);
         mainCamera.gameObject.SetActive(false);
         PlayCharacterAnimations();
-        yield return new WaitForSeconds(4f);
+        timer = 0f;
+        while (timer < duration)
+        {
+            fadeInEffect.alpha = 1-(timer / duration);
+            timer += Time.deltaTime;
+        }
+        yield return new WaitForSeconds(5f);
 
         var sacrificialGo = new GameObject("Sacrificial Lamb");
-        Runner.Disconnect(Runner.LocalPlayer);
+        Runner.Shutdown();
 
 
         DontDestroyOnLoad(sacrificialGo);
@@ -138,14 +159,28 @@ public class WinScreenHandler : NetworkBehaviour
     }
     public void EnableCharacter()
     {
-        if(mineradorWin != 0) mineradorAnim.gameObject.SetActive(true);
-        if(escavadoraWin != 0) escavadoraAnim.gameObject.SetActive(true);
-        if(paiEFilhaWin != 0)
+        if (mineradorWin == 0)
         {
-            paiAnim.gameObject.SetActive(true);
-            filhaAnim.gameObject.SetActive(true);
+            mineradorAnim.gameObject.SetActive(false);
+            mineradorLight.gameObject.SetActive(false);
         }
-        if(vovoWin != 0) vovoAnim.gameObject.SetActive(true);
+        if (escavadoraWin == 0)
+        {
+            escavadoraAnim.gameObject.SetActive(false);
+            escavadoraLight.gameObject.SetActive(false);
+        }
+        if(paiEFilhaWin == 0)
+        {
+            paiAnim.gameObject.SetActive(false);
+            filhaAnim.gameObject.SetActive(false);
+
+            paiEFilhaLight.gameObject.SetActive(false);
+        }
+        if (vovoWin == 0)
+        {
+            vovoAnim.gameObject.SetActive(false);
+            vovoLight.gameObject.SetActive(false);
+        }
     }
     public void PlayCharacterAnimations()
     {

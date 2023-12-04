@@ -18,6 +18,8 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
     public AudioClip[] onHitPlayerAudios;
     private int lastPlayedAudio = -1;
 
+    public AudioSource gameplayMusic;
+
     public readonly float onBodyHitCameraShakeAmplitude = 20f;
     public readonly float onDrillHitCameraShakeAmplitude = 15f;
     private void Awake()

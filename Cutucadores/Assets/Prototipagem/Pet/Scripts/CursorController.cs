@@ -579,6 +579,7 @@ public class CursorController : MonoBehaviour
                 if (Input.GetMouseButton(0)) timer += Time.deltaTime * (animSpeedUpMultiplier - 1);
                 yield return null;
             }
+            mapSelection.transform.localPosition = MapSelectFinalPos;
             mapSelection.blocksRaycasts = true;
         }
         pageLeaving.blocksRaycasts = true;
