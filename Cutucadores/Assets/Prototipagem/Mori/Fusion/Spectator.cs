@@ -4,15 +4,33 @@ using UnityEngine;
 
 public class Spectator : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public static Spectator Instance;
+    private void Awake()
     {
-        
+        Instance = this;
     }
-
-    // Update is called once per frame
-    void Update()
+    public void StartFollowCameraNextPlayer()
     {
-        
+        if(FollowPlayerCheckCoroutine == null) FollowPlayerCheckCoroutine = StartCoroutine(FollowPlayerCheck());
+    }
+    public Coroutine FollowPlayerCheckCoroutine;
+    public IEnumerator FollowPlayerCheck()
+    {
+        while (true)
+        {
+            ChangeCameraFollow();
+            yield return new WaitForSeconds(1f);
+        }
+    }
+    public void ChangeCameraFollow()
+    {
+        for(int i = 0; i < GameManager.Instance.playersControllers.Count; i++)
+        {
+            if (!GameManager.Instance.playersControllers[i].hpHandler.isDead)
+            {
+                GameManager.Instance.virtualCamera.Follow = GameManager.Instance.playersControllers[i].transform;
+                GameManager.Instance.virtualCamera.LookAt = GameManager.Instance.playersControllers[i].transform;
+            }
+        }
     }
 }

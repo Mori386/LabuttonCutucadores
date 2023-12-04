@@ -211,6 +211,7 @@ public class NetworkCharacterDrillController : NetworkTransform
         ToggleCharacterVisual(false);
         ToggleCharacterInput(false);
         if(Object.HasInputAuthority)GameManager.Instance.RPC_CheckForPlayersDead();
+        Spectator.Instance.StartFollowCameraNextPlayer();
     }
     public void ToggleCharacterInput(bool state)
     {
