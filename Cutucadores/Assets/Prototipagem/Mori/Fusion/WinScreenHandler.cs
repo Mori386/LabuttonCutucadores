@@ -153,7 +153,7 @@ public class WinScreenHandler : NetworkBehaviour
             yield return null;
         }
         PlayCharacterAnimations();
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(4f);
         timer = 0f;
         duration = 1f;
         while (timer < duration)
@@ -162,6 +162,7 @@ public class WinScreenHandler : NetworkBehaviour
             timer += Time.deltaTime;
             yield return null;
         }
+        fadeInEffect.alpha = 1f;
         var sacrificialGo = new GameObject("Sacrificial Lamb");
         Runner.Shutdown();
 
