@@ -77097,6 +77097,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1337539674761553963, guid: c5a69bba0c11e1d45b0ebdd9be13ab8c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3965428639880604712, guid: c5a69bba0c11e1d45b0ebdd9be13ab8c, type: 3}
       propertyPath: m_RootOrder
       value: 15
@@ -77147,11 +77151,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3965428639880604713, guid: c5a69bba0c11e1d45b0ebdd9be13ab8c, type: 3}
       propertyPath: NetworkGuid.RawGuidValue.Array.data[0]
-      value: -4664482012336358105
+      value: 1100225624705412250
       objectReference: {fileID: 0}
     - target: {fileID: 3965428639880604713, guid: c5a69bba0c11e1d45b0ebdd9be13ab8c, type: 3}
       propertyPath: NetworkGuid.RawGuidValue.Array.data[1]
-      value: 968169936880005019
+      value: 3863371678317969539
       objectReference: {fileID: 0}
     - target: {fileID: 3965428639880604715, guid: c5a69bba0c11e1d45b0ebdd9be13ab8c, type: 3}
       propertyPath: m_Name

@@ -134,7 +134,7 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
                     WinScreenHandler.Instance.RPC_DefineLoser(playerData.character);
                 }
             }
-            WinScreenHandler.Instance.RPC_StartWinScreen("Empate");
+            WinScreenHandler.Instance.RPC_StartWinScreen("Empate!!!");
         }
         else
         {
@@ -151,7 +151,7 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
                     else WinScreenHandler.Instance.RPC_DefineLoser(playerData.character);
                 }
             }
-            WinScreenHandler.Instance.RPC_StartWinScreen(playerName);
+            WinScreenHandler.Instance.RPC_StartWinScreen(playerName+" Venceu!!!");
         }
     }
 }

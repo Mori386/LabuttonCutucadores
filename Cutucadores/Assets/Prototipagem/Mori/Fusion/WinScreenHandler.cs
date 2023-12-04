@@ -1,6 +1,7 @@
 using Fusion;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -11,6 +12,8 @@ public class WinScreenHandler : NetworkBehaviour
     Camera mainCamera;
     public static WinScreenHandler Instance;
     [SerializeField] private CanvasGroup fadeInEffect;
+    [SerializeField] private TextMeshProUGUI winnerText;
+    [SerializeField] private CanvasGroup winnerTextCanvasGroup;
     [SerializeField] private AudioSource music;
     [SerializeField] private GameObject winScreenParent;
     [SerializeField] private Light mineradorLight, escavadoraLight, paiEFilhaLight, vovoLight;
@@ -135,6 +138,8 @@ public class WinScreenHandler : NetworkBehaviour
         }
         GameManager.Instance.gameplayMusic.volume = 0;
         fadeInEffect.alpha = 1;
+        winnerTextCanvasGroup.alpha = 1;
+        winnerText.text = textToApper;
         music.Play();
         EnableCharacter();
         winScreenParent.SetActive(true);
@@ -147,7 +152,7 @@ public class WinScreenHandler : NetworkBehaviour
             timer += Time.deltaTime;
             yield return null;
         }
-        yield return new WaitForSeconds(10f);
+        yield return new WaitForSeconds(8f);
 
         var sacrificialGo = new GameObject("Sacrificial Lamb");
         Runner.Shutdown();
