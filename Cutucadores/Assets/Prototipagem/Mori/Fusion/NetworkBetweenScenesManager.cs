@@ -249,7 +249,6 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
             {
                 Transform spawnpointTransform = GameManager.Instance.playerSpawnpoints[i];
                 Runner.Spawn(GameManager.Instance.playerPrefab, spawnpointTransform.position, spawnpointTransform.rotation, thisPlayerData.playerRef);
-                HPBarHandler.Instance.LoadPlayerInfos();
             }
         }
     }

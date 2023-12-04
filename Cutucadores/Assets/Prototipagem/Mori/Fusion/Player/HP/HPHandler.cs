@@ -30,6 +30,7 @@ public class HPHandler : NetworkBehaviour
     public override void Spawned()
     {
         base.Spawned();
+        HPBarHandler.Instance.LoadPlayerInfos();
         HP = startingHP;
         UpdateHpUI();
         isDead = false;
