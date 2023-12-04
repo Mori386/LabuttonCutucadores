@@ -117,8 +117,9 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
         if (totalPlayersAlive <= 1)
         {
             PlayerRef playerRef;
-            if (playersControllers.Count > 0) playerRef = playerAlive.Object.InputAuthority;
+            if (totalPlayersAlive > 0) playerRef = playerAlive.Object.InputAuthority;
             else playerRef = PlayerRef.None;
+            playerAlive.Object.RemoveInputAuthority();
             DefineWinner(totalPlayersAlive,playerRef);
             Debug.Log("Alguem ganhou");
         }

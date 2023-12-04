@@ -565,7 +565,7 @@ MonoBehaviour:
   motorAudioSource: {fileID: 4880860095109254421}
   wheelAudioSource: {fileID: 6737788527968781165}
   _wheelVolume: 0
-  defaultAudioSourceVolumeMultiplier: 0.05
+  defaultAudioSourceVolumeMultiplier: 0.35
 --- !u!82 &4880860095109254421
 AudioSource:
   m_ObjectHideFlags: 0
