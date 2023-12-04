@@ -62,9 +62,10 @@ public class HPHandler : NetworkBehaviour
 
 
     }
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
     public void UpdateHpUI()
     {
-        HPBarHandler.Instance.UpdateHp(NetworkBetweenScenesManager.Instance.selfUserID, HP);
+        HPBarHandler.Instance.UpdateHp(Object.InputAuthority, HP);
         hpText.text = HP.ToString();
     }
     static void OnHPChanged(Changed<HPHandler> changed)
@@ -90,7 +91,7 @@ public class HPHandler : NetworkBehaviour
     {
         if(changed.Behaviour.isDead)
         {
-            HPBarHandler.Instance.UpdateState(NetworkBetweenScenesManager.Instance.selfUserID, true);
+            HPBarHandler.Instance.UpdateState(changed.Behaviour.Object.InputAuthority, true);
             changed.Behaviour.drillController.Die();
         }
     }

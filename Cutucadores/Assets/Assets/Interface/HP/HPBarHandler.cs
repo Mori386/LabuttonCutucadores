@@ -18,7 +18,7 @@ public class HPBarHandler : MonoBehaviour
 
     public static HPBarHandler Instance;
 
-    public Dictionary<string, PlayerHPBar> userIDToPlayerHPBars = new Dictionary<string, PlayerHPBar>();
+    public Dictionary<PlayerRef, PlayerHPBar> playerRefToPlayerHPBars = new Dictionary<PlayerRef, PlayerHPBar>();
     private void Awake()
     {
         Instance = this;
@@ -40,7 +40,7 @@ public class HPBarHandler : MonoBehaviour
                         //Self
                         p1HPBar.profilePicture.sprite = GetCharacterPfp(playerData.character);
                         p1HPBar.username.text = playerData.username.ToString();
-                        userIDToPlayerHPBars.Add(NetworkBetweenScenesManager.Instance.userIDList[i].ToString(), p1HPBar);
+                        playerRefToPlayerHPBars.Add(playerData.playerRef, p1HPBar);
                         p1HPBar.hpBar.SetActive(true);
                     }
                     else
@@ -61,7 +61,7 @@ public class HPBarHandler : MonoBehaviour
                         }
                         playerHPBar.profilePicture.sprite = GetCharacterPfp(playerData.character);
                         playerHPBar.username.text = playerData.username.ToString();
-                        userIDToPlayerHPBars.Add(NetworkBetweenScenesManager.Instance.userIDList[i].ToString(), playerHPBar);
+                        playerRefToPlayerHPBars.Add(playerData.playerRef, playerHPBar);
                         playerHPBar.hpBar.SetActive(true);
                         playersPlaced++;
                     }
@@ -70,16 +70,16 @@ public class HPBarHandler : MonoBehaviour
         }
     }
 
-    public void UpdateHp(string userID,int newHpAmount)
+    public void UpdateHp(PlayerRef playerRef,int newHpAmount)
     {
-        if(userIDToPlayerHPBars.TryGetValue(userID,out PlayerHPBar playerHPBar))
+        if(playerRefToPlayerHPBars.TryGetValue(playerRef, out PlayerHPBar playerHPBar))
         {
             playerHPBar.ChangeHpSlots(newHpAmount);
         }
     }
-    public void UpdateState(string userID, bool isDead)
+    public void UpdateState(PlayerRef playerRef, bool isDead)
     {
-        if (userIDToPlayerHPBars.TryGetValue(userID, out PlayerHPBar playerHPBar))
+        if (playerRefToPlayerHPBars.TryGetValue(playerRef, out PlayerHPBar playerHPBar))
         {
             playerHPBar.deathEffect.gameObject.SetActive(isDead);
         }
