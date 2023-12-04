@@ -97,16 +97,59 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
     }
 
     [HideInInspector] public List<NetworkCharacterDrillController> playersControllers = new List<NetworkCharacterDrillController>();
-    public void CheckIfThereIsWinner()
+
+
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
+    public void RPC_CheckForPlayersDead()
     {
         int totalPlayersAlive = 0;
+        NetworkCharacterDrillController playerAlive = null;
         for (int i = 0; i < playersControllers.Count; i++)
         {
-            if (!playersControllers[i].hpHandler.isDead) totalPlayersAlive++;
+            if (!playersControllers[i].hpHandler.isDead)
+            {
+                totalPlayersAlive++;
+                playerAlive= playersControllers[i];
+            }
         }
         if (totalPlayersAlive <= 1)
         {
+            PlayerRef playerRef;
+            if (playersControllers.Count > 0) playerRef = playerAlive.Object.InputAuthority;
+            else playerRef = PlayerRef.None;
+            DefineWinner(totalPlayersAlive,playerRef);
             Debug.Log("Alguem ganhou");
+        }
+    }
+    public void DefineWinner(int totalPlayersAlive,PlayerRef playerAlive)
+    {
+        if (totalPlayersAlive <= 0)
+        {
+            for(int i = 0;i < NetworkBetweenScenesManager.Instance.userIDList.Count;i++)
+            {
+                if (NetworkBetweenScenesManager.Instance.userIDToPlayerData.TryGet(NetworkBetweenScenesManager.Instance.userIDList[i],out PlayerData playerData))
+                {
+                    WinScreenHandler.Instance.RPC_DefineLoser(playerData.character);
+                }
+            }
+            WinScreenHandler.Instance.RPC_StartWinScreen("Empate");
+        }
+        else
+        {
+            string playerName = "Unfound";
+            for (int i = 0; i < NetworkBetweenScenesManager.Instance.userIDList.Count; i++)
+            {
+                if (NetworkBetweenScenesManager.Instance.userIDToPlayerData.TryGet(NetworkBetweenScenesManager.Instance.userIDList[i], out PlayerData playerData))
+                {
+                    if(Runner.GetPlayerUserId(playerAlive) == NetworkBetweenScenesManager.Instance.userIDList[i])
+                    {
+                        playerName = playerData.username.ToString();
+                        WinScreenHandler.Instance.RPC_DefineWinner(playerData.character);
+                    }
+                    else WinScreenHandler.Instance.RPC_DefineLoser(playerData.character);
+                }
+            }
+            WinScreenHandler.Instance.RPC_StartWinScreen(playerName);
         }
     }
 }

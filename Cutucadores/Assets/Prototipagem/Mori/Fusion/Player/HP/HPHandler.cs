@@ -90,5 +90,5 @@ public class HPHandler : NetworkBehaviour
         {
             changed.Behaviour.drillController.Die();
         }
-    }    
+    }
 }

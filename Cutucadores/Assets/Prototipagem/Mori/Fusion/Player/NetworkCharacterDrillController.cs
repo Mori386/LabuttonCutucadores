@@ -210,7 +210,7 @@ public class NetworkCharacterDrillController : NetworkTransform
         ToggleCharacterCollider(false);
         ToggleCharacterVisual(false);
         ToggleCharacterInput(false);
-        GameManager.Instance.CheckIfThereIsWinner();
+        GameManager.Instance.RPC_CheckForPlayersDead();
     }
     public void ToggleCharacterInput(bool state)
     {
