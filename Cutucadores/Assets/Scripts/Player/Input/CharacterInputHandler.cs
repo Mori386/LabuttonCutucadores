@@ -40,6 +40,7 @@ public class CharacterInputHandler : MonoBehaviour
     }
     public void EnableCharacter()
     {
+        //Para nao contar inputs desnecessarios ele contabiliza so se tiver input authority
         if (characterMovementHandler.Object.HasInputAuthority && InputRegisterCoroutine == null) InputRegisterCoroutine = StartCoroutine(GetInputCoroutine());
     }
     public NetworkInputData GetNetworkInput()

@@ -7,7 +7,10 @@ using UnityEngine;
 
 public class NetworkRunnerReceiver : MonoBehaviour, INetworkRunnerCallbacks
 {
+    //Sigleston
     public static NetworkRunnerReceiver Instance;
+
+    //Stamp is deprecated, stamp estava bloqueando a visao do jogador, entao foi retirado, usado agora so para rastrear mouse do player 
     public GameObject stampPlayerPrefab;
     public GameObject networkBetweenScenesManager;
 
@@ -27,20 +30,13 @@ public class NetworkRunnerReceiver : MonoBehaviour, INetworkRunnerCallbacks
                 runner.Spawn(networkBetweenScenesManager, networkBetweenScenesManager.transform.position, networkBetweenScenesManager.transform.rotation);
             }
             NetworkObject NObject = runner.Spawn(stampPlayerPrefab, stampPlayerPrefab.transform.position, stampPlayerPrefab.transform.rotation, player);
-            //if (runner.LocalPlayer == player) CursorController.Instance.carimbo = NObject.gameObject;
-            //else
-            //{
-            //    Debug.Log("Send carimbo go");
-            //    Rpc_DefineCarimbo(player, NObject);
-            //}
-            // (runner.LocalPlayer == player) BetweenScenesPlayerInfos.Instance.idSelf = player.PlayerId;
             NetworkBetweenScenesManager.Instance.RPC_CheckForPlayerReady();
         }
         else Debug.Log("OnPlayerJoined");
     }
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
-        if (NetworkBetweenScenesManager.Instance!=null && NetworkBetweenScenesManager.Instance.isInGameplay)
+        if (NetworkBetweenScenesManager.Instance != null && NetworkBetweenScenesManager.Instance.isInGameplay)
         {
             if (characterInputHandler == null)
             {

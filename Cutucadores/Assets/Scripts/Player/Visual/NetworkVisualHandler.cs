@@ -1,8 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
-using static CharacterData;
 public class NetworkVisualHandler : NetworkBehaviour
 {
     NetworkMecanimAnimator mecanimAnimator;
@@ -17,7 +15,9 @@ public class NetworkVisualHandler : NetworkBehaviour
     [SerializeField] private LineRenderer powerUpSpeedLineRenderer;
     [SerializeField] private float maxRadius = 5f;
     [SerializeField] private float speed = 10f;
+    //Pontos da linha da explosao
     [SerializeField] private int pointsCount = 10;
+    //With of line da onda da explosao
     [SerializeField] private float startWidth = 2f;
 
     private void Awake()
@@ -89,6 +89,10 @@ public class NetworkVisualHandler : NetworkBehaviour
             yield return null;
         }
     }
+    /// <summary>
+    /// Draw the circle of the explosion
+    /// </summary>
+    /// <param name="radius"></param>
     private void Draw(float radius)
     {
         float angleBetweenPoints = 360f / pointsCount;

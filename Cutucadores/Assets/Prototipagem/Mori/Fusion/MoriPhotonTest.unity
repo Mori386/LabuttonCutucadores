@@ -501,7 +501,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3653569693898680243, guid: ec632613a285a274ea9ade7002e9404c, type: 3}
       propertyPath: m_Intensity
-      value: 1591.5493
+      value: 3180.96
       objectReference: {fileID: 0}
     - target: {fileID: 7121907477255031102, guid: ec632613a285a274ea9ade7002e9404c, type: 3}
       propertyPath: m_Material
@@ -1281,17 +1281,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1096194526856973586, guid: 49d3033f38780004592a616a8996d9e9, type: 3}
   m_PrefabInstance: {fileID: 1096194525981410310}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1442838234 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1096194526856973585, guid: 49d3033f38780004592a616a8996d9e9, type: 3}
-  m_PrefabInstance: {fileID: 1096194525981410310}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1442838233}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 28437a478bd135a469c1db5ebbff1820, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1442838237
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1313,8 +1302,7 @@ MonoBehaviour:
   NetworkGuid:
     RawGuidValue: c6786f90a54a4d2a9bdb4a630dbc0358
   NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 1442838234}
+  NetworkedBehaviours: []
   SimulationBehaviours: []
 --- !u!1 &1551061450
 GameObject:
@@ -2344,6 +2332,18 @@ PrefabInstance:
     - target: {fileID: 1096194526856973587, guid: 49d3033f38780004592a616a8996d9e9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7828795293188821932, guid: 49d3033f38780004592a616a8996d9e9, type: 3}
+      propertyPath: Flags
+      value: 2561
+      objectReference: {fileID: 0}
+    - target: {fileID: 7828795293188821932, guid: 49d3033f38780004592a616a8996d9e9, type: 3}
+      propertyPath: NetworkGuid.RawGuidValue.Array.data[0]
+      value: -2571774598489482953
+      objectReference: {fileID: 0}
+    - target: {fileID: 7828795293188821932, guid: 49d3033f38780004592a616a8996d9e9, type: 3}
+      propertyPath: NetworkGuid.RawGuidValue.Array.data[1]
+      value: -4600044596367905602
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49d3033f38780004592a616a8996d9e9, type: 3}

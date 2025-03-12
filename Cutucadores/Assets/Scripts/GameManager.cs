@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 using Fusion;
-using Unity.VisualScripting;
 
 public class GameManager : NetworkBehaviour, IAfterSpawned
 {
     public static GameManager Instance { get; private set; }
+
     public GameObject playerPrefab;
     public CinemachineVirtualCamera virtualCamera;
     [HideInInspector] public CinemachineBasicMultiChannelPerlin virtualCameraNoiseChannel;
@@ -22,11 +22,14 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
 
     public readonly float onBodyHitCameraShakeAmplitude = 20f;
     public readonly float onDrillHitCameraShakeAmplitude = 15f;
+
+    [HideInInspector] public List<NetworkCharacterDrillController> playersControllers = new List<NetworkCharacterDrillController>();
     private void Awake()
     {
         ParticleSystem particleSpawned;
         particleSpawned = Instantiate(onDrillHitParticlePrefab, null);
         onDrillHitParticlePrefab = particleSpawned;
+
         particleSpawned = Instantiate(onBodyHitParticlePrefab, null);
         onBodyHitParticlePrefab = particleSpawned;
 
@@ -51,11 +54,10 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
         {
             NetworkBetweenScenesManager.Instance.RPC_SetPlayerLoaded(NetworkBetweenScenesManager.Instance.selfUserID);
             NetworkBetweenScenesManager.Instance.RPC_CheckForPlayerLoaded();
-            Debug.Log(NetworkBetweenScenesManager.Instance.userIDToPlayerData.Get(NetworkBetweenScenesManager.Instance.selfUserID).username+" "+
-                NetworkBetweenScenesManager.Instance.userIDToPlayerData.Get(NetworkBetweenScenesManager.Instance.selfUserID).loaded);
         }
 
     }
+    #region Play Audios
     public virtual void PlayDrillHitAudio(Vector3 position)
     {
         int randomAudioID;
@@ -64,6 +66,9 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
         onHitAudioSource.transform.position = position;
         onHitAudioSource.PlayOneShot(onHitPlayerAudios[randomAudioID]);
     }
+    #endregion
+
+    #region Play Particles
     public void PlayOnBodyHitParticle(Vector3 position)
     {
         PlayDrillHitAudio(position);
@@ -76,6 +81,9 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
         onDrillHitParticlePrefab.transform.position = position;
         onDrillHitParticlePrefab.Play();
     }
+    #endregion
+
+    #region Shake Camera
     public void ShakeCamera(float amplitude)
     {
         if (shakeCameraCoroutine != null)
@@ -97,9 +105,9 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
         virtualCameraNoiseChannel.m_AmplitudeGain = 0;
         shakeCameraCoroutine = null;
     }
+    #endregion
 
-    [HideInInspector] public List<NetworkCharacterDrillController> playersControllers = new List<NetworkCharacterDrillController>();
-
+    #region Check Dead Players
 
     [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
     public void RPC_CheckForPlayersDead()
@@ -114,21 +122,24 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
                 playerAlive= playersControllers[i];
             }
         }
+        //Define winner based on players alive
         if (totalPlayersAlive <= 1)
         {
             PlayerRef playerRef;
             if (totalPlayersAlive > 0) playerRef = playerAlive.Object.InputAuthority;
             else playerRef = PlayerRef.None;
-            Debug.Log(Runner.GetPlayerUserId(playerRef));
             playerAlive.Object.RemoveInputAuthority();
             DefineWinner(totalPlayersAlive,playerRef);
-            Debug.Log("Alguem ganhou");
         }
     }
+    #endregion
+
+    #region Define Winner
     public void DefineWinner(int totalPlayersAlive,PlayerRef playerAlive)
     {
         if (totalPlayersAlive <= 0)
         {
+            //If tie define all players as losers
             for(int i = 0;i < NetworkBetweenScenesManager.Instance.userIDList.Count;i++)
             {
                 if (NetworkBetweenScenesManager.Instance.userIDToPlayerData.TryGet(NetworkBetweenScenesManager.Instance.userIDList[i],out PlayerData playerData))
@@ -140,6 +151,7 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
         }
         else
         {
+            //If there isnt a tie, define the survivor as the winner
             string playerName = "Unfound";
             for (int i = 0; i < NetworkBetweenScenesManager.Instance.userIDList.Count; i++)
             {
@@ -156,4 +168,5 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
             WinScreenHandler.Instance.RPC_StartWinScreen(playerName+" Venceu!!!");
         }
     }
+    #endregion
 }

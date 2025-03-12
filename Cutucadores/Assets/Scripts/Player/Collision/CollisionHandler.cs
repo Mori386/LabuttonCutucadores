@@ -27,6 +27,7 @@ public class CollisionHandler : NetworkBehaviour
                         {
                             networkCharacterController.Knockback(collision.GetContact(0).point, true);
                         }
+                        //Se for o player que bateu aplica um shake de tela
                         if (Object.HasInputAuthority)
                         {
                             GameManager.Instance.ShakeCamera(GameManager.Instance.onBodyHitCameraShakeAmplitude);
@@ -42,7 +43,6 @@ public class CollisionHandler : NetworkBehaviour
                         //If other player drill hit this player body
                         if (Object.HasStateAuthority)
                         {
-                            Debug.Log("Hit Player");
                             transform.root.GetComponent<HPHandler>().OnTakeDamage(1);
                             networkCharacterController.Knockback(collision.GetContact(0).point, false);
                         }

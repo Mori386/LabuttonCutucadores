@@ -19,15 +19,6 @@ public class MapLoader : NetworkSceneManagerBase
     }
     public static IEnumerator Load(string sceneName, int mapInt)
     {
-        //Scene oldScene = SceneManager.GetActiveScene();
-
-        //AsyncOperation ao = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
-        //while (!ao.isDone && ao != null)
-        //{
-        //    yield return null;
-        //}
-        //SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
-
         Instance.mapIndex = mapInt;
         yield return null;
         Instance.Runner.SetActiveScene(sceneName);

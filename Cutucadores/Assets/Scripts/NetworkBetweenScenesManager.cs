@@ -1,42 +1,16 @@
 using Fusion;
-using JetBrains.Annotations;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using static CharacterData;
 public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
 {
-    [Networked]public NetworkBool isInGameplay { get; set; }
+    //Singleton
+    public static NetworkBetweenScenesManager Instance;
 
+    [Networked]public NetworkBool isInGameplay { get; set; }
 
     public string selfUserID;
     public bool spawned;
-    public static NetworkBetweenScenesManager Instance;
-
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = true)]
-    public void Rpc_LoadMap(string mapName, int mapIndex)
-    {
-        StartCoroutine(MapLoader.Load(mapName, mapIndex));
-    }
-    [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
-    public void Rpc_UserIDDictionary(string userID, string nickname, PlayerRef playerReference)
-    {
-        userIDList.Add(userID);
-        userIDToPlayerData.Add(userID, new PlayerData
-        {
-            username = nickname,
-            character = Character.Null,
-            playerRef = playerReference,
-            loaded = false
-        });
-    }
-    [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
-    public void Rpc_RemoveUserID(string userID)
-    {
-        if (userIDList.Contains(userID)) userIDList.Remove(userID);
-        if (userIDToPlayerData.ContainsKey(userID)) userIDToPlayerData.Remove(userID);
-    }
 
     private void Awake()
     {
@@ -64,36 +38,9 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
         base.Despawned(runner, hasState);
         spawned = false;
     }
-    [Networked]
-    [Capacity(4)]
-    public NetworkLinkedList<NetworkString<_256>> userIDList { get; }
-    [Networked]
-    [Capacity(4)]
-    public NetworkDictionary<NetworkString<_256>, PlayerData> userIDToPlayerData { get; }
-    public CharacterData GetDataFromUserID(string userID)
-    {
-        if (userIDToPlayerData.TryGet(userID, out PlayerData playerData))
-        {
-            switch (playerData.character)
-            {
-                case Character.Escavador:
-                default:
-                    return BetweenScenesPlayerInfos.Instance.escavadorCharData;
-                case Character.Minerador:
-                    return BetweenScenesPlayerInfos.Instance.mineradorCharData;
-                case Character.PaiEFilha:
-                    return BetweenScenesPlayerInfos.Instance.PaiEFilhaCharData;
-                case Character.Vovo:
-                    return BetweenScenesPlayerInfos.Instance.VovoCharData;
-            }
-        }
-        else
-        {
-            Debug.LogError("Error in search to find " + userID + " inCharacterID");
-            return null;
-        }
-    }
 
+    #region Character Select
+    //Select and deselect characters
     [Rpc(RpcSources.All, RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = true)]
     public void RPC_LockCharacter(string userID, Character character)
     {
@@ -159,6 +106,8 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
             StartCoroutine(ChangeTankMaterial(thisCharacterBP, thisCharacterBP.BpEffectMaterial));
         }
     }
+
+    //Change from blueprint material to real material 
     public IEnumerator ChangeTankMaterial(BPCharacter bPCharacter, Material newMat)
     {
         float timer = 0f;
@@ -197,6 +146,7 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
         bPCharacter.rotateObjectScript.transform.localScale = startScale;
     }
 
+    //Every time someone locks in a character it checks if all players has locked there characters unlock the play button
     [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable, InvokeLocal = true)]
     public void RPC_CheckForPlayerReady()
     {
@@ -216,7 +166,67 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
         }
         else CursorController.Instance.hostStartGameButton.gameObject.SetActive(false);
     }
+    public CharacterData GetDataFromUserID(string userID)
+    {
+        //Get character data from playerData
+        if (userIDToPlayerData.TryGet(userID, out PlayerData playerData))
+        {
+            switch (playerData.character)
+            {
+                case Character.Escavador:
+                default:
+                    return BetweenScenesPlayerInfos.Instance.escavadorCharData;
+                case Character.Minerador:
+                    return BetweenScenesPlayerInfos.Instance.mineradorCharData;
+                case Character.PaiEFilha:
+                    return BetweenScenesPlayerInfos.Instance.PaiEFilhaCharData;
+                case Character.Vovo:
+                    return BetweenScenesPlayerInfos.Instance.VovoCharData;
+            }
+        }
+        else
+        {
+            Debug.LogError("Error in search to find " + userID + " inCharacterID");
+            return null;
+        }
+    }
+    #endregion
 
+    #region User Info Storage
+    [Networked]
+    [Capacity(4)]
+    public NetworkLinkedList<NetworkString<_256>> userIDList { get; }
+    [Networked]
+    [Capacity(4)]
+    public NetworkDictionary<NetworkString<_256>, PlayerData> userIDToPlayerData { get; }
+
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
+    public void Rpc_UserIDDictionary(string userID, string nickname, PlayerRef playerReference)
+    {
+        userIDList.Add(userID);
+        userIDToPlayerData.Add(userID, new PlayerData
+        {
+            username = nickname,
+            character = Character.Null,
+            playerRef = playerReference,
+            loaded = false
+        });
+    }
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
+    public void Rpc_RemoveUserID(string userID)
+    {
+        if (userIDList.Contains(userID)) userIDList.Remove(userID);
+        if (userIDToPlayerData.ContainsKey(userID)) userIDToPlayerData.Remove(userID);
+    }
+    #endregion
+
+    #region Load Map
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = true)]
+    public void Rpc_LoadMap(string mapName, int mapIndex)
+    {
+        StartCoroutine(MapLoader.Load(mapName, mapIndex));
+    }
     [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
     public void RPC_CheckForPlayerLoaded()
     {
@@ -262,6 +272,7 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
             userIDToPlayerData.Set(userID, thisPlayerData);
         }
     }
+    #endregion
 }
 public struct PlayerData : INetworkStruct
 {

@@ -11,8 +11,8 @@ public class BPPlayer : NetworkBehaviour , IAfterSpawned
         if (Object.HasInputAuthority)
         {
             NetworkBetweenScenesManager.Instance.selfUserID = Runner.GetPlayerUserId(Object.InputAuthority);
+            //Coloca no dicionario o player id, o nome e a referencia dele
             NetworkBetweenScenesManager.Instance.Rpc_UserIDDictionary(Runner.GetPlayerUserId(Object.InputAuthority),CursorController.Instance.nicknameInputField.text, Object.InputAuthority);
-            //Debug.Log(NetworkBetweenScenesManager.Instance.userIDToPlayerData[Runner.UserId]);
             CursorController.Instance.carimbo = gameObject;
         }
     }

@@ -1,10 +1,6 @@
 using Fusion;
 using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
-using UnityEngine.InputSystem.XR;
-using TMPro;
 
 [OrderBefore(typeof(NetworkTransform))]
 [DisallowMultipleComponent]
@@ -27,6 +23,8 @@ public class NetworkCharacterDrillController : NetworkTransform
     /// For more details on how this field is used, see <see cref="NetworkTransform.TeleportToRotation"/>.
     /// </summary>
     protected override Vector3 DefaultTeleportInterpolationAngularVelocity => new Vector3(0f, 0f, characterData.rotationSpeed);
+    
+    //Componentes
     public Rigidbody rb { get; private set; }
     [Space] public Transform visual;
     public TrailRenderer[] speedBoostTrail;
@@ -47,6 +45,9 @@ public class NetworkCharacterDrillController : NetworkTransform
         CacheInfos();
         GameManager.Instance.playersControllers.Add(this);
     }
+    /// <summary>
+    /// Armazena as informaçoes do jogador
+    /// </summary>
     private void CacheInfos()
     {
         if (rb == null)
@@ -74,10 +75,8 @@ public class NetworkCharacterDrillController : NetworkTransform
         if (audioHandler == null) audioHandler = GetComponent<AudioPlayerHandler>();
 
     }
-    public void CalculateVelocity()
-    {
-        Velocity = new Vector2(rb.velocity.x, rb.velocity.z) * Runner.Simulation.Config.TickRate;
-    }
+
+    #region Movement
     public virtual void Move(float direction)
     {
         float deltaTime = Runner.DeltaTime;
@@ -85,6 +84,15 @@ public class NetworkCharacterDrillController : NetworkTransform
         rb.AddForce(moveForce, ForceMode.Acceleration);
         visualHandler.rotationDirection = direction;
         audioHandler.wheelVolume = Mathf.Abs(direction);
+    }
+    public virtual void Rotate(float direction)
+    {
+        rb.rotation = transform.rotation * Quaternion.Euler(0, direction * Runner.DeltaTime * characterData.rotationSpeed * (0.85f + activeSpeedMultiplier * 0.15f) * 10f, 0);
+        visualHandler.RotateWheel(direction);
+    }
+    public void CalculateVelocity()
+    {
+        Velocity = new Vector2(rb.velocity.x, rb.velocity.z) * Runner.Simulation.Config.TickRate;
     }
     public virtual void Knockback(Vector3 contactPoint, bool considerWeight)
     {
@@ -102,6 +110,8 @@ public class NetworkCharacterDrillController : NetworkTransform
         }
         rb.AddForce(directionOfKnockback, ForceMode.VelocityChange);
     }
+
+    #region SpeedBoost
     public void StartSpeedBoost()
     {
         if (speedBoostCoroutine == null)
@@ -152,6 +162,10 @@ public class NetworkCharacterDrillController : NetworkTransform
         DefineTrailTime(trailTime);
         speedBoostCoroutine = null;
     }
+    #endregion
+    #endregion
+
+    #region Fall in hole
     bool isFalling;
     public virtual void FallInHole(Vector3 holePosition)
     {
@@ -166,15 +180,18 @@ public class NetworkCharacterDrillController : NetworkTransform
     }
     public IEnumerator FallIntoHole(Vector3 holePosition)
     {
-        //Para fazer a rotacao dele virando rotacionar ele baseado em um ponto embaixo dele no momento com a diferenca de altura sendo a distancia dele do buraco
         Vector3 startPos = transform.position;
         transform.position = holePosition;
         Quaternion originalRotation = transform.rotation;
-        float timer = 0;
+
+        //Cria uma rotacao aleatoria
         Vector3 rotationDirection = Vector3.zero;
         rotationDirection.x = Random.Range(0, 1) * 2 - 1;
         rotationDirection.y = Random.Range(0, 1) * 2 - 1;
         rotationDirection.z = Random.Range(0, 1) * 2 - 1;
+        
+        //Cair
+        float timer = 0;
         while (timer < 1f)
         {
             transform.Rotate(rotationDirection * 3f);
@@ -182,6 +199,8 @@ public class NetworkCharacterDrillController : NetworkTransform
             timer += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
         }
+
+        //Se caso ele nao morrer na hora de tomar dano ele reseta ele pra posicao normal
         hpHandler.OnTakeDamage(1);
         if (!hpHandler.isDead)
         {
@@ -204,6 +223,9 @@ public class NetworkCharacterDrillController : NetworkTransform
 
     }
 
+    #endregion
+
+    #region Death/Damage
     public void Die()
     {
         visualHandler.OndDeath();
@@ -212,10 +234,14 @@ public class NetworkCharacterDrillController : NetworkTransform
         ToggleCharacterInput(false);
         if (Object.HasInputAuthority)
         {
+            //Troca a camera pra spec se tiver alguem vivo
             GameManager.Instance.RPC_CheckForPlayersDead();
             Spectator.Instance.StartFollowCameraNextPlayer();
         }
     }
+    #endregion
+
+    #region Toggles
     public void ToggleCharacterInput(bool state)
     {
         characterInputHandler.enabled = state;
@@ -231,10 +257,5 @@ public class NetworkCharacterDrillController : NetworkTransform
     {
         visual.gameObject.SetActive(state);
     }
-    public virtual void Rotate(float direction)
-    {
-        //rb.AddTorque(transform.up * direction * characterData.rotationSpeed * Runner.DeltaTime*30f, ForceMode.Acceleration);
-        rb.rotation = transform.rotation * Quaternion.Euler(0, direction * Runner.DeltaTime * characterData.rotationSpeed * (0.85f + activeSpeedMultiplier * 0.15f) * 10f, 0);
-        visualHandler.RotateWheel(direction);
-    }
+    #endregion
 }

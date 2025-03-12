@@ -15,6 +15,7 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     {
         if (Object.HasInputAuthority)
         {
+            //Se for o player controlando ele coloca a camera nele
             Local = this;
             Vector3 cameraPos = transform.position;
             cameraPos.y = GameManager.Instance.virtualCamera.transform.position.y;

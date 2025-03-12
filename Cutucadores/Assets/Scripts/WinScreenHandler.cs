@@ -1,25 +1,29 @@
 using Fusion;
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 using static CharacterData;
 
 public class WinScreenHandler : NetworkBehaviour
 {
-    Camera mainCamera;
+    //Singleton
     public static WinScreenHandler Instance;
-    [SerializeField] private CanvasGroup fadeInEffect;
-    [SerializeField] private TextMeshProUGUI winnerText;
-    [SerializeField] private CanvasGroup winnerTextCanvasGroup;
+
+    //Components
+    Camera mainCamera;
     [SerializeField] private AudioSource music;
-    [SerializeField] private GameObject winScreenParent;
     [SerializeField] private Light mineradorLight, escavadoraLight, paiEFilhaLight, vovoLight;
     [SerializeField] private Camera winScreenCamera;
     [SerializeField] private Animator mineradorAnim, escavadoraAnim, paiAnim, filhaAnim, vovoAnim;
+    //Ui Components
+    [SerializeField] private GameObject winScreenParent;
+    [SerializeField] private CanvasGroup fadeInEffect;
+    [SerializeField] private TextMeshProUGUI winnerText;
+    [SerializeField] private CanvasGroup winnerTextCanvasGroup;
+
     private int mineradorWin, escavadoraWin, paiEFilhaWin, vovoWin; // 1 = win/ 0 = not present/ -1 = lose
+
     private readonly float winnerLightTemperature = 4000;
     private readonly float loserLightTemperature = 20000;
     private void Awake()
@@ -33,49 +37,7 @@ public class WinScreenHandler : NetworkBehaviour
         base.Spawned();
         if (mainCamera == null) mainCamera = Camera.main;
     }
-    public Light GetCharacterLight(Character character)
-    {
-        switch (character)
-        {
-            default:
-            case Character.Escavador:
-                return escavadoraLight;
-            case Character.Minerador:
-                return mineradorLight;
-            case Character.PaiEFilha:
-                return paiEFilhaLight;
-            case Character.Vovo:
-                return vovoLight;
-        }
-    }
-    public Animator[] GetCharacterAnim(Character character)
-    {
-        Animator[] returnAnimator;
-        switch (character)
-        {
-            default:
-            case Character.Escavador:
-                returnAnimator = new Animator[1];
-                returnAnimator[0] = escavadoraAnim;
-                return returnAnimator;
-
-            case Character.Minerador:
-                returnAnimator = new Animator[1];
-                returnAnimator[0] = mineradorAnim;
-                return returnAnimator;
-
-            case Character.PaiEFilha:
-                returnAnimator = new Animator[2];
-                returnAnimator[0] = paiAnim;
-                returnAnimator[1] = filhaAnim;
-                return returnAnimator;
-
-            case Character.Vovo:
-                returnAnimator = new Animator[1];
-                returnAnimator[0] = vovoAnim;
-                return returnAnimator;
-        }
-    }
+    #region Define Winner and Loser
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All, Channel = RpcChannel.Reliable)]
     public void RPC_DefineWinner(Character character)
@@ -98,6 +60,8 @@ public class WinScreenHandler : NetworkBehaviour
         }
         GetCharacterLight(character).colorTemperature = winnerLightTemperature;
     }
+
+
     [Rpc(RpcSources.StateAuthority, RpcTargets.All, Channel = RpcChannel.Reliable)]
     public void RPC_DefineLoser(Character character)
     {
@@ -119,62 +83,27 @@ public class WinScreenHandler : NetworkBehaviour
         }
         GetCharacterLight(character).colorTemperature = loserLightTemperature;
     }
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All, Channel = RpcChannel.Reliable)]
-    public void RPC_StartWinScreen(string textToApper)
+    #endregion
+
+    #region Set Characters and Lights
+    public Light GetCharacterLight(Character character)
     {
-        StartCoroutine(WinScreenAnimations(textToApper));
-    }
-    public IEnumerator WinScreenAnimations(string textToApper)
-    {
-        float timer = 0f;
-        float duration = 1;
-        float gameplayVolumeStartValue = GameManager.Instance.gameplayMusic.volume;
-        while (timer<duration)
+        switch (character)
         {
-            GameManager.Instance.gameplayMusic.volume = Mathf.Lerp(gameplayVolumeStartValue,0,timer/duration);
-            fadeInEffect.alpha = timer/duration;
-            timer += Time.deltaTime;
-            yield return null;
+            default:
+            case Character.Escavador:
+                return escavadoraLight;
+            case Character.Minerador:
+                return mineradorLight;
+            case Character.PaiEFilha:
+                return paiEFilhaLight;
+            case Character.Vovo:
+                return vovoLight;
         }
-        GameManager.Instance.gameplayMusic.volume = 0;
-        fadeInEffect.alpha = 1;
-        winnerTextCanvasGroup.alpha = 1;
-        winnerText.text = textToApper;
-        music.Play();
-        EnableCharacter();
-        winScreenParent.SetActive(true);
-        mainCamera.gameObject.SetActive(false);
-        timer = 0f;
-        duration = 0.5f;
-        while (timer < duration)
-        {
-            fadeInEffect.alpha = 1-(timer / duration);
-            timer += Time.deltaTime;
-            yield return null;
-        }
-        PlayCharacterAnimations();
-        yield return new WaitForSeconds(4f);
-        timer = 0f;
-        duration = 1f;
-        while (timer < duration)
-        {
-            fadeInEffect.alpha = timer / duration;
-            timer += Time.deltaTime;
-            yield return null;
-        }
-        fadeInEffect.alpha = 1f;
-        var sacrificialGo = new GameObject("Sacrificial Lamb");
-        Runner.Shutdown();
-
-
-        DontDestroyOnLoad(sacrificialGo);
-
-        foreach (var root in sacrificialGo.scene.GetRootGameObjects())
-            Destroy(root);
-        SceneManager.LoadSceneAsync(0, LoadSceneMode.Single);
     }
     public void EnableCharacter()
     {
+        //All characters start enabled and whover isnt in the match are set active false
         if (mineradorWin == 0)
         {
             mineradorAnim.gameObject.SetActive(false);
@@ -185,7 +114,7 @@ public class WinScreenHandler : NetworkBehaviour
             escavadoraAnim.gameObject.SetActive(false);
             escavadoraLight.gameObject.SetActive(false);
         }
-        if(paiEFilhaWin == 0)
+        if (paiEFilhaWin == 0)
         {
             paiAnim.gameObject.SetActive(false);
             filhaAnim.gameObject.SetActive(false);
@@ -198,9 +127,12 @@ public class WinScreenHandler : NetworkBehaviour
             vovoLight.gameObject.SetActive(false);
         }
     }
+    #endregion
+
+    #region Set Animations
     public void PlayCharacterAnimations()
     {
-        //Minerador
+        #region Minerador
         if (mineradorWin >= 1)
         {
             mineradorAnim.SetTrigger("isWin");
@@ -209,8 +141,9 @@ public class WinScreenHandler : NetworkBehaviour
         {
             mineradorAnim.SetTrigger("isLose");
         }
+        #endregion
 
-        //Escavadora
+        #region Escavadora
         if (escavadoraWin >= 1)
         {
             escavadoraAnim.SetTrigger("isWin");
@@ -219,8 +152,9 @@ public class WinScreenHandler : NetworkBehaviour
         {
             escavadoraAnim.SetTrigger("isLose");
         }
+        #endregion
 
-        //Pai e filha
+        #region Pai e filha
         if (paiEFilhaWin >= 1)
         {
             paiAnim.SetTrigger("isWin");
@@ -231,9 +165,9 @@ public class WinScreenHandler : NetworkBehaviour
             paiAnim.SetTrigger("isLose");
             filhaAnim.SetTrigger("isLose");
         }
-        
-        
-        //Vovo
+        #endregion
+
+        #region Vovo
         if (vovoWin >= 1)
         {
             vovoAnim.SetTrigger("isWin");
@@ -242,5 +176,71 @@ public class WinScreenHandler : NetworkBehaviour
         {
             vovoAnim.SetTrigger("isLose");
         }
+        #endregion
+    }
+    #endregion
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All, Channel = RpcChannel.Reliable)]
+    public void RPC_StartWinScreen(string textToApper)
+    {
+        StartCoroutine(WinScreenAnimations(textToApper));
+    }
+    public IEnumerator WinScreenAnimations(string textToApper)
+    {
+        float timer = 0f;
+        float duration = 1;
+        float gameplayVolumeStartValue = GameManager.Instance.gameplayMusic.volume;
+        //Fade out music and fade in winscreen
+        while (timer<duration)
+        {
+            GameManager.Instance.gameplayMusic.volume = Mathf.Lerp(gameplayVolumeStartValue,0,timer/duration);
+            fadeInEffect.alpha = timer/duration;
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        GameManager.Instance.gameplayMusic.volume = 0;
+        fadeInEffect.alpha = 1;
+
+        //Setup components ready for fade out
+        winnerTextCanvasGroup.alpha = 1;
+        winnerText.text = textToApper;
+        music.Play();
+        EnableCharacter();
+        winScreenParent.SetActive(true);
+        mainCamera.gameObject.SetActive(false);
+
+        //Fade out timer
+        timer = 0f;
+        duration = 0.5f;
+        while (timer < duration)
+        {
+            fadeInEffect.alpha = 1-(timer / duration);
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        //Play animations wait and fade out
+        PlayCharacterAnimations();
+        yield return new WaitForSeconds(4f);
+        timer = 0f;
+        duration = 1f;
+        while (timer < duration)
+        {
+            fadeInEffect.alpha = timer / duration;
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        fadeInEffect.alpha = 1f;
+
+        //Fix for not unloading previous scene to go back to menu, probably better to change it for something better
+        var sacrificialGo = new GameObject("Sacrificial Lamb");
+        Runner.Shutdown();
+
+
+        DontDestroyOnLoad(sacrificialGo);
+
+        foreach (var root in sacrificialGo.scene.GetRootGameObjects())
+            Destroy(root);
+        SceneManager.LoadSceneAsync(0, LoadSceneMode.Single);
     }
 }

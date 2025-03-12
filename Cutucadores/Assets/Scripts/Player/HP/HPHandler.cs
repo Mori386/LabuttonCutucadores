@@ -5,9 +5,11 @@ using Fusion;
 using TMPro;
 public class HPHandler : NetworkBehaviour
 {
+    //variavel em byte que ao ser mudada chama funcao
     [Networked(OnChanged = nameof(OnHPChanged))]
     byte HP { get; set; }
 
+    //variavel em bool que ao ser mudada chama funcao
     [Networked(OnChanged = nameof(OnStateChanged))]
     public bool isDead { get; set; }
 
@@ -43,7 +45,6 @@ public class HPHandler : NetworkBehaviour
             HP -= damageAmount;
             isInvulnerable = true;
             StartCoroutine(CheckForInvulnerability());
-            InvulnerabilityTimer = TickTimer.CreateFromSeconds(Runner, 0.5f);
         }
         if (HP<=0)
         {
@@ -53,14 +54,13 @@ public class HPHandler : NetworkBehaviour
     public IEnumerator CheckForInvulnerability()
     {
         InvulnerabilityTimer = TickTimer.CreateFromSeconds(Runner, 0.5f);
+        //Cria um timer na rede para check de tempo de invulnerabilidade
         while (!InvulnerabilityTimer.Expired(Runner))
         {
             yield return null;
         }
         InvulnerabilityTimer = TickTimer.None;
         isInvulnerable = false;
-
-
     }
     public void UpdateHpUI()
     {
@@ -70,6 +70,7 @@ public class HPHandler : NetworkBehaviour
     static void OnHPChanged(Changed<HPHandler> changed)
     {
         changed.Behaviour.UpdateHpUI();
+        //Define a diferenca de valor
         byte newHp = changed.Behaviour.HP;
         changed.LoadOld();
         byte oldHp = changed.Behaviour.HP;
@@ -81,6 +82,7 @@ public class HPHandler : NetworkBehaviour
     }
     public void OnHPLower()
     {
+        //Se for ele mesmo que tomou dano da shake na camera
         if (Object.HasInputAuthority)
         {
             GameManager.Instance.ShakeCamera(GameManager.Instance.onBodyHitCameraShakeAmplitude);

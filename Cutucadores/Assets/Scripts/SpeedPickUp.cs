@@ -1,15 +1,15 @@
 using Fusion;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SpeedPickUp : NetworkBehaviour
 {
+    [Header("Components")]
     private CapsuleCollider pickupCollider;
     public AudioSource playAudioSourceSpeedPickUp;
+
     [Header("Respawn")]
     public readonly float respawnTime = 15f;
+
     [Header("Item")]
     public Transform itemVisual;
     public float itemRotationSpeed;
@@ -18,6 +18,7 @@ public class SpeedPickUp : NetworkBehaviour
 
     [Header("PickupArea")]
     public Transform pickupAreaVisual;
+    Vector3 startingPosition;
 
     [Networked] TickTimer respawnTickTimer { get; set; }
     [Networked] TickTimer respawningTickTimer { get; set; }
@@ -30,9 +31,9 @@ public class SpeedPickUp : NetworkBehaviour
         base.Spawned();
         startingPosition = itemVisual.localPosition;
     }
-    Vector3 startingPosition;
     private void FixedUpdate()
     {
+        //Rotate over time and wiggle up and down
         itemVisual.Rotate(0, itemRotationSpeed, 0, Space.Self);
         itemVisual.localPosition = new Vector3(itemVisual.localPosition.x,
             startingPosition.y + Mathf.Abs(Mathf.Sin(Time.time * itemYDeltaFrequency)) * itemYDelta
@@ -42,7 +43,7 @@ public class SpeedPickUp : NetworkBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            if (other.transform.parent.TryGetComponent<NetworkCharacterDrillController>(out NetworkCharacterDrillController drillController))
+            if (other.transform.parent.TryGetComponent(out NetworkCharacterDrillController drillController))
             {
                 GetPowerUp();
                 drillController.StartSpeedBoost();
@@ -51,14 +52,17 @@ public class SpeedPickUp : NetworkBehaviour
     }
     public void GetPowerUp()
     {
-        //Deactivate collider
         pickupCollider.enabled = false;
         itemVisual.gameObject.SetActive(false);
         pickupAreaVisual.gameObject.SetActive(false);
+
         PlayOnPickUpAudio();
+
+        //Inicia um timer na network para o respawn
         respawnTickTimer = TickTimer.CreateFromSeconds(Runner, respawnTime);
     }
 
+    #region Respawn 
     public override void FixedUpdateNetwork()
     {
         if (respawnTickTimer.Expired(Runner))
@@ -82,6 +86,7 @@ public class SpeedPickUp : NetworkBehaviour
         pickupCollider.enabled = true;
         respawningTickTimer = TickTimer.None;
     }
+    #endregion
 
     public virtual void PlayOnPickUpAudio()
     {

@@ -1,6 +1,4 @@
 using Fusion;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class HoleHandler : NetworkBehaviour
@@ -10,7 +8,7 @@ public class HoleHandler : NetworkBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            if (other.transform.parent.TryGetComponent<NetworkCharacterDrillController>(out NetworkCharacterDrillController drillController))
+            if (other.transform.parent.TryGetComponent(out NetworkCharacterDrillController drillController))
             {
                 drillController.FallInHole(transform.position);
                 PlayFallAudio();

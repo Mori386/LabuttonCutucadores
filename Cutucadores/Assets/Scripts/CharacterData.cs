@@ -18,9 +18,6 @@ public class CharacterData : ScriptableObject
     }
     public Character character = Character.Null;
 
-    //[Header("------Stats------")]
-    //public InGameCharacterData characterData;
-
     [Header("------Model Info------"), Space(10)]
     public GameObject visualPrefab;
 
@@ -28,6 +25,7 @@ public class CharacterData : ScriptableObject
 [Serializable]
 public class InGameCharacterData
 {
+    //Deprecated, antes os personagens tinham variacoes de atributos 
     [Range(0,100)]public float weight = 20;
     public float braking = 1.0f;
     public float maxSpeed = 50.0f;

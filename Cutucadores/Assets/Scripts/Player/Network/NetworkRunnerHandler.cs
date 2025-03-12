@@ -33,15 +33,6 @@ public class NetworkRunnerHandler : MonoBehaviour
         if(mapLoader == null) mapLoader = MapLoader.Instance;
         return InitializeNetworkRunner(networkRunner, gamemode, NetAddress.Any(), SceneManager.GetActiveScene().buildIndex, null, sessionName, mapLoader);
     }
-    void Start()
-    {
-        //networkRunner = Instantiate(networkRunnerPrefab);
-        //networkRunner.name = "Network Runner";
-
-        //Task clientTask = InitializeNetworkRunner(networkRunner,GameMode.AutoHostOrClient,NetAddress.Any(),SceneManager.GetActiveScene().buildIndex,null,"MoriTestRoom");
-        //Debug.Log($"Server NetworkRunner started.");
-    }
-    
     protected virtual Task InitializeNetworkRunner(NetworkRunner runner, GameMode gameMode, NetAddress address,SceneRef scene, Action<NetworkRunner> initialized,string sessionName,INetworkSceneManager sceneManager)
     {
         runner.ProvideInput = true;

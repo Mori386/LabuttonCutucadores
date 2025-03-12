@@ -1,6 +1,4 @@
 using Fusion;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class AudioPlayerHandler : NetworkBehaviour
@@ -13,6 +11,7 @@ public class AudioPlayerHandler : NetworkBehaviour
         wheelAudioSource.enabled = state;
     }
 
+    //Armazena o wheelVolume(0 a 1) e aciona o a funcao ao ter ser valor mudado pelo NetworkCharacterDrillController
     [Networked(OnChanged = nameof(ChangeWheelAudioSourceVolume)), HideInInspector] public float wheelVolume { get; set; }
     public float defaultAudioSourceVolumeMultiplier;
     static public void ChangeWheelAudioSourceVolume(Changed<AudioPlayerHandler> changed)
@@ -25,6 +24,8 @@ public class AudioPlayerHandler : NetworkBehaviour
     public void DefineAudioValues()
     {
         wheelAudioSource.volume = wheelVolume * defaultAudioSourceVolumeMultiplier * 0.5f;
+
+        //Reduz o som do motor inversamente proporcional ao da roda para evitar clutter de audio
         motorAudioSource.volume = (0.5f + 0.5f * (1 - wheelVolume)) * defaultAudioSourceVolumeMultiplier;
     }
     private void Awake()
