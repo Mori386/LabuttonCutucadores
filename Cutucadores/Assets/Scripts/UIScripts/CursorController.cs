@@ -103,6 +103,9 @@ public class CursorController : MonoBehaviour
     {
         mainCamera = Camera.main;
 
+        if (PlayerPrefs.GetString("nickname") != null && PlayerPrefs.GetString("nickname") != "")
+            nicknameInputField.text = PlayerPrefs.GetString("nickname");
+
         Cursor.visible = false; // Esconde o cursor do mouse
         Cursor.lockState = CursorLockMode.Confined; // Mantém o cursor dentro da janela do jogo.
 
