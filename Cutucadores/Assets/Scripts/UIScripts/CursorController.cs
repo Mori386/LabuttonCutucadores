@@ -382,19 +382,29 @@ public class CursorController : MonoBehaviour
         Task task = NetworkRunnerHandler.Instance.StartNetworkRunner(sessionNameInputfield.text, Fusion.GameMode.Host);
         StartCoroutine(WaitForHostToConnectToServer(task));
     }
+    private void StartClient()
+    {
+        Task task = NetworkRunnerHandler.Instance.StartNetworkRunner(sessionNameInputfield.text, Fusion.GameMode.Client);
+        StartCoroutine(WaitForHostToConnectToServer(task));
+    }
     public IEnumerator WaitForHostToConnectToServer(Task task)
     {
+        float timeoutCount = 0;
+        createJoinPaperLoadingText.text = "Conectando...";
         while (task.Status != TaskStatus.RanToCompletion)
         {
-            Debug.Log(task.Status);
-            if (task.Status == TaskStatus.Canceled || task.Status == TaskStatus.Faulted)
+            Debug.Log($"Task status: {task.Status}, time elapsed: {timeoutCount} seconds");
+            if (task.Status == TaskStatus.Canceled || task.Status == TaskStatus.Faulted || timeoutCount > 25f)
             {
+                NetworkRunnerHandler.Instance.ShutdownNetworkRunner();
                 createJoinPaperLoadingText.text = "Erro ao conectar";
                 yield return new WaitForSeconds(2);
                 createJoinPaperDefaultGroup.gameObject.SetActive(true);
                 createJoinPaperLoadingGroup.gameObject.SetActive(false);
+                yield break;
             }
             yield return null;
+            timeoutCount += Time.deltaTime;
         }
         createJoinPaperLoadingText.text = "Conectado";
         while (carimbo == null) yield return new WaitForFixedUpdate();
@@ -403,11 +413,6 @@ public class CursorController : MonoBehaviour
         Debug.Log("NetworkBetweenScenesManager carregado");
         yield return new WaitForSeconds(1);
         BlueprintEnter();
-    }
-    private void StartClient()
-    {
-        Task task = NetworkRunnerHandler.Instance.StartNetworkRunner(sessionNameInputfield.text, Fusion.GameMode.Client);
-        StartCoroutine(WaitForHostToConnectToServer(task));
     }
     public void StartMatch()
     {

@@ -47,4 +47,10 @@ public class NetworkRunnerHandler : MonoBehaviour
         });
 
     }
+    public void ShutdownNetworkRunner()
+    {
+        if (networkRunner == null) return;
+        networkRunner.Shutdown();
+        networkRunner = null;
+    }
 }
