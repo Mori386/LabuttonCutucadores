@@ -37,7 +37,8 @@ public class NetworkVisualHandler : NetworkBehaviour
     public override void Spawned()
     {
         base.Spawned();
-        RPC_RequestLoadVisual(NetworkBetweenScenesManager.Instance.selfUserID);
+        if (HasInputAuthority)
+            RPC_RequestLoadVisual(NetworkBetweenScenesManager.Instance.selfUserID);
         StartCoroutine(RotateDrillCoroutine());
     }
     [Rpc(RpcSources.InputAuthority, RpcTargets.All)]

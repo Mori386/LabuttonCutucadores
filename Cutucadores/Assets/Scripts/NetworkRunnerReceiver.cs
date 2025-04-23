@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class NetworkRunnerReceiver : MonoBehaviour, INetworkRunnerCallbacks
 {
@@ -38,6 +39,7 @@ public class NetworkRunnerReceiver : MonoBehaviour, INetworkRunnerCallbacks
     {
         if (NetworkBetweenScenesManager.Instance != null && NetworkBetweenScenesManager.Instance.isInGameplay)
         {
+            //Debug.Log($"OnInput {NetworkBetweenScenesManager.Instance.userIDToPlayerData[runner.UserId].username}");
             if (characterInputHandler == null)
             {
                 if (NetworkPlayer.Local != null) characterInputHandler = NetworkPlayer.Local.GetComponent<CharacterInputHandler>();
@@ -56,8 +58,13 @@ public class NetworkRunnerReceiver : MonoBehaviour, INetworkRunnerCallbacks
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
         Debug.Log(player);
-        NetworkBetweenScenesManager.Instance.RPC_UnlockCharacter(runner.GetPlayerUserId(player));
-        NetworkBetweenScenesManager.Instance.Rpc_RemoveUserID(runner.GetPlayerUserId(player));
+        NetworkBetweenScenesManager.Instance.UnlockCharacter(player);
+        NetworkBetweenScenesManager.Instance.RemoveUserID(player);
+        if (HPBarHandler.Instance != null)
+        {
+            HPBarHandler.Instance.UpdateHp(player, 0);
+            HPBarHandler.Instance.UpdateState(player, true);
+        }
     }
 
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input)
@@ -67,7 +74,15 @@ public class NetworkRunnerReceiver : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
     {
+        //Fix for not unloading previous scene to go back to menu, probably better to change it for something better
+        var sacrificialGo = new GameObject("Sacrificial Lamb");
+        NetworkBetweenScenesManager.Instance.Runner.Shutdown();
 
+        DontDestroyOnLoad(sacrificialGo);
+
+        foreach (var root in sacrificialGo.scene.GetRootGameObjects())
+            Destroy(root);
+        SceneManager.LoadSceneAsync(0, LoadSceneMode.Single);
     }
 
     public void OnDisconnectedFromServer(NetworkRunner runner)

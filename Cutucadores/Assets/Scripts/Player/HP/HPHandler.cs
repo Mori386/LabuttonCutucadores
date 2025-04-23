@@ -93,6 +93,9 @@ public class HPHandler : NetworkBehaviour
         if(changed.Behaviour.isDead)
         {
             HPBarHandler.Instance.UpdateState(changed.Behaviour.Object.InputAuthority, true);
+            PlayerData deadPlayer = NetworkBetweenScenesManager.Instance.userIDToPlayerData[changed.Behaviour.Object.Runner.UserId];
+            deadPlayer.isDead = true;
+            NetworkBetweenScenesManager.Instance.userIDToPlayerData.Set(changed.Behaviour.Object.Runner.UserId, deadPlayer);
             changed.Behaviour.drillController.Die();
         }
     }

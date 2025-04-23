@@ -46,6 +46,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
+  _isInGameplay:
+    _value: 0
+  selfUserID: 
+  spawned: 0
+  _userIDList: []
+  _userIDToPlayerData:
+    _items: []
 --- !u!114 &6964071759971916078
 MonoBehaviour:
   m_ObjectHideFlags: 0

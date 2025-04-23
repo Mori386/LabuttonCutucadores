@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
 using System;
 using System.Linq;
+using Unity.VisualScripting;
 
 public class NetworkRunnerHandler : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class NetworkRunnerHandler : MonoBehaviour
     private NetworkRunner networkRunner;
     private NetworkRunnerReceiver networkRunnerReceiver;
 
-    private MapLoader mapLoader;
+    private NetworkSceneManagerDefault sceneManager;
     private void Awake()
     {
         Instance = this;
@@ -30,8 +31,14 @@ public class NetworkRunnerHandler : MonoBehaviour
             networkRunnerReceiver = networkRunner.GetComponent<NetworkRunnerReceiver>();
             networkRunner.name = "Network Runner";
         }
-        if(mapLoader == null) mapLoader = MapLoader.Instance;
-        return InitializeNetworkRunner(networkRunner, gamemode, NetAddress.Any(), SceneManager.GetActiveScene().buildIndex, null, sessionName, mapLoader);
+        if (sceneManager == null)
+        {
+            if (networkRunner.TryGetComponent(out NetworkSceneManagerDefault sceneManagerDefault))
+                sceneManager = sceneManagerDefault;
+            else
+                sceneManager = networkRunner.AddComponent<NetworkSceneManagerDefault>();
+        }
+        return InitializeNetworkRunner(networkRunner, gamemode, NetAddress.Any(), SceneManager.GetActiveScene().buildIndex, null, sessionName, sceneManager);
     }
     protected virtual Task InitializeNetworkRunner(NetworkRunner runner, GameMode gameMode, NetAddress address,SceneRef scene, Action<NetworkRunner> initialized,string sessionName,INetworkSceneManager sceneManager)
     {

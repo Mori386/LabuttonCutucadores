@@ -12,7 +12,7 @@ public class CharacterInputHandler : MonoBehaviour
     }
     void Start()
     {
-        EnableCharacter();
+        StartCoroutine(Delay());
     }
     public Coroutine InputRegisterCoroutine;
     public IEnumerator GetInputCoroutine()
@@ -36,12 +36,21 @@ public class CharacterInputHandler : MonoBehaviour
     }
     private void OnEnable()
     {
+        StartCoroutine(Delay());
+    }
+    private IEnumerator Delay()
+    {
+        yield return new WaitForSeconds(.5f);
         EnableCharacter();
     }
     public void EnableCharacter()
     {
         //Para nao contar inputs desnecessarios ele contabiliza so se tiver input authority
-        if (characterMovementHandler.Object.HasInputAuthority && InputRegisterCoroutine == null) InputRegisterCoroutine = StartCoroutine(GetInputCoroutine());
+        if (characterMovementHandler.Object.HasInputAuthority && InputRegisterCoroutine == null)
+        {
+            //Debug.Log($"{NetworkBetweenScenesManager.Instance.userIDToPlayerData[characterMovementHandler.Runner.UserId].username} Starting input coroutine");
+            InputRegisterCoroutine = StartCoroutine(GetInputCoroutine());
+        }
     }
     public NetworkInputData GetNetworkInput()
     {

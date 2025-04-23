@@ -41,6 +41,7 @@ public class CursorController : MonoBehaviour
     [Header("Create/Join page")]
     private bool selectedHost;
     public TMP_InputField sessionNameInputfield;
+    public TextMeshProUGUI placeholderSessionNameText;
     public CanvasGroup mapSelection;
     public Image mapPreview;
     public Sprite[] mapPreviewImages;
@@ -375,10 +376,31 @@ public class CursorController : MonoBehaviour
 
     public void HostOrCreateSession()
     {
+        if (sessionNameBlankCoroutine != null)
+        {
+            StopCoroutine(sessionNameBlankCoroutine);
+            placeholderSessionNameText.color = Color.black;
+        }
+        if (sessionNameInputfield.text == "" || sessionNameInputfield.text == null)
+        {
+            sessionNameBlankCoroutine = StartCoroutine(SessionNameBlankFeedback());
+            return;
+        }
         createJoinPaperDefaultGroup.gameObject.SetActive(false);
         createJoinPaperLoadingGroup.gameObject.SetActive(true);
         if (selectedHost) StartHost();
         else StartClient();
+    }
+    private Coroutine sessionNameBlankCoroutine;
+    private IEnumerator SessionNameBlankFeedback()
+    {
+        for (int i = 0; i <= 3; i++)
+        {
+            placeholderSessionNameText.color = Color.red;
+            yield return new WaitForSeconds(.3f);
+            placeholderSessionNameText.color = Color.black;
+            yield return new WaitForSeconds(.3f);
+        }
     }
     private void StartHost()
     {
@@ -422,13 +444,13 @@ public class CursorController : MonoBehaviour
         switch(mapInPreviewID)
         {
             case 0:
-                NetworkBetweenScenesManager.Instance.Rpc_LoadMap("Level1",1);
+                NetworkBetweenScenesManager.Instance.LoadMapToHost("Level1",1);
                 break;
             case 1:
-                NetworkBetweenScenesManager.Instance.Rpc_LoadMap("Level2",2);
+                NetworkBetweenScenesManager.Instance.LoadMapToHost("Level2",2);
                 break;
             case 2:
-                NetworkBetweenScenesManager.Instance.Rpc_LoadMap("Level3",3);
+                NetworkBetweenScenesManager.Instance.LoadMapToHost("Level3",3);
                 break;
         }
     }

@@ -1,13 +1,17 @@
 using Fusion;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static CharacterData;
 public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
 {
     //Singleton
     public static NetworkBetweenScenesManager Instance;
-
     [Networked]public NetworkBool isInGameplay { get; set; }
+    [Networked] public NetworkBool GameManagerSpawned { get; set; }
+    [Networked] public NetworkBool winScreenSpawned { get; set; }
+    [Networked] public bool PlayersGOSpawned { get; set; }
 
     public string selfUserID;
     public bool spawned;
@@ -77,13 +81,16 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
         RPC_CheckForPlayerReady();
     }
 
-    [Rpc(RpcSources.All, RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = true)]
-    public void RPC_UnlockCharacter(string userID)
+    public void UnlockCharacter(PlayerRef userID)
     {
-        if (userIDToPlayerData.TryGet(userID, out PlayerData myPlayerData))
+        if (Instance.GameManagerSpawned)
+            return;
+        foreach (KeyValuePair<NetworkString<_256>, PlayerData> pair in userIDToPlayerData)
         {
+            if (pair.Value.character == Character.Null)
+                return;
             BPCharacter thisCharacterBP;
-            switch (myPlayerData.character)
+            switch (pair.Value.character)
             {
                 default:
                 case Character.Escavador:
@@ -99,11 +106,15 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
                     thisCharacterBP = CursorController.Instance.vovoCharBP;
                     break;
             }
-            thisCharacterBP.selectButton.interactable = true;
-            myPlayerData.character = Character.Null;
-            thisCharacterBP.usernameText.text = "Nome do jogador";
-            userIDToPlayerData.Set(userID, myPlayerData);
-            StartCoroutine(ChangeTankMaterial(thisCharacterBP, thisCharacterBP.BpEffectMaterial));
+            if (thisCharacterBP.selectButton != null)
+            {
+                thisCharacterBP.selectButton.interactable = true;
+                thisCharacterBP.usernameText.text = "Nome do jogador";
+                StartCoroutine(ChangeTankMaterial(thisCharacterBP, thisCharacterBP.BpEffectMaterial));
+            }
+            PlayerData player = pair.Value;
+            player.character = Character.Null;
+            userIDToPlayerData.Set(pair.Key, player);
         }
     }
 
@@ -203,6 +214,7 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
     [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
     public void Rpc_UserIDDictionary(string userID, string nickname, PlayerRef playerReference)
     {
+        if (userIDList.Contains(userID)) return;
         userIDList.Add(userID);
         userIDToPlayerData.Add(userID, new PlayerData
         {
@@ -212,65 +224,80 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
             loaded = false
         });
     }
-    [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
-    public void Rpc_RemoveUserID(string userID)
+    public void RemoveUserID(PlayerRef userID)
     {
-        if (userIDList.Contains(userID)) userIDList.Remove(userID);
-        if (userIDToPlayerData.ContainsKey(userID)) userIDToPlayerData.Remove(userID);
+        Debug.Log($"Attempting to remove ID {userID}");
+        foreach (KeyValuePair<NetworkString<_256>, PlayerData> pair in userIDToPlayerData)
+        {
+            if (pair.Value.playerRef == userID)
+            {
+                if (Instance.GameManagerSpawned)
+                {
+                    PlayerData disconnectedData = pair.Value;
+                    disconnectedData.isDead = true;
+                    userIDToPlayerData.Set(pair.Key, disconnectedData);
+                    if (Runner.IsServer)
+                        GameManager.Instance.RPC_CheckForPlayersDead();
+                }
+                else
+                {
+                    Debug.Log($"Removing {userID} from userIDList and userIDToPlayerData.");
+                    userIDToPlayerData.Remove(pair.Key);
+                    userIDList.Remove(pair.Key);
+                }
+            }
+        }
     }
     #endregion
 
     #region Load Map
+    public void LoadMapToHost(string mapName, int mapIndex)
+    {
+        if (Runner.IsServer)
+        {
+            var sceneManager = Runner.SceneManager as NetworkSceneManagerDefault;
+            sceneManager.LoadSceneAsync(mapIndex, new LoadSceneParameters(LoadSceneMode.Single), (_) => RPC_LoadMapToClients(mapIndex));
+        }
+    }
 
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = true)]
-    public void Rpc_LoadMap(string mapName, int mapIndex)
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = false)]
+    private void RPC_LoadMapToClients(SceneRef scene)
     {
-        StartCoroutine(MapLoader.Load(mapName, mapIndex));
-    }
-    [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
-    public void RPC_CheckForPlayerLoaded()
-    {
-        if (CheckForPlayersLoadedCoroutine == null) CheckForPlayersLoadedCoroutine = StartCoroutine(LoopCheckForPlayersLoaded());
-    }
-    public Coroutine CheckForPlayersLoadedCoroutine;
-    public IEnumerator LoopCheckForPlayersLoaded()
-    {
-        while (true)
+        if (!Runner.IsServer)
         {
-            bool isAllPlayersLoaded = true;
-            for (int i = 0; i < userIDList.Count; i++)
-            {
-                if (userIDToPlayerData.TryGet(userIDList[i], out PlayerData thisPlayerData))
-                {
-                    if (thisPlayerData.loaded == false)
-                    {
-                        Debug.Log(thisPlayerData.username + " " + thisPlayerData.loaded);
-                        isAllPlayersLoaded = false;
-                    }
-                }
-                yield return null;
-            }
-            if (isAllPlayersLoaded) break;
-        }
-        isInGameplay = true;
-        for (int i = 0; i < userIDList.Count; i++)
-        {
-            if (userIDToPlayerData.TryGet(userIDList[i], out PlayerData thisPlayerData))
-            {
-                Transform spawnpointTransform = GameManager.Instance.playerSpawnpoints[i];
-                Runner.Spawn(GameManager.Instance.playerPrefab, spawnpointTransform.position, spawnpointTransform.rotation, thisPlayerData.playerRef);
-            }
+            var sceneManager = Runner.SceneManager as NetworkSceneManagerDefault;
+            sceneManager.LoadSceneAsync(scene, new LoadSceneParameters(LoadSceneMode.Single), null);
         }
     }
-    [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
-    public void RPC_SetPlayerLoaded(string userID)
+    
+    public void SetPlayerLoaded(string userID)
     {
+        if (!Runner.IsServer || PlayersGOSpawned) return;
         if (userIDToPlayerData.TryGet(userID, out PlayerData myPlayerData))
         {
+            Debug.Log($"Setting {myPlayerData.username} to loaded.");
             PlayerData thisPlayerData = myPlayerData;
             thisPlayerData.loaded = true;
             userIDToPlayerData.Set(userID, thisPlayerData);
         }
+        else return;
+        Debug.Log($"Checking if all players are loaded.");
+        foreach (KeyValuePair<NetworkString<_256>, PlayerData> pair in userIDToPlayerData)
+        {
+            Debug.Log($"{pair.Value.username} {(pair.Value.loaded? "loaded.": "not loaded.")}");
+            if (!pair.Value.loaded) return;
+        }
+        Debug.Log($"Every player is loaded. Spawning game objects.");
+        PlayersGOSpawned = true;
+        int playerNumber = 0;
+        foreach (KeyValuePair<NetworkString<_256>, PlayerData> pair in userIDToPlayerData)
+        {
+            NetworkObject playerObj = Runner.Spawn(GameManager.Instance.playerPrefab, GameManager.Instance.playerSpawnpoints[playerNumber].position, GameManager.Instance.playerSpawnpoints[playerNumber].rotation, pair.Value.playerRef);
+            Runner.SetPlayerObject(pair.Value.playerRef, playerObj);
+            Debug.Log($"{pair.Value.username} game object spawned.");
+            playerNumber++;
+        }
+        isInGameplay = true;
     }
     #endregion
 }
@@ -280,4 +307,5 @@ public struct PlayerData : INetworkStruct
     public NetworkString<_16> username;
     public Character character;
     public NetworkBool loaded;
+    public NetworkBool isDead;
 }

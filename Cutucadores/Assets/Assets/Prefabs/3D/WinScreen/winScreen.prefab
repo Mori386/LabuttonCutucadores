@@ -1332,7 +1332,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3965428639880604715}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1000, y: 1000, z: 1000}
+  m_LocalPosition: {x: 10000, y: 10000, z: 10000}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1358,12 +1358,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a76366038a1bb6942a86a0c30b63989f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  WordOffset: 0
+  WordCount: 0
   _interpolationDataSource: 0
-  fadeInEffect: {fileID: 1478685000798725919}
-  winnerText: {fileID: 8403017191196657594}
-  winnerTextCanvasGroup: {fileID: 3607416777329304472}
   music: {fileID: 2614174261188027811}
-  winScreenParent: {fileID: 1337539674761553963}
   mineradorLight: {fileID: 3965428641334485406}
   escavadoraLight: {fileID: 3965428639786864753}
   paiEFilhaLight: {fileID: 3965428640443282313}
@@ -1374,6 +1372,10 @@ MonoBehaviour:
   paiAnim: {fileID: 7377632858199014832}
   filhaAnim: {fileID: 7377632859304966628}
   vovoAnim: {fileID: 7377632859457695468}
+  winScreenParent: {fileID: 1337539674761553963}
+  fadeInEffect: {fileID: 1478685000798725919}
+  winnerText: {fileID: 8403017191196657594}
+  winnerTextCanvasGroup: {fileID: 3607416777329304472}
 --- !u!114 &3965428639880604713
 MonoBehaviour:
   m_ObjectHideFlags: 0

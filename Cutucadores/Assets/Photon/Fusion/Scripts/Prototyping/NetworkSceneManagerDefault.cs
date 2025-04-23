@@ -19,7 +19,7 @@ namespace Fusion {
     [Header("Single Peer Options")]
     public int PostLoadDelayFrames = 1;
     
-    protected virtual YieldInstruction LoadSceneAsync(SceneRef sceneRef, LoadSceneParameters parameters, Action<Scene> loaded) {
+    public virtual YieldInstruction LoadSceneAsync(SceneRef sceneRef, LoadSceneParameters parameters, Action<Scene> loaded) {
 
       if (!TryGetScenePath(sceneRef, out var scenePath)) {
         throw new InvalidOperationException($"Not going to load {sceneRef}: unable to find the scene name");

@@ -1,13 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SceneLoaderCheck : MonoBehaviour
 {
-    // Start is called before the first frame update
+    [SerializeField] private GameObject gameManagerPrefab;
+    [SerializeField] private GameObject winScreenPrefab;
+
     void Start()
     {
-        GameManager.Instance.LoadPlayerInfo();
+        if (!NetworkBetweenScenesManager.Instance.Runner.IsServer)
+            return;
+        if (!NetworkBetweenScenesManager.Instance.GameManagerSpawned)
+        {
+            NetworkBetweenScenesManager.Instance.Runner.Spawn(gameManagerPrefab);
+            NetworkBetweenScenesManager.Instance.GameManagerSpawned = true;
+        }
+        if (!NetworkBetweenScenesManager.Instance.winScreenSpawned)
+        {
+            NetworkBetweenScenesManager.Instance.Runner.Spawn(winScreenPrefab);
+            NetworkBetweenScenesManager.Instance.winScreenSpawned = true;
+        }
     }
-
 }

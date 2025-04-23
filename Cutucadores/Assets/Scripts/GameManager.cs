@@ -34,28 +34,40 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
         onBodyHitParticlePrefab = particleSpawned;
 
         Instance = this;
+        Debug.Log("Awake GameManager");
     }
     private void Start()
     {
-        virtualCameraNoiseChannel = virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+        Debug.Log("Started GameManager");
     }
     public override void Spawned()
     {
         base.Spawned();
-        Debug.Log("Spawned");
+        virtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
+        virtualCameraNoiseChannel = virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+        int count = 0;
+        foreach (GameObject spawnpoint in GameObject.FindGameObjectsWithTag("Spawnpoint"))
+        {
+            playerSpawnpoints[count] = spawnpoint.transform;
+            count++;
+        }
+        Debug.Log("Spawned GameManager");
+        RPC_LoadPlayerInfo(NetworkBetweenScenesManager.Instance.selfUserID);
     }
     void IAfterSpawned.AfterSpawned()
     {
-        
+        Debug.Log("AfterSpawned GameManager");
     }
-    public void LoadPlayerInfo()
-    {
-        if (NetworkBetweenScenesManager.Instance.userIDToPlayerData.TryGet(NetworkBetweenScenesManager.Instance.selfUserID, out PlayerData myPlayerData))
-        {
-            NetworkBetweenScenesManager.Instance.RPC_SetPlayerLoaded(NetworkBetweenScenesManager.Instance.selfUserID);
-            NetworkBetweenScenesManager.Instance.RPC_CheckForPlayerLoaded();
-        }
 
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    public void RPC_LoadPlayerInfo(string playerId)
+    {
+        if (NetworkBetweenScenesManager.Instance.userIDToPlayerData.TryGet(playerId, out PlayerData myPlayerData))
+        {
+            if (myPlayerData.loaded) return;
+            Debug.Log($"Loading player {myPlayerData.username} info...");
+            NetworkBetweenScenesManager.Instance.SetPlayerLoaded(playerId);
+        }
     }
     #region Play Audios
     public virtual void PlayDrillHitAudio(Vector3 position)
@@ -113,22 +125,38 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
     public void RPC_CheckForPlayersDead()
     {
         int totalPlayersAlive = 0;
-        NetworkCharacterDrillController playerAlive = null;
-        for (int i = 0; i < playersControllers.Count; i++)
+        NetworkObject playerAlive = null;
+        foreach (KeyValuePair<NetworkString<_256>, PlayerData> pair in NetworkBetweenScenesManager.Instance.userIDToPlayerData)
         {
-            if (!playersControllers[i].hpHandler.isDead)
+            if (!pair.Value.isDead)
             {
-                totalPlayersAlive++;
-                playerAlive= playersControllers[i];
+                Debug.Log($"{pair.Value.username} is alive, searching for their networkObject.");
+                if (Runner.TryGetPlayerObject(pair.Value.playerRef, out playerAlive))
+                {
+                    totalPlayersAlive++;
+                    Debug.Log($"Found network object: {playerAlive.Runner.UserId}");
+                }
+                else
+                {
+                    Debug.Log($"Could not find network object.");
+                }
             }
         }
         //Define winner based on players alive
         if (totalPlayersAlive <= 1)
         {
             PlayerRef playerRef;
-            if (totalPlayersAlive > 0) playerRef = playerAlive.Object.InputAuthority;
-            else playerRef = PlayerRef.None;
-            playerAlive.Object.RemoveInputAuthority();
+            if (totalPlayersAlive > 0)
+            {
+                playerRef = playerAlive.InputAuthority;
+                Debug.Log($"Winner: {playerAlive.InputAuthority}");
+            }
+            else
+            {
+                playerRef = PlayerRef.None;
+                Debug.Log($"Players alive: {totalPlayersAlive}");
+            }
+            playerAlive.RemoveInputAuthority();
             DefineWinner(totalPlayersAlive,playerRef);
         }
     }
@@ -140,12 +168,9 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
         if (totalPlayersAlive <= 0)
         {
             //If tie define all players as losers
-            for(int i = 0;i < NetworkBetweenScenesManager.Instance.userIDList.Count;i++)
+            foreach (KeyValuePair<NetworkString<_256>, PlayerData> pair in NetworkBetweenScenesManager.Instance.userIDToPlayerData)
             {
-                if (NetworkBetweenScenesManager.Instance.userIDToPlayerData.TryGet(NetworkBetweenScenesManager.Instance.userIDList[i],out PlayerData playerData))
-                {
-                    WinScreenHandler.Instance.RPC_DefineLoser(playerData.character);
-                }
+                WinScreenHandler.Instance.RPC_DefineLoser(pair.Value.character);
             }
             WinScreenHandler.Instance.RPC_StartWinScreen("Empate!!!");
         }
@@ -153,17 +178,14 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
         {
             //If there isnt a tie, define the survivor as the winner
             string playerName = "Unfound";
-            for (int i = 0; i < NetworkBetweenScenesManager.Instance.userIDList.Count; i++)
+            foreach (KeyValuePair<NetworkString<_256>, PlayerData> pair in NetworkBetweenScenesManager.Instance.userIDToPlayerData)
             {
-                if (NetworkBetweenScenesManager.Instance.userIDToPlayerData.TryGet(NetworkBetweenScenesManager.Instance.userIDList[i], out PlayerData playerData))
+                if (Runner.GetPlayerUserId(playerAlive) == pair.Key)
                 {
-                    if(Runner.GetPlayerUserId(playerAlive) == NetworkBetweenScenesManager.Instance.userIDList[i])
-                    {
-                        playerName = playerData.username.ToString();
-                        WinScreenHandler.Instance.RPC_DefineWinner(playerData.character);
-                    }
-                    else WinScreenHandler.Instance.RPC_DefineLoser(playerData.character);
+                    playerName = pair.Value.username.ToString();
+                    WinScreenHandler.Instance.RPC_DefineWinner(pair.Value.character);
                 }
+                else WinScreenHandler.Instance.RPC_DefineLoser(pair.Value.character);
             }
             WinScreenHandler.Instance.RPC_StartWinScreen(playerName+" Venceu!!!");
         }
