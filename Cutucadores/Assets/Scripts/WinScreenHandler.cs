@@ -28,7 +28,10 @@ public class WinScreenHandler : NetworkBehaviour
     private readonly float loserLightTemperature = 20000;
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+            Instance = this;
+        else 
+            Destroy(this);
         winScreenParent.SetActive(false);
         if (mainCamera == null) mainCamera = Camera.main;
     }

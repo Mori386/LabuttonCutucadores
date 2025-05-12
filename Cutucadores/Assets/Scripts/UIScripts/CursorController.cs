@@ -37,10 +37,15 @@ public class CursorController : MonoBehaviour
     public TMP_InputField nicknameInputField;
     public CanvasGroup clientHostCanvas; // continuar daki mexer ele 
     public CanvasGroup clientHostPaper;
+    public GameObject insertPasswordPaper;
     public RectTransform returnToMainMenuFromClientHost;
     [Header("Create/Join page")]
     private bool selectedHost;
     public TMP_InputField sessionNameInputfield;
+    public TMP_InputField passwordInputField;
+    public TMP_InputField enterRoomPasswordInputField;
+    public TextMeshProUGUI placeholderPasswordText;
+    public Toggle isRoomPrivateToggle;
     public TextMeshProUGUI placeholderSessionNameText;
     public CanvasGroup mapSelection;
     public Image mapPreview;
@@ -50,6 +55,8 @@ public class CursorController : MonoBehaviour
     public CanvasGroup createJoinPaperDefaultGroup;
     public CanvasGroup createJoinPaperLoadingGroup;
     public TextMeshProUGUI createJoinPaperLoadingText;
+    public GameObject roomListParent;
+    public GameObject roomPrefab;
 
     [Header("|----- Blueprint -----|")]
     public Button hostStartGameButton;
@@ -98,7 +105,10 @@ public class CursorController : MonoBehaviour
     private Vector3 targetPosition;
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(this);
     }
     void Start()
     {
@@ -113,7 +123,7 @@ public class CursorController : MonoBehaviour
         startPosition = mainMenuHand.transform.position; //para retorno da posição inicial
         moveDuration = moveTime - pauseTime; // valor do tempo de deslocamento
         StartCoroutine(MoveBookSmoothly());
-
+        isRoomPrivateToggle.onValueChanged.AddListener(passwordInputField.gameObject.transform.parent.gameObject.SetActive);
     }
     public void StartHandFollowCursor()
     {
@@ -288,15 +298,78 @@ public class CursorController : MonoBehaviour
     //Quando pressiona o play
     public void CloseBookOnPlay() // anim para fechar livro
     {
+        NetworkRunnerHandler.Instance.StartLobby();
         StopHandFollowCursor();
         StartMoveCursorObject(mainMenuHand, moveDuration, animHandStartingPoint.position);
         StartCoroutine(DelayCloseBook());
+        
+    }
 
+    public void ReloadRoomList(List<SessionInfo> sessionList)
+    {
+        if (roomListParent == null)
+            return;
+        foreach (Transform child in roomListParent.transform)
+        {
+            Destroy(child.gameObject);
+        }
+        foreach (SessionInfo session in sessionList)
+        {
+            Debug.Log($"Instantiating room {session.Name}");
+            LobbyRoomPrefab prefab = Instantiate(roomPrefab, roomListParent.transform).GetComponent<LobbyRoomPrefab>();
+            prefab.Setup(session.Name, session.PlayerCount, new Dictionary<string, SessionProperty>(session.Properties));
+        }
+    }
+
+    string currentRoomPassword;
+    string currentRoomName;
+    public void ToInsertPasswordScreen(string password, string name)
+    {
+        Debug.Log($"Senha correta: {password}");
+        clientHostPaper.gameObject.SetActive(false);
+        insertPasswordPaper.SetActive(true);
+        enterRoomPasswordInputField.placeholder.color = Color.black;
+        //enterRoomPasswordInputField.placeholder.GetComponent<Text>().text = "Insira a senha da partida...";
+        currentRoomPassword = password;
+        currentRoomName = name;
+    }
+
+    public void BackFromInsertPasswordScreen()
+    {
+        clientHostPaper.gameObject.SetActive(true);
+        insertPasswordPaper.SetActive(false);
+        enterRoomPasswordInputField.placeholder.color = Color.black;
+        //enterRoomPasswordInputField.placeholder.GetComponent<Text>().text = "Insira a senha da partida...";
+        currentRoomPassword = null;
+        currentRoomName = null;
+    }
+
+    public void TryPassword()
+    {
+        if (enterRoomPasswordInputField.text != currentRoomPassword)
+        {
+            enterRoomPasswordInputField.text = "";
+            enterRoomPasswordInputField.placeholder.color = Color.red;
+            //enterRoomPasswordInputField.placeholder.GetComponent<Text>().text = "Senha incorreta";
+            return;
+        }
+        enterRoomPasswordInputField.placeholder.color = Color.black;
+        //enterRoomPasswordInputField.placeholder.GetComponent<Text>().text = "Insira a senha da partida...";
+        Dictionary<string, SessionProperty> properties = new()
+        {
+            { isRoomPrivate, 1 },
+            { password, currentRoomPassword },
+            { joinable, 1 }
+        };
+        StartClient(currentRoomName, properties);
+        currentRoomPassword = null;
+        currentRoomName = null;
     }
 
     //Quando retorna ao menu
     public void OpenBookReturnToPlay() // anim para abrir livro
     {
+        NetworkRunnerHandler.Instance.ShutdownNetworkRunner();
         StopHandFollowCursor();
         StartMoveCursorObject(mainMenuHand, moveDuration, animHandStartingPoint.position);
         StartCoroutine(DelayOpenBook());
@@ -381,35 +454,54 @@ public class CursorController : MonoBehaviour
             StopCoroutine(sessionNameBlankCoroutine);
             placeholderSessionNameText.color = Color.black;
         }
+        if (passwordBlankCoroutine != null)
+        {
+            StopCoroutine(passwordBlankCoroutine);
+            placeholderPasswordText.color = Color.black;
+        }
         if (sessionNameInputfield.text == "" || sessionNameInputfield.text == null)
         {
-            sessionNameBlankCoroutine = StartCoroutine(SessionNameBlankFeedback());
+            sessionNameBlankCoroutine = StartCoroutine(SessionNameBlankFeedback(placeholderSessionNameText));
+            return;
+        }
+        if (isRoomPrivateToggle.isOn && (passwordInputField.text == "" || passwordInputField.text == null))
+        {
+            passwordBlankCoroutine = StartCoroutine(SessionNameBlankFeedback(placeholderPasswordText));
             return;
         }
         createJoinPaperDefaultGroup.gameObject.SetActive(false);
         createJoinPaperLoadingGroup.gameObject.SetActive(true);
-        if (selectedHost) StartHost();
-        else StartClient();
+        StartHost();
     }
     private Coroutine sessionNameBlankCoroutine;
-    private IEnumerator SessionNameBlankFeedback()
+    private Coroutine passwordBlankCoroutine;
+    private IEnumerator SessionNameBlankFeedback(TextMeshProUGUI text)
     {
         for (int i = 0; i <= 3; i++)
         {
-            placeholderSessionNameText.color = Color.red;
+            text.color = Color.red;
             yield return new WaitForSeconds(.3f);
-            placeholderSessionNameText.color = Color.black;
+            text.color = Color.black;
             yield return new WaitForSeconds(.3f);
         }
     }
+    private const string isRoomPrivate = "Private"; // 1 = true; 0 = false;
+    private const string password = "Password";
+    private const string joinable = "Joinable";
     private void StartHost()
     {
-        Task task = NetworkRunnerHandler.Instance.StartNetworkRunner(sessionNameInputfield.text, Fusion.GameMode.Host);
+        Dictionary<string, SessionProperty> properties = new()
+        {
+            { isRoomPrivate, isRoomPrivateToggle.isOn ? 1 : 0 },
+            { password, passwordInputField.text },
+            { joinable, 1 }
+        };
+        Task task = NetworkRunnerHandler.Instance.StartNetworkRunner(sessionNameInputfield.text, Fusion.GameMode.Host, properties);
         StartCoroutine(WaitForHostToConnectToServer(task));
     }
-    private void StartClient()
+    public void StartClient(string sessionName, Dictionary<string, SessionProperty> sessionProperties)
     {
-        Task task = NetworkRunnerHandler.Instance.StartNetworkRunner(sessionNameInputfield.text, Fusion.GameMode.Client);
+        Task task = NetworkRunnerHandler.Instance.StartNetworkRunner(sessionName, Fusion.GameMode.Client, sessionProperties);
         StartCoroutine(WaitForHostToConnectToServer(task));
     }
     public IEnumerator WaitForHostToConnectToServer(Task task)
@@ -419,14 +511,14 @@ public class CursorController : MonoBehaviour
         while (task.Status != TaskStatus.RanToCompletion)
         {
             Debug.Log($"Task status: {task.Status}, time elapsed: {timeoutCount} seconds");
-            if (task.Status == TaskStatus.Canceled || task.Status == TaskStatus.Faulted || timeoutCount > 25f)
+            if ((task.Status == TaskStatus.Canceled || task.Status == TaskStatus.Faulted) && timeoutCount > 25f)
             {
-                NetworkRunnerHandler.Instance.ShutdownNetworkRunner();
                 createJoinPaperLoadingText.text = "Erro ao conectar";
+                /*NetworkRunnerHandler.Instance.ShutdownNetworkRunner();
                 yield return new WaitForSeconds(2);
                 createJoinPaperDefaultGroup.gameObject.SetActive(true);
                 createJoinPaperLoadingGroup.gameObject.SetActive(false);
-                yield break;
+                yield break;*/
             }
             yield return null;
             timeoutCount += Time.deltaTime;

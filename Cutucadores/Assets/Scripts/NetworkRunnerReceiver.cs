@@ -74,6 +74,8 @@ public class NetworkRunnerReceiver : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
     {
+        if (NetworkBetweenScenesManager.Instance == null) 
+            return;
         //Fix for not unloading previous scene to go back to menu, probably better to change it for something better
         var sacrificialGo = new GameObject("Sacrificial Lamb");
         NetworkBetweenScenesManager.Instance.Runner.Shutdown();
@@ -107,7 +109,11 @@ public class NetworkRunnerReceiver : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
     {
-
+        Debug.Log($"OnSessionListUpdated ({sessionList})");
+        if (CursorController.Instance != null)
+        {
+            CursorController.Instance.ReloadRoomList(sessionList);
+        }
     }
 
     public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data)

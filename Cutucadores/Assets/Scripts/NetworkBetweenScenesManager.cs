@@ -1,6 +1,7 @@
 using Fusion;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static CharacterData;
@@ -15,6 +16,8 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
 
     public string selfUserID;
     public bool spawned;
+    [SerializeField] private GameObject canvas;
+    [SerializeField] private TextMeshProUGUI countdownText;
 
     private void Awake()
     {
@@ -23,6 +26,8 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
             Instance = this;
             DontDestroyOnLoad(gameObject);
         }
+        else
+            Destroy(this);
     }
     public override void Spawned()
     {
@@ -257,6 +262,7 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
         {
             var sceneManager = Runner.SceneManager as NetworkSceneManagerDefault;
             sceneManager.LoadSceneAsync(mapIndex, new LoadSceneParameters(LoadSceneMode.Single), (_) => RPC_LoadMapToClients(mapIndex));
+            canvas.SetActive(true);
         }
     }
 
@@ -267,6 +273,7 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
         {
             var sceneManager = Runner.SceneManager as NetworkSceneManagerDefault;
             sceneManager.LoadSceneAsync(scene, new LoadSceneParameters(LoadSceneMode.Single), null);
+            canvas.SetActive(true);
         }
     }
     
@@ -297,7 +304,37 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
             Debug.Log($"{pair.Value.username} game object spawned.");
             playerNumber++;
         }
-        isInGameplay = true;
+        StartCoroutine(HostCountdown());
+    }
+
+    //Dá pra substituir isso aqui pra chamar uma animação ou algo mais bonitinho, deixei de placeholder
+    private IEnumerator HostCountdown()
+    {
+        for (int i = 1; i <= 5; i++)
+        {
+            if (i > 0 && i <= 3)
+                RPC_UpdateCountdownUI(i.ToString());
+            else if (i == 4)
+                RPC_UpdateCountdownUI("Vai!");
+            else if (i == 5)
+            {
+                RPC_ManageCanvas(false);
+                isInGameplay = true;
+            }
+            yield return new WaitForSeconds(1);
+        }
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All, InvokeLocal = true)]
+    private void RPC_ManageCanvas(bool state)
+    {
+        canvas.SetActive(state);
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All, InvokeLocal = true)]
+    private void RPC_UpdateCountdownUI(string text)
+    {
+        countdownText.text = text;
     }
     #endregion
 }

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System;
 using System.Linq;
 using Unity.VisualScripting;
+using System.Runtime.CompilerServices;
 
 public class NetworkRunnerHandler : MonoBehaviour
 {
@@ -20,11 +21,11 @@ public class NetworkRunnerHandler : MonoBehaviour
     private NetworkSceneManagerDefault sceneManager;
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(this);
         DontDestroyOnLoad(gameObject);
-    }
-    public Task StartNetworkRunner(string sessionName,GameMode gamemode)
-    {
         if(networkRunner == null)
         {
             networkRunner = Instantiate(networkRunnerPrefab);
@@ -38,9 +39,18 @@ public class NetworkRunnerHandler : MonoBehaviour
             else
                 sceneManager = networkRunner.AddComponent<NetworkSceneManagerDefault>();
         }
-        return InitializeNetworkRunner(networkRunner, gamemode, NetAddress.Any(), SceneManager.GetActiveScene().buildIndex, null, sessionName, sceneManager);
     }
-    protected virtual Task InitializeNetworkRunner(NetworkRunner runner, GameMode gameMode, NetAddress address,SceneRef scene, Action<NetworkRunner> initialized,string sessionName,INetworkSceneManager sceneManager)
+    public Task StartLobby()
+    {
+        networkRunner.Shutdown();
+        return networkRunner.JoinSessionLobby(SessionLobby.Custom, "Lobby");
+    }
+
+    public Task StartNetworkRunner(string sessionName,GameMode gamemode, Dictionary<string, SessionProperty> sessionProperties)
+    {
+        return InitializeNetworkRunner(networkRunner, gamemode, NetAddress.Any(), SceneManager.GetActiveScene().buildIndex, null, sessionName, sceneManager, sessionProperties);
+    }
+    protected virtual Task InitializeNetworkRunner(NetworkRunner runner, GameMode gameMode, NetAddress address,SceneRef scene, Action<NetworkRunner> initialized,string sessionName,INetworkSceneManager sceneManager, Dictionary<string, SessionProperty> sessionProperties)
     {
         runner.ProvideInput = true;
         return runner.StartGame(new StartGameArgs
@@ -50,14 +60,13 @@ public class NetworkRunnerHandler : MonoBehaviour
             Scene = scene,
             SessionName = sessionName,
             Initialized = initialized,
-            SceneManager = sceneManager
+            SceneManager = sceneManager,
+            SessionProperties = sessionProperties,
         });
 
     }
     public void ShutdownNetworkRunner()
     {
-        if (networkRunner == null) return;
         networkRunner.Shutdown();
-        networkRunner = null;
     }
 }
