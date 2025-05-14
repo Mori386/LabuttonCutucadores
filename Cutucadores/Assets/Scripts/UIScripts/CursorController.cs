@@ -93,12 +93,6 @@ public class CursorController : MonoBehaviour
     public RectTransform blueprintRect;
 
     private float moveDuration; // Tempo de deslocamento
-    private float timer = 0.0f; // verificação de tempo max
-
-    [Header("BOOLEANOS")]
-    private bool isMoving = false;
-    private bool isChange = false;
-    private bool isReturn = false;
 
     [Header("VETORES")]
     private Vector3 startPosition;
@@ -328,7 +322,6 @@ public class CursorController : MonoBehaviour
     string currentRoomName;
     public void ToInsertPasswordScreen(string password, string name)
     {
-        Debug.Log($"Senha correta: {password}");
         clientHostPaper.gameObject.SetActive(false);
         insertPasswordPaper.SetActive(true);
         enterRoomPasswordInputField.placeholder.color = Color.black;
@@ -372,6 +365,8 @@ public class CursorController : MonoBehaviour
     //Quando retorna ao menu
     public void OpenBookReturnToPlay() // anim para abrir livro
     {
+        if (createJoinPaperLoadingGroup.gameObject.activeInHierarchy)
+            return;
         NetworkRunnerHandler.Instance.ShutdownNetworkRunner();
         StopHandFollowCursor();
         StartMoveCursorObject(mainMenuHand, moveDuration, animHandStartingPoint.position);
@@ -504,6 +499,7 @@ public class CursorController : MonoBehaviour
     }
     public void StartClient(string sessionName, Dictionary<string, SessionProperty> sessionProperties)
     {
+        createJoinPaperLoadingGroup.gameObject.SetActive(true);
         Task task = NetworkRunnerHandler.Instance.StartNetworkRunner(sessionName, Fusion.GameMode.Client, sessionProperties);
         StartCoroutine(WaitForHostToConnectToServer(task));
     }
@@ -517,11 +513,11 @@ public class CursorController : MonoBehaviour
             if ((task.Status == TaskStatus.Canceled || task.Status == TaskStatus.Faulted) && timeoutCount > 25f)
             {
                 createJoinPaperLoadingText.text = "Erro ao conectar";
-                /*NetworkRunnerHandler.Instance.ShutdownNetworkRunner();
+                NetworkRunnerHandler.Instance.ShutdownNetworkRunner();
                 yield return new WaitForSeconds(2);
                 createJoinPaperDefaultGroup.gameObject.SetActive(true);
                 createJoinPaperLoadingGroup.gameObject.SetActive(false);
-                yield break;*/
+                yield break;
             }
             yield return null;
             timeoutCount += Time.deltaTime;
@@ -552,14 +548,6 @@ public class CursorController : MonoBehaviour
     public void ReturnBlueprintSelect() // sair do blue de seleção
     {
         NetworkRunnerHandler.Instance.ShutdownNetworkRunner();
-        /*tanques.SetActive(false);
-        Luz.SetActive(false);
-        Lampada.SetActive(true);
-        clientHostCanvas.gameObject.SetActive(true);
-        StartCoroutine(ReturnBlue());
-
-        isReturn = true;
-        isChange = false;*/
     }
     public void ChangeMaterial(Material newMaterial, GameObject Tank, GameObject Drill)
     {

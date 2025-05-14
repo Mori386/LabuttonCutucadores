@@ -13,7 +13,7 @@ public class HPHandler : NetworkBehaviour
     [Networked(OnChanged = nameof(OnStateChanged))]
     public bool isDead { get; set; }
 
-    bool isInitialized = false;
+    //bool isInitialized = false;
 
     const byte startingHP = 5;
 
