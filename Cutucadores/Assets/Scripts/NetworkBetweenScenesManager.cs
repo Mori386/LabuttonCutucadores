@@ -241,6 +241,7 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
                     PlayerData disconnectedData = pair.Value;
                     disconnectedData.isDead = true;
                     userIDToPlayerData.Set(pair.Key, disconnectedData);
+                    Debug.Log($"Setting {pair.Value.username} as dead (isDead = {userIDToPlayerData[pair.Key].isDead})");
                     if (Runner.IsServer)
                         GameManager.Instance.RPC_CheckForPlayersDead();
                 }

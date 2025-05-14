@@ -142,6 +142,7 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
                 }
             }
         }
+        Debug.Log($"{totalPlayersAlive} players alive.");
         //Define winner based on players alive
         if (totalPlayersAlive <= 1)
         {

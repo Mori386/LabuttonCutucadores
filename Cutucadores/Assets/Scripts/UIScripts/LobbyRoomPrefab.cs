@@ -22,7 +22,15 @@ public class LobbyRoomPrefab : MonoBehaviour
         playerQuantityText.text = $"{playerCount}/4";
         roomProperties = properties;
         privateRoomSign.SetActive(roomProperties[isRoomPrivate] == 1);
-        joinButton.onClick.AddListener(JoinRoom);
+        if (playerCount >= 4)
+        {
+            playerQuantityText.color = Color.red;
+            joinButton.gameObject.SetActive(false);
+        }
+        else
+        {
+            joinButton.onClick.AddListener(JoinRoom);
+        }
     }
 
     public void JoinRoom()
