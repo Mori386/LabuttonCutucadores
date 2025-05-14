@@ -551,14 +551,15 @@ public class CursorController : MonoBehaviour
     }
     public void ReturnBlueprintSelect() // sair do blue de seleção
     {
-        tanques.SetActive(false);
+        NetworkRunnerHandler.Instance.ShutdownNetworkRunner();
+        /*tanques.SetActive(false);
         Luz.SetActive(false);
         Lampada.SetActive(true);
         clientHostCanvas.gameObject.SetActive(true);
         StartCoroutine(ReturnBlue());
 
         isReturn = true;
-        isChange = false;
+        isChange = false;*/
     }
     public void ChangeMaterial(Material newMaterial, GameObject Tank, GameObject Drill)
     {
