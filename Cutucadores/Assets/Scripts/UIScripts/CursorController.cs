@@ -315,9 +315,12 @@ public class CursorController : MonoBehaviour
         }
         foreach (SessionInfo session in sessionList)
         {
-            Debug.Log($"Instantiating room {session.Name}");
-            LobbyRoomPrefab prefab = Instantiate(roomPrefab, roomListParent.transform).GetComponent<LobbyRoomPrefab>();
-            prefab.Setup(session.Name, session.PlayerCount, new Dictionary<string, SessionProperty>(session.Properties));
+            if (session.Properties[joinable] == 1)
+            {
+                Debug.Log($"Instantiating room {session.Name}");
+                LobbyRoomPrefab prefab = Instantiate(roomPrefab, roomListParent.transform).GetComponent<LobbyRoomPrefab>();
+                prefab.Setup(session.Name, session.PlayerCount, new Dictionary<string, SessionProperty>(session.Properties));
+            }
         }
     }
 

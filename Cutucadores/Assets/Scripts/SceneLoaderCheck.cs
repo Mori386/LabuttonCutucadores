@@ -4,6 +4,7 @@ public class SceneLoaderCheck : MonoBehaviour
 {
     [SerializeField] private GameObject gameManagerPrefab;
     [SerializeField] private GameObject winScreenPrefab;
+    [SerializeField] private GameObject[] boostsArray;
 
     void Start()
     {
@@ -18,6 +19,8 @@ public class SceneLoaderCheck : MonoBehaviour
         {
             NetworkBetweenScenesManager.Instance.Runner.Spawn(winScreenPrefab);
             NetworkBetweenScenesManager.Instance.winScreenSpawned = true;
+            foreach (GameObject boost in boostsArray)
+                NetworkBetweenScenesManager.Instance.Runner.Spawn(boost);
         }
     }
 }
