@@ -26,6 +26,11 @@ public class NetworkRunnerHandler : MonoBehaviour
         else
             Destroy(this);
         DontDestroyOnLoad(gameObject);
+        TryInstantiateRunner();
+    }
+
+    public void TryInstantiateRunner()
+    {
         if(networkRunner == null)
         {
             networkRunner = Instantiate(networkRunnerPrefab);
@@ -40,6 +45,7 @@ public class NetworkRunnerHandler : MonoBehaviour
                 sceneManager = networkRunner.AddComponent<NetworkSceneManagerDefault>();
         }
     }
+
     public Task StartLobby()
     {
         networkRunner.Shutdown();
