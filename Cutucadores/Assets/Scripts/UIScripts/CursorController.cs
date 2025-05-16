@@ -118,6 +118,7 @@ public class CursorController : MonoBehaviour
         moveDuration = moveTime - pauseTime; // valor do tempo de deslocamento
         StartCoroutine(MoveBookSmoothly());
         isRoomPrivateToggle.onValueChanged.AddListener(passwordInputField.gameObject.transform.parent.gameObject.SetActive);
+        NetworkRunnerHandler.Instance.StartLobby();
     }
     public void StartHandFollowCursor()
     {
@@ -292,7 +293,6 @@ public class CursorController : MonoBehaviour
     //Quando pressiona o play
     public void CloseBookOnPlay() // anim para fechar livro
     {
-        NetworkRunnerHandler.Instance.StartLobby();
         StopHandFollowCursor();
         StartMoveCursorObject(mainMenuHand, moveDuration, animHandStartingPoint.position);
         StartCoroutine(DelayCloseBook());
