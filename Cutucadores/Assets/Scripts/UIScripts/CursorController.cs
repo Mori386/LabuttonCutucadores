@@ -57,6 +57,7 @@ public class CursorController : MonoBehaviour
     public TextMeshProUGUI createJoinPaperLoadingText;
     public GameObject roomListParent;
     public GameObject roomPrefab;
+    public TextMeshProUGUI lobbyStatusText;
 
     [Header("|----- Blueprint -----|")]
     public Button hostStartGameButton;
@@ -118,7 +119,6 @@ public class CursorController : MonoBehaviour
         moveDuration = moveTime - pauseTime; // valor do tempo de deslocamento
         StartCoroutine(MoveBookSmoothly());
         isRoomPrivateToggle.onValueChanged.AddListener(passwordInputField.gameObject.transform.parent.gameObject.SetActive);
-        NetworkRunnerHandler.Instance.StartLobby();
     }
     public void StartHandFollowCursor()
     {
@@ -296,16 +296,38 @@ public class CursorController : MonoBehaviour
         StopHandFollowCursor();
         StartMoveCursorObject(mainMenuHand, moveDuration, animHandStartingPoint.position);
         StartCoroutine(DelayCloseBook());
-        
+        NetworkRunnerHandler.Instance.StartLobby();
+        foreach (Transform child in roomListParent.transform)
+        {
+            if (child.GetComponent<LobbyRoomPrefab>() != null)
+                return;
+        }
+        lobbyStatusText.gameObject.SetActive(true);
+        lobbyStatusText.text = "Procurando salas...";
     }
 
     public void ReloadRoomList(List<SessionInfo> sessionList)
     {
+        Debug.Log($"Reloading room list");
         if (roomListParent == null)
             return;
         foreach (Transform child in roomListParent.transform)
         {
-            Destroy(child.gameObject);
+            if (child.GetComponent<LobbyRoomPrefab>() != null)
+                Destroy(child.gameObject);
+        }
+        lobbyStatusText.gameObject.SetActive(true);
+        lobbyStatusText.text = "Nenhuma sala ativa no momento.";
+        if (sessionList != null || sessionList.Count > 0)
+        {
+            foreach (SessionInfo session in sessionList)
+            {
+                if (session.Properties[joinable] == 1)
+                {
+                    lobbyStatusText.gameObject.SetActive(false);
+                    break;
+                }
+            }
         }
         foreach (SessionInfo session in sessionList)
         {
@@ -467,7 +489,7 @@ public class CursorController : MonoBehaviour
             passwordBlankCoroutine = StartCoroutine(SessionNameBlankFeedback(placeholderPasswordText));
             return;
         }
-        createJoinPaperDefaultGroup.gameObject.SetActive(false);
+        //createJoinPaperDefaultGroup.gameObject.SetActive(false);
         createJoinPaperLoadingGroup.gameObject.SetActive(true);
         StartHost();
     }
@@ -492,7 +514,7 @@ public class CursorController : MonoBehaviour
         {
             { isRoomPrivate, isRoomPrivateToggle.isOn ? 1 : 0 },
             { password, passwordInputField.text },
-            { joinable, 1 }
+            { joinable, 0 }
         };
         Task task = NetworkRunnerHandler.Instance.StartNetworkRunner(sessionNameInputfield.text, Fusion.GameMode.Host, properties);
         StartCoroutine(WaitForHostToConnectToServer(task));
@@ -509,25 +531,90 @@ public class CursorController : MonoBehaviour
         createJoinPaperLoadingText.text = "Conectando...";
         while (task.Status != TaskStatus.RanToCompletion)
         {
-            Debug.Log($"Task status: {task.Status}, time elapsed: {timeoutCount} seconds");
-            if ((task.Status == TaskStatus.Canceled || task.Status == TaskStatus.Faulted) && timeoutCount > 25f)
+            Debug.Log($"Task status: {task.Status}, time elapsed: {timeoutCount} seconds.");
+            if (task.Status == TaskStatus.Canceled || task.Status == TaskStatus.Faulted || timeoutCount > 25f)
             {
-                createJoinPaperLoadingText.text = "Erro ao conectar";
-                NetworkRunnerHandler.Instance.ShutdownNetworkRunner();
-                yield return new WaitForSeconds(2);
-                createJoinPaperDefaultGroup.gameObject.SetActive(true);
+                createJoinPaperLoadingText.text = "Erro ao conectar.";
+                Task shutdownTask = NetworkRunnerHandler.Instance.ShutdownNetworkRunner();
+                foreach (Transform child in roomListParent.transform)
+                {
+                    if (child.GetComponent<LobbyRoomPrefab>() != null)
+                        Destroy(child.gameObject);
+                }
+                while (shutdownTask.Status != TaskStatus.RanToCompletion)
+                    yield return null;
+                yield return new WaitForSeconds(1);
+                NetworkRunnerHandler.Instance.StartLobby();
+                clientHostPaper.gameObject.SetActive(true);
+                lobbyStatusText.gameObject.SetActive(true);
+                lobbyStatusText.text = "Procurando salas...";
                 createJoinPaperLoadingGroup.gameObject.SetActive(false);
+                createJoinPaper.gameObject.SetActive(false);
+                insertPasswordPaper.SetActive(false);
                 yield break;
             }
             yield return null;
             timeoutCount += Time.deltaTime;
         }
-        createJoinPaperLoadingText.text = "Conectado";
-        while (carimbo == null) yield return new WaitForFixedUpdate();
-        Debug.Log("Carimbo carregado");
-        while (NetworkBetweenScenesManager.Instance.spawned == false) yield return new WaitForFixedUpdate();
+        while (carimbo == null)
+        {
+            Debug.Log($"Loading carimbo, time elapsed: {timeoutCount} seconds.");
+            if (timeoutCount > 25f)
+            {
+                createJoinPaperLoadingText.text = "Erro ao conectar.";
+                Task shutdownTask = NetworkRunnerHandler.Instance.ShutdownNetworkRunner();
+                foreach (Transform child in roomListParent.transform)
+                {
+                    if (child.GetComponent<LobbyRoomPrefab>() != null)
+                        Destroy(child.gameObject);
+                }
+                while (shutdownTask.Status != TaskStatus.RanToCompletion)
+                    yield return null;
+                yield return new WaitForSeconds(1);
+                NetworkRunnerHandler.Instance.StartLobby();
+                clientHostPaper.gameObject.SetActive(true);
+                lobbyStatusText.gameObject.SetActive(true);
+                lobbyStatusText.text = "Procurando salas...";
+                createJoinPaperLoadingGroup.gameObject.SetActive(false);
+                createJoinPaper.gameObject.SetActive(false);
+                insertPasswordPaper.SetActive(false);
+                yield break;
+            }
+            yield return null;
+            timeoutCount += Time.deltaTime;
+        }
+        Debug.Log("Carimbo loaded.");
+        while (NetworkBetweenScenesManager.Instance.spawned == false)
+        {
+            Debug.Log($"Loading NetworkBetweenScenesManager, time elapsed: {timeoutCount} seconds.");
+            if (timeoutCount > 25f)
+            {
+                createJoinPaperLoadingText.text = "Erro ao conectar.";
+                Task shutdownTask = NetworkRunnerHandler.Instance.ShutdownNetworkRunner();
+                foreach (Transform child in roomListParent.transform)
+                {
+                    if (child.GetComponent<LobbyRoomPrefab>() != null)
+                        Destroy(child.gameObject);
+                }
+                while (shutdownTask.Status != TaskStatus.RanToCompletion)
+                    yield return null;
+                yield return new WaitForSeconds(1);
+                NetworkRunnerHandler.Instance.StartLobby();
+                clientHostPaper.gameObject.SetActive(true);
+                lobbyStatusText.gameObject.SetActive(true);
+                lobbyStatusText.text = "Procurando salas...";
+                createJoinPaperLoadingGroup.gameObject.SetActive(false);
+                createJoinPaper.gameObject.SetActive(false);
+                insertPasswordPaper.SetActive(false);
+                yield break;
+            }
+            yield return null;
+            timeoutCount += Time.deltaTime;
+        }
         Debug.Log("NetworkBetweenScenesManager carregado");
+        createJoinPaperLoadingText.text = "Conectado";
         yield return new WaitForSeconds(1);
+        NetworkRunnerHandler.Instance.ManageRoomVisibility(1);
         BlueprintEnter();
     }
     public void StartMatch()

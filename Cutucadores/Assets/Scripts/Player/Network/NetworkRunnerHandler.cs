@@ -48,7 +48,7 @@ public class NetworkRunnerHandler : MonoBehaviour
 
     public Task StartLobby()
     {
-        networkRunner.Shutdown();
+        TryInstantiateRunner();
         return networkRunner.JoinSessionLobby(SessionLobby.Custom, "Lobby");
     }
 
@@ -69,10 +69,24 @@ public class NetworkRunnerHandler : MonoBehaviour
             SceneManager = sceneManager,
             SessionProperties = sessionProperties,
         });
-
     }
-    public void ShutdownNetworkRunner()
+
+    private const string joinable = "Joinable";
+    /// <summary>
+    /// Set if the room is joinable or not.
+    /// </summary>
+    /// <param name="isJoinable">0 = not joinable; 1 = joinable</param>
+    public void ManageRoomVisibility(int isJoinable)
     {
-        networkRunner.Shutdown();
+        if (networkRunner.IsServer)
+        {
+            Dictionary<string, SessionProperty> properties = new(networkRunner.SessionInfo.Properties) { [joinable] = isJoinable };
+            networkRunner.SessionInfo.UpdateCustomProperties(properties);
+        }
+    }
+
+    public Task ShutdownNetworkRunner()
+    {
+        return networkRunner.Shutdown();
     }
 }

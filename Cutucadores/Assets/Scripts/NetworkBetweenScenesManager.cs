@@ -257,13 +257,11 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
     #endregion
 
     #region Load Map
-    private const string joinable = "Joinable";
     public void LoadMapToHost(string mapName, int mapIndex)
     {
         if (Runner.IsServer)
         {
-            Dictionary<string, SessionProperty> properties = new(Runner.SessionInfo.Properties) {[joinable] = 0};
-            Runner.SessionInfo.UpdateCustomProperties(properties);
+            NetworkRunnerHandler.Instance.ManageRoomVisibility(0);
             var sceneManager = Runner.SceneManager as NetworkSceneManagerDefault;
             sceneManager.LoadSceneAsync(mapIndex, new LoadSceneParameters(LoadSceneMode.Single), (_) => RPC_LoadMapToClients(mapIndex));
             canvas.SetActive(true);

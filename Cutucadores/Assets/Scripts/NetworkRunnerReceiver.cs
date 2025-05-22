@@ -78,7 +78,6 @@ public class NetworkRunnerReceiver : MonoBehaviour, INetworkRunnerCallbacks
             return;
         //Fix for not unloading previous scene to go back to menu, probably better to change it for something better
         var sacrificialGo = new GameObject("Sacrificial Lamb");
-        NetworkBetweenScenesManager.Instance.Runner.Shutdown();
 
         DontDestroyOnLoad(sacrificialGo);
 
