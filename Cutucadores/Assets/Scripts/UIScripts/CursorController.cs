@@ -112,21 +112,21 @@ public class CursorController : MonoBehaviour
         if (PlayerPrefs.GetString("nickname") != null && PlayerPrefs.GetString("nickname") != "")
             nicknameInputField.text = PlayerPrefs.GetString("nickname");
 
+        isRoomPrivateToggle.onValueChanged.AddListener(passwordInputField.gameObject.transform.parent.gameObject.SetActive);
+        if (NetworkBetweenScenesManager.Instance != null)
+        {
+            if (NetworkBetweenScenesManager.Instance.Runner.IsInSession)
+            {
+                BlueprintEnter();
+                return;
+            }
+        }
         Cursor.visible = false; // Esconde o cursor do mouse
         Cursor.lockState = CursorLockMode.Confined; // Mantém o cursor dentro da janela do jogo.
 
         startPosition = mainMenuHand.transform.position; //para retorno da posição inicial
         moveDuration = moveTime - pauseTime; // valor do tempo de deslocamento
         StartCoroutine(MoveBookSmoothly());
-        isRoomPrivateToggle.onValueChanged.AddListener(passwordInputField.gameObject.transform.parent.gameObject.SetActive);
-        if (NetworkBetweenScenesManager.Instance != null)
-        {
-            if (NetworkBetweenScenesManager.Instance.Runner.IsInSession)
-            {
-                CloseBookOnPlay();
-                BlueprintEnter();
-            }
-        }
     }
     public void StartHandFollowCursor()
     {
@@ -304,10 +304,7 @@ public class CursorController : MonoBehaviour
         StopHandFollowCursor();
         StartMoveCursorObject(mainMenuHand, moveDuration, animHandStartingPoint.position);
         StartCoroutine(DelayCloseBook());
-        if (NetworkBetweenScenesManager.Instance == null || !NetworkBetweenScenesManager.Instance.Runner.IsInSession)
-        {
-            StartCoroutine(StartLobbyConnection());
-        }
+        StartCoroutine(StartLobbyConnection());
     }
 
     private IEnumerator StartLobbyConnection()
