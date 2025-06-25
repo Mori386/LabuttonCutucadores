@@ -234,8 +234,9 @@ public class NetworkCharacterDrillController : NetworkTransform
         ToggleCharacterInput(false);
         if (Object.HasInputAuthority)
         {
+            Debug.Log($"NetworkCharacterDrillController/Die()");
             //Troca a camera pra spec se tiver alguem vivo
-            GameManager.Instance.RPC_CheckForPlayersDead();
+            //GameManager.Instance.RPC_CheckForPlayersDead();
             Spectator.Instance.StartFollowCameraNextPlayer();
         }
     }

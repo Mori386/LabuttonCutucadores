@@ -9,7 +9,7 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
 {
     //Singleton
     public static NetworkBetweenScenesManager Instance;
-    [Networked]public NetworkBool isInGameplay { get; set; }
+    [Networked] public NetworkBool isInGameplay { get; set; }
     [Networked] public NetworkBool GameManagerSpawned { get; set; }
     [Networked] public NetworkBool winScreenSpawned { get; set; }
     [Networked] public bool PlayersGOSpawned { get; set; }
@@ -46,6 +46,21 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
     {
         base.Despawned(runner, hasState);
         spawned = false;
+    }
+    public void PostGameReset()
+    {
+        isInGameplay = false;
+        GameManagerSpawned = false;
+        winScreenSpawned = false;
+        PlayersGOSpawned = false;
+        foreach (KeyValuePair<NetworkString<_256>, PlayerData> pair in userIDToPlayerData)
+        {
+            PlayerData resetData = pair.Value;
+            resetData.character = Character.Null;
+            resetData.loaded = false;
+            resetData.isDead = false;
+            userIDToPlayerData.Set(pair.Key, resetData);
+        }
     }
 
     #region Character Select
@@ -92,35 +107,46 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
             return;
         foreach (KeyValuePair<NetworkString<_256>, PlayerData> pair in userIDToPlayerData)
         {
-            if (pair.Value.character == Character.Null)
-                return;
-            BPCharacter thisCharacterBP;
-            switch (pair.Value.character)
+            if (pair.Value.playerRef == userID)
             {
-                default:
-                case Character.Escavador:
-                    thisCharacterBP = CursorController.Instance.escavadorCharBP;
-                    break;
-                case Character.Minerador:
-                    thisCharacterBP = CursorController.Instance.mineradorCharBP;
-                    break;
-                case Character.PaiEFilha:
-                    thisCharacterBP = CursorController.Instance.paiEFilhaCharBP;
-                    break;
-                case Character.Vovo:
-                    thisCharacterBP = CursorController.Instance.vovoCharBP;
-                    break;
+                if (pair.Value.character == Character.Null)
+                    return;
+                BPCharacter thisCharacterBP;
+                switch (pair.Value.character)
+                {
+                    default:
+                    case Character.Escavador:
+                        thisCharacterBP = CursorController.Instance.escavadorCharBP;
+                        break;
+                    case Character.Minerador:
+                        thisCharacterBP = CursorController.Instance.mineradorCharBP;
+                        break;
+                    case Character.PaiEFilha:
+                        thisCharacterBP = CursorController.Instance.paiEFilhaCharBP;
+                        break;
+                    case Character.Vovo:
+                        thisCharacterBP = CursorController.Instance.vovoCharBP;
+                        break;
+                }
+                if (thisCharacterBP.selectButton != null)
+                {
+                    thisCharacterBP.selectButton.interactable = true;
+                    thisCharacterBP.usernameText.text = "Nome do jogador";
+                    StartCoroutine(ChangeTankMaterial(thisCharacterBP, thisCharacterBP.BpEffectMaterial));
+                }
+                PlayerData player = pair.Value;
+                player.character = Character.Null;
+                userIDToPlayerData.Set(pair.Key, player);
             }
-            if (thisCharacterBP.selectButton != null)
-            {
-                thisCharacterBP.selectButton.interactable = true;
-                thisCharacterBP.usernameText.text = "Nome do jogador";
-                StartCoroutine(ChangeTankMaterial(thisCharacterBP, thisCharacterBP.BpEffectMaterial));
-            }
-            PlayerData player = pair.Value;
-            player.character = Character.Null;
-            userIDToPlayerData.Set(pair.Key, player);
         }
+        if (userIDToPlayerData[selfUserID].character != Character.Null)
+        {
+            CursorController.Instance.escavadorCharBP.selectButton.interactable = false;
+            CursorController.Instance.mineradorCharBP.selectButton.interactable = false;
+            CursorController.Instance.paiEFilhaCharBP.selectButton.interactable = false;
+            CursorController.Instance.vovoCharBP.selectButton.interactable = false;
+        }
+        RPC_CheckForPlayerReady();
     }
 
     //Change from blueprint material to real material 
@@ -236,46 +262,57 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
         {
             if (pair.Value.playerRef == userID)
             {
-                if (Instance.GameManagerSpawned)
-                {
-                    PlayerData disconnectedData = pair.Value;
-                    disconnectedData.isDead = true;
-                    userIDToPlayerData.Set(pair.Key, disconnectedData);
-                    Debug.Log($"Setting {pair.Value.username} as dead (isDead = {userIDToPlayerData[pair.Key].isDead})");
-                    if (Runner.IsServer)
-                        GameManager.Instance.RPC_CheckForPlayersDead();
-                }
-                else
-                {
-                    Debug.Log($"Removing {userID} from userIDList and userIDToPlayerData.");
-                    userIDToPlayerData.Remove(pair.Key);
-                    userIDList.Remove(pair.Key);
-                }
+                PlayerData disconnectedData = pair.Value;
+                disconnectedData.isDead = true;
+                userIDToPlayerData.Set(pair.Key, disconnectedData);
+                Debug.Log($"Setting {pair.Value.username} as dead (isDead = {userIDToPlayerData[pair.Key].isDead}) and removing {userID} from userIDList and userIDToPlayerData.");
+                userIDToPlayerData.Remove(pair.Key);
+                userIDList.Remove(pair.Key);
+                if (Instance.GameManagerSpawned && Runner.IsServer)
+                    GameManager.Instance.RPC_CheckForPlayersDead();
+                return;
+            }
+        }
+    }
+    public void SetPlayerAsDead(PlayerRef userID)
+    {
+        Debug.Log($"Attempting to remove ID {userID}");
+        foreach (KeyValuePair<NetworkString<_256>, PlayerData> pair in userIDToPlayerData)
+        {
+            if (pair.Value.playerRef == userID)
+            {
+                PlayerData disconnectedData = pair.Value;
+                disconnectedData.isDead = true;
+                userIDToPlayerData.Set(pair.Key, disconnectedData);
+                Debug.Log($"Setting {pair.Value.username} as dead (isDead = {userIDToPlayerData[pair.Key].isDead})");
+                if (Runner.IsServer)
+                    GameManager.Instance.RPC_CheckForPlayersDead();
+                return;
             }
         }
     }
     #endregion
 
     #region Load Map
-    public void LoadMapToHost(string mapName, int mapIndex)
+    public void LoadSceneToHost(int mapIndex)
     {
         if (Runner.IsServer)
         {
-            NetworkRunnerHandler.Instance.ManageRoomVisibility(0);
+            NetworkRunnerHandler.Instance.ManageRoomVisibility(mapIndex > 0 ? 0 : 1);
             var sceneManager = Runner.SceneManager as NetworkSceneManagerDefault;
-            sceneManager.LoadSceneAsync(mapIndex, new LoadSceneParameters(LoadSceneMode.Single), (_) => RPC_LoadMapToClients(mapIndex));
-            canvas.SetActive(true);
+            sceneManager.LoadSceneAsync(mapIndex, new LoadSceneParameters(LoadSceneMode.Single), (_) => RPC_LoadSceneToClients(mapIndex));
+            if (mapIndex > 0) canvas.SetActive(true);
         }
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = false)]
-    private void RPC_LoadMapToClients(SceneRef scene)
+    private void RPC_LoadSceneToClients(SceneRef scene)
     {
         if (!Runner.IsServer)
         {
             var sceneManager = Runner.SceneManager as NetworkSceneManagerDefault;
             sceneManager.LoadSceneAsync(scene, new LoadSceneParameters(LoadSceneMode.Single), null);
-            canvas.SetActive(true);
+            if (scene > 0) canvas.SetActive(true);
         }
     }
     
@@ -320,6 +357,7 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
                 RPC_UpdateCountdownUI("Vai!");
             else if (i == 5)
             {
+                RPC_UpdateCountdownUI("");
                 RPC_ManageCanvas(false);
                 isInGameplay = true;
             }

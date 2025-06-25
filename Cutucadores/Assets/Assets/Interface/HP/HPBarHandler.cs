@@ -82,7 +82,6 @@ public class HPBarHandler : MonoBehaviour
         if (playerRefToPlayerHPBars.TryGetValue(playerRef, out PlayerHPBar playerHPBar))
         {
             playerHPBar.deathEffect.gameObject.SetActive(isDead);
-            NetworkBetweenScenesManager.Instance.RemoveUserID(playerRef);
         }
     }
     public Sprite GetCharacterPfp(Character character)

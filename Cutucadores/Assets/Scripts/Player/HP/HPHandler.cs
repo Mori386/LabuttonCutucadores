@@ -94,6 +94,7 @@ public class HPHandler : NetworkBehaviour
         if(changed.Behaviour.isDead)
         {
             HPBarHandler.Instance.UpdateState(changed.Behaviour.Object.InputAuthority, true);
+            NetworkBetweenScenesManager.Instance.SetPlayerAsDead(changed.Behaviour.Object.InputAuthority);
             changed.Behaviour.drillController.Die();
         }
     }

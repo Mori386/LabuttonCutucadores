@@ -24,7 +24,7 @@ public class NetworkRunnerHandler : MonoBehaviour
         if (Instance == null)
             Instance = this;
         else
-            Destroy(this);
+            Destroy(gameObject);
         DontDestroyOnLoad(gameObject);
         TryInstantiateRunner();
     }

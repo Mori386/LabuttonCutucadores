@@ -119,6 +119,14 @@ public class CursorController : MonoBehaviour
         moveDuration = moveTime - pauseTime; // valor do tempo de deslocamento
         StartCoroutine(MoveBookSmoothly());
         isRoomPrivateToggle.onValueChanged.AddListener(passwordInputField.gameObject.transform.parent.gameObject.SetActive);
+        if (NetworkBetweenScenesManager.Instance != null)
+        {
+            if (NetworkBetweenScenesManager.Instance.Runner.IsInSession)
+            {
+                CloseBookOnPlay();
+                BlueprintEnter();
+            }
+        }
     }
     public void StartHandFollowCursor()
     {
@@ -296,14 +304,35 @@ public class CursorController : MonoBehaviour
         StopHandFollowCursor();
         StartMoveCursorObject(mainMenuHand, moveDuration, animHandStartingPoint.position);
         StartCoroutine(DelayCloseBook());
-        NetworkRunnerHandler.Instance.StartLobby();
+        if (NetworkBetweenScenesManager.Instance == null || !NetworkBetweenScenesManager.Instance.Runner.IsInSession)
+        {
+            StartCoroutine(StartLobbyConnection());
+        }
+    }
+
+    private IEnumerator StartLobbyConnection()
+    {
         foreach (Transform child in roomListParent.transform)
         {
             if (child.GetComponent<LobbyRoomPrefab>() != null)
-                return;
+                Destroy(child.gameObject);
         }
+        createJoinPaperLoadingGroup.gameObject.SetActive(true);
+        createJoinPaperLoadingText.text = "Carregando...";
         lobbyStatusText.gameObject.SetActive(true);
         lobbyStatusText.text = "Procurando salas...";
+        Task lobbyLoadTask = NetworkRunnerHandler.Instance.StartLobby();
+        while (lobbyLoadTask.Status != TaskStatus.RanToCompletion)
+        {
+            if (lobbyLoadTask.Status == TaskStatus.Canceled || lobbyLoadTask.Status == TaskStatus.Faulted)
+            {
+                NetworkRunnerHandler.Instance.ShutdownNetworkRunner();
+            }
+            yield return null;
+        }
+        createJoinPaperLoadingText.text = "Conectado";
+        yield return new WaitForSeconds(.3f);
+        createJoinPaperLoadingGroup.gameObject.SetActive(false);
     }
 
     public void ReloadRoomList(List<SessionInfo> sessionList)
@@ -619,18 +648,7 @@ public class CursorController : MonoBehaviour
     }
     public void StartMatch()
     {
-        switch(mapInPreviewID)
-        {
-            case 0:
-                NetworkBetweenScenesManager.Instance.LoadMapToHost("Level1",1);
-                break;
-            case 1:
-                NetworkBetweenScenesManager.Instance.LoadMapToHost("Level2",2);
-                break;
-            case 2:
-                NetworkBetweenScenesManager.Instance.LoadMapToHost("Level3",3);
-                break;
-        }
+        NetworkBetweenScenesManager.Instance.LoadSceneToHost(mapInPreviewID+1);
     }
     public void ReturnBlueprintSelect() // sair do blue de seleção
     {
@@ -1197,7 +1215,7 @@ public class CursorController : MonoBehaviour
             yield return null;
         }
         blueprintRect.localPosition = bpCenterPos;
-        carimbo.SetActive(true);
+        //carimbo.SetActive(true);
         //StartStampFollowCursor();
         Cursor.visible = true;
     }

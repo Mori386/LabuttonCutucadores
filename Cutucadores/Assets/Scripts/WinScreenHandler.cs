@@ -235,7 +235,9 @@ public class WinScreenHandler : NetworkBehaviour
         }
         fadeInEffect.alpha = 1f;
 
-        //Fix for not unloading previous scene to go back to menu, probably better to change it for something better
+        NetworkBetweenScenesManager.Instance.PostGameReset();
+        NetworkBetweenScenesManager.Instance.LoadSceneToHost(0);
+        /*//Fix for not unloading previous scene to go back to menu, probably better to change it for something better
         var sacrificialGo = new GameObject("Sacrificial Lamb");
         Runner.Shutdown();
 
@@ -244,6 +246,6 @@ public class WinScreenHandler : NetworkBehaviour
 
         foreach (var root in sacrificialGo.scene.GetRootGameObjects())
             Destroy(root);
-        SceneManager.LoadSceneAsync(0, LoadSceneMode.Single);
+        SceneManager.LoadSceneAsync(0, LoadSceneMode.Single);*/
     }
 }

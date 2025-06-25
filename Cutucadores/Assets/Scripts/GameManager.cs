@@ -130,7 +130,7 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
         {
             if (!pair.Value.isDead)
             {
-                Debug.Log($"{pair.Value.username} is alive, searching for their networkObject.");
+                Debug.Log($"{pair.Value.username} {pair.Value.playerRef} is alive, searching for their networkObject.");
                 if (Runner.TryGetPlayerObject(pair.Value.playerRef, out playerAlive))
                 {
                     totalPlayersAlive++;
