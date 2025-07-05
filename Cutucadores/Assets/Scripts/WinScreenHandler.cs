@@ -21,11 +21,15 @@ public class WinScreenHandler : NetworkBehaviour
     [SerializeField] private CanvasGroup fadeInEffect;
     [SerializeField] private TextMeshProUGUI winnerText;
     [SerializeField] private CanvasGroup winnerTextCanvasGroup;
+    [SerializeField] private GameObject hostButtonsGO;
+    [SerializeField] private GameObject waitingForHostText;
 
     private int mineradorWin, escavadoraWin, paiEFilhaWin, vovoWin; // 1 = win/ 0 = not present/ -1 = lose
 
     private readonly float winnerLightTemperature = 4000;
     private readonly float loserLightTemperature = 20000;
+    private bool shouldGoToCharacterSelection = false;
+    public bool gameEnded = false;
     private void Awake()
     {
         if (Instance == null)
@@ -190,6 +194,8 @@ public class WinScreenHandler : NetworkBehaviour
     }
     public IEnumerator WinScreenAnimations(string textToApper)
     {
+        gameEnded = true;
+        HPBarHandler.Instance.HideUI();
         float timer = 0f;
         float duration = 1;
         float gameplayVolumeStartValue = GameManager.Instance.gameplayMusic.volume;
@@ -235,17 +241,33 @@ public class WinScreenHandler : NetworkBehaviour
         }
         fadeInEffect.alpha = 1f;
 
-        NetworkBetweenScenesManager.Instance.PostGameReset();
+        if (shouldGoToCharacterSelection)
+            RPC_ReturnToCharacterSelection();
+
+        if (Runner.IsServer)
+            hostButtonsGO.SetActive(true);
+        else
+            waitingForHostText.SetActive(true);
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = true)]
+    public void RPC_ReplayMatch()
+    {
+        NetworkBetweenScenesManager.Instance.PostGameReset(false);
+        NetworkBetweenScenesManager.Instance.LoadSceneToHost(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = true)]
+    public void RPC_ReturnToCharacterSelection()
+    {
+        NetworkBetweenScenesManager.Instance.PostGameReset(true);
         NetworkBetweenScenesManager.Instance.LoadSceneToHost(0);
-        /*//Fix for not unloading previous scene to go back to menu, probably better to change it for something better
-        var sacrificialGo = new GameObject("Sacrificial Lamb");
-        Runner.Shutdown();
+    }
 
-
-        DontDestroyOnLoad(sacrificialGo);
-
-        foreach (var root in sacrificialGo.scene.GetRootGameObjects())
-            Destroy(root);
-        SceneManager.LoadSceneAsync(0, LoadSceneMode.Single);*/
+    public void ShouldGoToCharacterSelection()
+    {
+        shouldGoToCharacterSelection = true;
+        if (hostButtonsGO.activeInHierarchy || waitingForHostText.activeInHierarchy)
+            RPC_ReturnToCharacterSelection();
     }
 }

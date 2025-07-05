@@ -19,11 +19,12 @@ public class HPBarHandler : MonoBehaviour
     public static HPBarHandler Instance;
 
     public Dictionary<PlayerRef, PlayerHPBar> playerRefToPlayerHPBars = new Dictionary<PlayerRef, PlayerHPBar>();
+    public bool loaded;
+    [SerializeField] private CanvasGroup canvasGroup;
     private void Awake()
     {
         Instance = this;
     }
-    public bool loaded;
     public void LoadPlayerInfos()
     {
         if (!loaded)
@@ -100,6 +101,12 @@ public class HPBarHandler : MonoBehaviour
         }
     }
 
+    public void HideUI()
+    {
+        canvasGroup.alpha = 0;
+        canvasGroup.blocksRaycasts = false;
+        canvasGroup.interactable = false;
+    }
 }
 [Serializable]
 public struct PlayerHPBar

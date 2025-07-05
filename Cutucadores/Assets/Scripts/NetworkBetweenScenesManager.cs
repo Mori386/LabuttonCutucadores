@@ -47,7 +47,7 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
         base.Despawned(runner, hasState);
         spawned = false;
     }
-    public void PostGameReset()
+    public void PostGameReset(bool deselectCharacters)
     {
         isInGameplay = false;
         GameManagerSpawned = false;
@@ -56,7 +56,8 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
         foreach (KeyValuePair<NetworkString<_256>, PlayerData> pair in userIDToPlayerData)
         {
             PlayerData resetData = pair.Value;
-            resetData.character = Character.Null;
+            if (deselectCharacters)
+                resetData.character = Character.Null;
             resetData.loaded = false;
             resetData.isDead = false;
             userIDToPlayerData.Set(pair.Key, resetData);

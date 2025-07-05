@@ -3,6 +3,7 @@ using Fusion.Sockets;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -37,7 +38,7 @@ public class NetworkRunnerReceiver : MonoBehaviour, INetworkRunnerCallbacks
     }
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
-        if (NetworkBetweenScenesManager.Instance != null && NetworkBetweenScenesManager.Instance.isInGameplay)
+        if (NetworkBetweenScenesManager.Instance != null && NetworkBetweenScenesManager.Instance.isInGameplay && !PauseUI.Instance.paused)
         {
             //Debug.Log($"OnInput {NetworkBetweenScenesManager.Instance.userIDToPlayerData[runner.UserId].username}");
             if (characterInputHandler == null)
@@ -64,6 +65,8 @@ public class NetworkRunnerReceiver : MonoBehaviour, INetworkRunnerCallbacks
         {
             HPBarHandler.Instance.UpdateHp(player, 0);
             HPBarHandler.Instance.UpdateState(player, true);
+            if (runner.ActivePlayers.Count() <= 1)
+                WinScreenHandler.Instance.ShouldGoToCharacterSelection();
         }
     }
 
