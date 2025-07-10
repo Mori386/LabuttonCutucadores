@@ -6,18 +6,16 @@ using TMPro;
 public class HPHandler : NetworkBehaviour
 {
     //variavel em byte que ao ser mudada chama funcao
-    [Networked(OnChanged = nameof(OnHPChanged))]
-    byte HP { get; set; }
+    [Networked(OnChanged = nameof(OnScoreChanged))]
+    byte Kills { get; set; }
 
     //variavel em bool que ao ser mudada chama funcao
-    [Networked(OnChanged = nameof(OnStateChanged))]
-    public bool isDead { get; set; }
+    //[Networked(OnChanged = nameof(OnStateChanged))]
+    //public bool isDead { get; set; }
 
     //bool isInitialized = false;
 
-    const byte startingHP = 5;
-
-    public TextMeshPro hpText;
+    public TextMeshPro killsText;
 
     public NetworkVisualHandler networkVisualHandler;
     public NetworkCharacterDrillController drillController;
@@ -33,28 +31,28 @@ public class HPHandler : NetworkBehaviour
     {
         base.Spawned();
         HPBarHandler.Instance.LoadPlayerInfos();
-        HP = startingHP;
-        UpdateHpUI();
-        isDead = false;
+        Kills = 0;
+        UpdateRankingUI();
+        //isDead = false;
     }
-    public void OnTakeDamage(byte damageAmount)
+    public void OnHitTaken() //mudar aqui pra pessoa respawnar em algum outro canto
     {
-        if(isDead) return;
         if (!isInvulnerable)
         {
-            HP -= damageAmount;
+            drillController.Die();
             isInvulnerable = true;
             StartCoroutine(CheckForInvulnerability());
-        }
-        if (HP<=0)
-        {
-            isDead = true;
         }
     }
 
     public IEnumerator CheckForInvulnerability()
     {
         InvulnerabilityTimer = TickTimer.CreateFromSeconds(Runner, 0.5f);
+        while (InvulnerabilityTimer.RemainingTime(Runner) >= 0.2f)
+        {
+            yield return null;
+        }
+        drillController.Respawn();
         //Cria um timer na rede para check de tempo de invulnerabilidade
         while (!InvulnerabilityTimer.Expired(Runner))
         {
@@ -63,23 +61,20 @@ public class HPHandler : NetworkBehaviour
         InvulnerabilityTimer = TickTimer.None;
         isInvulnerable = false;
     }
-    public void UpdateHpUI()
-    {
-        HPBarHandler.Instance.UpdateHp(Object.InputAuthority, HP);
-        hpText.text = HP.ToString();
-    }
-    static void OnHPChanged(Changed<HPHandler> changed)
-    {
-        changed.Behaviour.UpdateHpUI();
-        //Define a diferenca de valor
-        byte newHp = changed.Behaviour.HP;
-        changed.LoadOld();
-        byte oldHp = changed.Behaviour.HP;
 
-        if(newHp<oldHp)
-        {
-            changed.Behaviour.OnHPLower();
-        }
+    public void IncreaseScore(byte amount)
+    {
+        Kills += amount;
+    }
+
+    public void UpdateRankingUI()
+    {
+        HPBarHandler.Instance.UpdateScore(Object.InputAuthority, Kills);
+        killsText.text = Kills.ToString();
+    }
+    static void OnScoreChanged(Changed<HPHandler> changed)
+    {
+        changed.Behaviour.UpdateRankingUI();
     }
     public void OnHPLower()
     {
@@ -87,15 +82,6 @@ public class HPHandler : NetworkBehaviour
         if (Object.HasInputAuthority)
         {
             GameManager.Instance.ShakeCamera(GameManager.Instance.onBodyHitCameraShakeAmplitude);
-        }
-    }
-    static void OnStateChanged(Changed<HPHandler> changed)
-    {
-        if(changed.Behaviour.isDead)
-        {
-            HPBarHandler.Instance.UpdateState(changed.Behaviour.Object.InputAuthority, true);
-            NetworkBetweenScenesManager.Instance.SetPlayerAsDead(changed.Behaviour.Object.InputAuthority);
-            changed.Behaviour.drillController.Die();
         }
     }
 }

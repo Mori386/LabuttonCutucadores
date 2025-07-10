@@ -195,7 +195,8 @@ public class WinScreenHandler : NetworkBehaviour
     public IEnumerator WinScreenAnimations(string textToApper)
     {
         gameEnded = true;
-        HPBarHandler.Instance.HideUI();
+        HPBarHandler.Instance.ManageUIToEndGame();
+        PauseUI.Instance.OpenOrCloseUI(false);
         float timer = 0f;
         float duration = 1;
         float gameplayVolumeStartValue = GameManager.Instance.gameplayMusic.volume;

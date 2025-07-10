@@ -59,7 +59,6 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
             if (deselectCharacters)
                 resetData.character = Character.Null;
             resetData.loaded = false;
-            resetData.isDead = false;
             userIDToPlayerData.Set(pair.Key, resetData);
         }
     }
@@ -264,30 +263,12 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
             if (pair.Value.playerRef == userID)
             {
                 PlayerData disconnectedData = pair.Value;
-                disconnectedData.isDead = true;
                 userIDToPlayerData.Set(pair.Key, disconnectedData);
-                Debug.Log($"Setting {pair.Value.username} as dead (isDead = {userIDToPlayerData[pair.Key].isDead}) and removing {userID} from userIDList and userIDToPlayerData.");
+                Debug.Log($"Removing {pair.Value.username}/{userID} from userIDList and userIDToPlayerData.");
                 userIDToPlayerData.Remove(pair.Key);
                 userIDList.Remove(pair.Key);
                 if (Instance.GameManagerSpawned && Runner.IsServer)
-                    GameManager.Instance.RPC_CheckForPlayersDead();
-                return;
-            }
-        }
-    }
-    public void SetPlayerAsDead(PlayerRef userID)
-    {
-        Debug.Log($"Attempting to remove ID {userID}");
-        foreach (KeyValuePair<NetworkString<_256>, PlayerData> pair in userIDToPlayerData)
-        {
-            if (pair.Value.playerRef == userID)
-            {
-                PlayerData disconnectedData = pair.Value;
-                disconnectedData.isDead = true;
-                userIDToPlayerData.Set(pair.Key, disconnectedData);
-                Debug.Log($"Setting {pair.Value.username} as dead (isDead = {userIDToPlayerData[pair.Key].isDead})");
-                if (Runner.IsServer)
-                    GameManager.Instance.RPC_CheckForPlayersDead();
+                    GameManager.Instance.RPC_CheckForEndOfMatch();
                 return;
             }
         }
@@ -385,5 +366,4 @@ public struct PlayerData : INetworkStruct
     public NetworkString<_16> username;
     public Character character;
     public NetworkBool loaded;
-    public NetworkBool isDead;
 }

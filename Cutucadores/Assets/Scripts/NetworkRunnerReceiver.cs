@@ -63,8 +63,6 @@ public class NetworkRunnerReceiver : MonoBehaviour, INetworkRunnerCallbacks
         NetworkBetweenScenesManager.Instance.RemoveUserID(player);
         if (HPBarHandler.Instance != null)
         {
-            HPBarHandler.Instance.UpdateHp(player, 0);
-            HPBarHandler.Instance.UpdateState(player, true);
             if (runner.ActivePlayers.Count() <= 1)
                 WinScreenHandler.Instance.ShouldGoToCharacterSelection();
         }

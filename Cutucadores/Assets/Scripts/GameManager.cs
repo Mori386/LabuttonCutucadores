@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 using Fusion;
+using System.Linq;
+using System;
 
 public class GameManager : NetworkBehaviour, IAfterSpawned
 {
@@ -73,8 +75,8 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
     public virtual void PlayDrillHitAudio(Vector3 position)
     {
         int randomAudioID;
-        randomAudioID = Random.Range(0, onHitPlayerAudios.Length);
-        while (randomAudioID == lastPlayedAudio) randomAudioID = Random.Range(0, onHitPlayerAudios.Length);
+        randomAudioID = UnityEngine.Random.Range(0, onHitPlayerAudios.Length);
+        while (randomAudioID == lastPlayedAudio) randomAudioID = UnityEngine.Random.Range(0, onHitPlayerAudios.Length);
         onHitAudioSource.transform.position = position;
         onHitAudioSource.PlayOneShot(onHitPlayerAudios[randomAudioID]);
     }
@@ -122,18 +124,23 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
     #region Check Dead Players
 
     [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
-    public void RPC_CheckForPlayersDead()
+    public void RPC_CheckForEndOfMatch()
     {
-        int totalPlayersAlive = 0;
+        if(Runner.ActivePlayers.Count() <= 1)
+        {
+            DefineWinner(1, Runner.ActivePlayers.First());
+            return;
+        }
+        int playersWith10Kills = 0;
         NetworkObject playerAlive = null;
         foreach (KeyValuePair<NetworkString<_256>, PlayerData> pair in NetworkBetweenScenesManager.Instance.userIDToPlayerData)
         {
-            if (!pair.Value.isDead)
+            if (HPBarHandler.Instance.playerRefToPlayerHPBars.TryGetValue(pair.Value.playerRef, out PlayerHPBar player) && Convert.ToInt32(player.kills.text) >= 10)
             {
-                Debug.Log($"{pair.Value.username} {pair.Value.playerRef} is alive, searching for their networkObject.");
+                Debug.Log($"{pair.Value.username} {pair.Value.playerRef} is elegible to win, searching for their networkObject.");
                 if (Runner.TryGetPlayerObject(pair.Value.playerRef, out playerAlive))
                 {
-                    totalPlayersAlive++;
+                    playersWith10Kills++;
                     Debug.Log($"Found network object: {playerAlive.Runner.UserId}");
                 }
                 else
@@ -142,12 +149,12 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
                 }
             }
         }
-        Debug.Log($"{totalPlayersAlive} players alive.");
+        Debug.Log($"{playersWith10Kills} players with 10 kills or more.");
         //Define winner based on players alive
-        if (totalPlayersAlive <= 1)
+        if (playersWith10Kills <= 1)
         {
             PlayerRef playerRef;
-            if (totalPlayersAlive > 0)
+            if (playersWith10Kills > 0)
             {
                 playerRef = playerAlive.InputAuthority;
                 Debug.Log($"Winner: {playerAlive.InputAuthority}");
@@ -155,10 +162,10 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
             else
             {
                 playerRef = PlayerRef.None;
-                Debug.Log($"Players alive: {totalPlayersAlive}");
+                Debug.Log($"Players eligible: {playersWith10Kills}");
             }
             playerAlive.RemoveInputAuthority();
-            DefineWinner(totalPlayersAlive,playerRef);
+            DefineWinner(playersWith10Kills,playerRef);
         }
     }
     #endregion

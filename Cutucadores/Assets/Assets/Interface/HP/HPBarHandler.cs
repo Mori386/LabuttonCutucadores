@@ -2,6 +2,7 @@ using Fusion;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,6 +16,8 @@ public class HPBarHandler : MonoBehaviour
     [SerializeField] PlayerHPBar p2HPBar;
     [SerializeField] PlayerHPBar p3HPBar;
     [SerializeField] PlayerHPBar p4HPBar;
+
+    [SerializeField] private RectTransform rankingBackground;
 
     public static HPBarHandler Instance;
 
@@ -36,7 +39,7 @@ public class HPBarHandler : MonoBehaviour
             {
                 if (betweenScenesManager.userIDToPlayerData.TryGet(betweenScenesManager.userIDList[i], out PlayerData playerData))
                 {
-                    if (NetworkBetweenScenesManager.Instance.selfUserID == NetworkBetweenScenesManager.Instance.userIDList[i])
+                    if (betweenScenesManager.selfUserID == betweenScenesManager.userIDList[i])
                     {
                         //Self
                         p1HPBar.profilePicture.sprite = GetCharacterPfp(playerData.character);
@@ -68,23 +71,34 @@ public class HPBarHandler : MonoBehaviour
                     }
                 }
             }
+            rankingBackground.sizeDelta = new (358, (float)(40.874 + (playersPlaced * 100)));
         }
     }
 
-    public void UpdateHp(PlayerRef playerRef,int newHpAmount)
+    public void UpdateScore(PlayerRef playerRef,int newScore)
     {
         if(playerRefToPlayerHPBars.TryGetValue(playerRef, out PlayerHPBar playerHPBar))
         {
-            playerHPBar.ChangeHpSlots(newHpAmount);
+            playerHPBar.ChangeScore(newScore);
+            SortRanking();
+            if (newScore >= 10)
+            {
+                GameManager.Instance.RPC_CheckForEndOfMatch();
+            }
         }
     }
-    public void UpdateState(PlayerRef playerRef, bool isDead)
+
+    private void SortRanking()
     {
-        if (playerRefToPlayerHPBars.TryGetValue(playerRef, out PlayerHPBar playerHPBar))
+        var sortedDisctionary = playerRefToPlayerHPBars.OrderBy(pair => Convert.ToInt16(pair.Value.kills)).ToDictionary(pair => pair.Key, pair => pair.Value);
+        int count = 0;
+        foreach (KeyValuePair<PlayerRef, PlayerHPBar> pair in sortedDisctionary)
         {
-            playerHPBar.deathEffect.gameObject.SetActive(isDead);
+            pair.Value.hpBar.transform.SetSiblingIndex(count);
+            pair.Value.position.text = $"{count++}.";
         }
     }
+
     public Sprite GetCharacterPfp(Character character)
     {
         switch (character)
@@ -101,9 +115,8 @@ public class HPBarHandler : MonoBehaviour
         }
     }
 
-    public void HideUI()
+    public void ManageUIToEndGame()
     {
-        canvasGroup.alpha = 0;
         canvasGroup.blocksRaycasts = false;
         canvasGroup.interactable = false;
     }
@@ -112,29 +125,17 @@ public class HPBarHandler : MonoBehaviour
 public struct PlayerHPBar
 {
     public GameObject hpBar;
-    [Header("Placement")]
-    public RectTransform placementTransform;
-    public TextMeshProUGUI placementText;
-    [Header("Usarname")]
+    [Header("Position")]
+    public TextMeshProUGUI position;
+    [Header("Username")]
     public TextMeshProUGUI username;
     [Header("Profile Picture")]
     public Image profilePicture;
-    [Header("HP")]
-    public Image[] hpSlots;
+    [Header("Kills")]
+    public TextMeshProUGUI kills;
 
-    public void ChangeHpSlots(int hpAmount)
+    public void ChangeScore(int newScore)
     {
-        for (int i = 0; i < hpSlots.Length; i++)
-        {
-            if (hpAmount > 0)
-            {
-                hpSlots[i].gameObject.SetActive(true);
-                hpAmount -= 1;
-            }
-            else hpSlots[i].gameObject.SetActive(false);
-        }
+        kills.text = newScore.ToString();
     }
-
-    [Header("Death Effect")]
-    public Image deathEffect;
 }

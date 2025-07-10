@@ -200,27 +200,18 @@ public class NetworkCharacterDrillController : NetworkTransform
             yield return new WaitForFixedUpdate();
         }
 
-        //Se caso ele nao morrer na hora de tomar dano ele reseta ele pra posicao normal
-        hpHandler.OnTakeDamage(1);
-        if (!hpHandler.isDead)
-        {
-            Vector3 deltaPos = startPos - holePosition;
-            deltaPos.y = 0;
-            deltaPos.Normalize();
-            ToggleCharacterVisual(false);
-            yield return new WaitForSeconds(0.5f);
-            transform.position = startPos + deltaPos * 10f;
-            transform.LookAt(startPos + deltaPos * 11f);
-            ToggleCharacterVisual(true);
-            ToggleCharacterInput(true);
-            ToggleCharacterCollider(true);
-        }
-        else
-        {
-            transform.rotation = originalRotation;
-        }
-        isFalling = false;
+        Vector3 deltaPos = startPos - holePosition;
+        deltaPos.y = 0;
+        deltaPos.Normalize();
+        ToggleCharacterVisual(false);
+        yield return new WaitForSeconds(0.5f);
+        transform.position = startPos + deltaPos * 10f;
+        transform.LookAt(startPos + deltaPos * 11f);
+        ToggleCharacterVisual(true);
+        ToggleCharacterInput(true);
+        ToggleCharacterCollider(true);
 
+        isFalling = false;
     }
 
     #endregion
@@ -229,16 +220,12 @@ public class NetworkCharacterDrillController : NetworkTransform
     public void Die()
     {
         visualHandler.OndDeath();
-        ToggleCharacterCollider(false);
-        ToggleCharacterVisual(false);
-        ToggleCharacterInput(false);
-        if (Object.HasInputAuthority)
-        {
-            Debug.Log($"NetworkCharacterDrillController/Die()");
-            //Troca a camera pra spec se tiver alguem vivo
-            //GameManager.Instance.RPC_CheckForPlayersDead();
-            Spectator.Instance.StartFollowCameraNextPlayer();
-        }
+    }
+
+    public void Respawn()
+    {
+        int spawnpoint = Random.Range(0, 4);
+        transform.SetPositionAndRotation(GameManager.Instance.playerSpawnpoints[spawnpoint].position, GameManager.Instance.playerSpawnpoints[spawnpoint].rotation);
     }
     #endregion
 

@@ -26,7 +26,7 @@ public class Spectator : MonoBehaviour
     {
         for(int i = 0; i < GameManager.Instance.playersControllers.Count; i++)
         {
-            if (!GameManager.Instance.playersControllers[i].hpHandler.isDead)
+            //if (!GameManager.Instance.playersControllers[i].hpHandler.isDead)
             {
                 GameManager.Instance.virtualCamera.Follow = GameManager.Instance.playersControllers[i].transform;
                 GameManager.Instance.virtualCamera.LookAt = GameManager.Instance.playersControllers[i].transform;

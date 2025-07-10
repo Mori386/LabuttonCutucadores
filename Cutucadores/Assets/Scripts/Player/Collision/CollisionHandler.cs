@@ -25,6 +25,7 @@ public class CollisionHandler : NetworkBehaviour
                         //Contact with other player body with this player drill
                         if (Object.HasStateAuthority)
                         {
+                            transform.root.GetComponent<HPHandler>().IncreaseScore(1);
                             networkCharacterController.Knockback(collision.GetContact(0).point, true);
                         }
                         //Se for o player que bateu aplica um shake de tela
@@ -43,8 +44,7 @@ public class CollisionHandler : NetworkBehaviour
                         //If other player drill hit this player body
                         if (Object.HasStateAuthority)
                         {
-                            transform.root.GetComponent<HPHandler>().OnTakeDamage(1);
-                            networkCharacterController.Knockback(collision.GetContact(0).point, false);
+                            transform.root.GetComponent<HPHandler>().OnHitTaken();
                         }
                         GameManager.Instance.PlayOnBodyHitParticle(collision.GetContact(0).point);
                         break;

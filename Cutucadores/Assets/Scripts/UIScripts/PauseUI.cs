@@ -30,13 +30,20 @@ public class PauseUI : MonoBehaviour
 
     private void Update()
     {
+        if (!NetworkBetweenScenesManager.Instance)
+            return;
         if (!NetworkBetweenScenesManager.Instance.isInGameplay || WinScreenHandler.Instance.gameEnded)
             return;
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            uiGO.SetActive(!uiGO.activeInHierarchy);
-            paused = uiGO.activeInHierarchy;
+            OpenOrCloseUI(!uiGO.activeInHierarchy);
         }
+    }
+
+    public void OpenOrCloseUI(bool isOpen)
+    {
+        uiGO.SetActive(isOpen);
+        paused = isOpen;
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = true)]
