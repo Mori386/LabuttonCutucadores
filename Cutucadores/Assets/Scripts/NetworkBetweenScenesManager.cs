@@ -283,7 +283,11 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
             NetworkRunnerHandler.Instance.ManageRoomVisibility(mapIndex > 0 ? 0 : 1);
             var sceneManager = Runner.SceneManager as NetworkSceneManagerDefault;
             sceneManager.LoadSceneAsync(mapIndex, new LoadSceneParameters(LoadSceneMode.Single), (_) => RPC_LoadSceneToClients(mapIndex));
-            if (mapIndex > 0) canvas.SetActive(true);
+            if (mapIndex > 0)
+            {
+                canvas.SetActive(true);
+                RPC_UpdateCountdownUI("Carregando...");
+            }
         }
     }
 
@@ -294,7 +298,11 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
         {
             var sceneManager = Runner.SceneManager as NetworkSceneManagerDefault;
             sceneManager.LoadSceneAsync(scene, new LoadSceneParameters(LoadSceneMode.Single), null);
-            if (scene > 0) canvas.SetActive(true);
+            if (scene > 0)
+            {
+                canvas.SetActive(true);
+                RPC_UpdateCountdownUI("Carregando...");
+            }
         }
     }
     
@@ -315,9 +323,15 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
             Debug.Log($"{pair.Value.username} {(pair.Value.loaded? "loaded.": "not loaded.")}");
             if (!pair.Value.loaded) return;
         }
+        StartCoroutine(WaitToSpawnGOs());
+    }
+
+    private IEnumerator WaitToSpawnGOs()
+    {
         Debug.Log($"Every player is loaded. Spawning game objects.");
         PlayersGOSpawned = true;
         int playerNumber = 0;
+        yield return new WaitForSeconds(.5f);
         foreach (KeyValuePair<NetworkString<_256>, PlayerData> pair in userIDToPlayerData)
         {
             NetworkObject playerObj = Runner.Spawn(GameManager.Instance.playerPrefab, GameManager.Instance.playerSpawnpoints[playerNumber].position, GameManager.Instance.playerSpawnpoints[playerNumber].rotation, pair.Value.playerRef);

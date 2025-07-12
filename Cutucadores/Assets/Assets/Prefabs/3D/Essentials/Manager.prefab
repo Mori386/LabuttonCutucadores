@@ -47,6 +47,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28437a478bd135a469c1db5ebbff1820, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  WordOffset: 0
+  WordCount: 0
   _interpolationDataSource: 0
   playerPrefab: {fileID: 1877149326463046058, guid: ec632613a285a274ea9ade7002e9404c, type: 3}
   virtualCamera: {fileID: 0}
@@ -64,6 +66,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e473ead7d66bf9744a223d81d200fd62, type: 3}
   - {fileID: 8300000, guid: 7af198226e2afad49a5f6273857136b2, type: 3}
   - {fileID: 8300000, guid: efb12c1c45f01b84a881498a9024a8f6, type: 3}
+  killTarget: 10
   gameplayMusic: {fileID: 999918413317481006}
   playersControllers: []
 --- !u!114 &7828795293188821932

@@ -19,6 +19,7 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
     public AudioSource onHitAudioSource;
     public AudioClip[] onHitPlayerAudios;
     private int lastPlayedAudio = -1;
+    public int killTarget = 10;
 
     public AudioSource gameplayMusic;
 
@@ -54,11 +55,17 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
             count++;
         }
         Debug.Log("Spawned GameManager");
-        RPC_LoadPlayerInfo(NetworkBetweenScenesManager.Instance.selfUserID);
+        StartCoroutine(WaitToLoadPlayerInfo(NetworkBetweenScenesManager.Instance.selfUserID));
     }
     void IAfterSpawned.AfterSpawned()
     {
         Debug.Log("AfterSpawned GameManager");
+    }
+
+    private IEnumerator WaitToLoadPlayerInfo(string playerId)
+    {
+        yield return new WaitForSeconds(.5f);
+        RPC_LoadPlayerInfo(playerId);
     }
 
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
@@ -131,16 +138,16 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
             DefineWinner(1, Runner.ActivePlayers.First());
             return;
         }
-        int playersWith10Kills = 0;
+        int playersWithTargetedKills = 0;
         NetworkObject playerAlive = null;
         foreach (KeyValuePair<NetworkString<_256>, PlayerData> pair in NetworkBetweenScenesManager.Instance.userIDToPlayerData)
         {
-            if (HPBarHandler.Instance.playerRefToPlayerHPBars.TryGetValue(pair.Value.playerRef, out PlayerHPBar player) && Convert.ToInt32(player.kills.text) >= 10)
+            if (HPBarHandler.Instance.playerRefToPlayerHPBars.TryGetValue(pair.Value.playerRef, out PlayerHPBar player) && Convert.ToInt32(player.kills.text) >= killTarget)
             {
                 Debug.Log($"{pair.Value.username} {pair.Value.playerRef} is elegible to win, searching for their networkObject.");
                 if (Runner.TryGetPlayerObject(pair.Value.playerRef, out playerAlive))
                 {
-                    playersWith10Kills++;
+                    playersWithTargetedKills++;
                     Debug.Log($"Found network object: {playerAlive.Runner.UserId}");
                 }
                 else
@@ -149,12 +156,12 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
                 }
             }
         }
-        Debug.Log($"{playersWith10Kills} players with 10 kills or more.");
+        Debug.Log($"{playersWithTargetedKills} players with {killTarget} kills or more.");
         //Define winner based on players alive
-        if (playersWith10Kills <= 1)
+        if (playersWithTargetedKills <= 1)
         {
             PlayerRef playerRef;
-            if (playersWith10Kills > 0)
+            if (playersWithTargetedKills > 0)
             {
                 playerRef = playerAlive.InputAuthority;
                 Debug.Log($"Winner: {playerAlive.InputAuthority}");
@@ -162,10 +169,10 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
             else
             {
                 playerRef = PlayerRef.None;
-                Debug.Log($"Players eligible: {playersWith10Kills}");
+                Debug.Log($"Players eligible: {playersWithTargetedKills}");
             }
             playerAlive.RemoveInputAuthority();
-            DefineWinner(playersWith10Kills,playerRef);
+            DefineWinner(playersWithTargetedKills,playerRef);
         }
     }
     #endregion

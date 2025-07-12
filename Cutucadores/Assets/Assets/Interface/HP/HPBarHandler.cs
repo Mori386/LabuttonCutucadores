@@ -81,7 +81,7 @@ public class HPBarHandler : MonoBehaviour
         {
             playerHPBar.ChangeScore(newScore);
             SortRanking();
-            if (newScore >= 10)
+            if (newScore >= GameManager.Instance.killTarget)
             {
                 GameManager.Instance.RPC_CheckForEndOfMatch();
             }
