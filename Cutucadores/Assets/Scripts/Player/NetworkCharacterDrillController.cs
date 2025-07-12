@@ -1,5 +1,7 @@
 using Fusion;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [OrderBefore(typeof(NetworkTransform))]
@@ -34,6 +36,7 @@ public class NetworkCharacterDrillController : NetworkTransform
     [HideInInspector] public AudioPlayerHandler audioHandler;
 
     [HideInInspector] public Collider[] playerColliders;
+    [SerializeField] private List<Transform> otherPlayersTransforms = new();
     protected override void Awake()
     {
         base.Awake();
@@ -73,7 +76,18 @@ public class NetworkCharacterDrillController : NetworkTransform
         }
         if (hpHandler == null) hpHandler = GetComponent<HPHandler>();
         if (audioHandler == null) audioHandler = GetComponent<AudioPlayerHandler>();
+        StartCoroutine(GetDrillControllers());
+    }
 
+    private IEnumerator GetDrillControllers()
+    {
+        yield return new WaitForSeconds(.3f);
+        Transform thisPlayer = transform.GetChild(1);
+        foreach (GameObject player in GameObject.FindGameObjectsWithTag("Player"))
+        {
+            if (player != thisPlayer)
+                otherPlayersTransforms.Add(player.transform);
+        }
     }
 
     #region Movement
@@ -219,13 +233,33 @@ public class NetworkCharacterDrillController : NetworkTransform
     #region Death/Damage
     public void Die()
     {
-        visualHandler.OndDeath();
+        visualHandler.OnDeath();
     }
 
     public void Respawn()
     {
-        int spawnpoint = Random.Range(0, 4);
-        transform.SetPositionAndRotation(GameManager.Instance.playerSpawnpoints[spawnpoint].position, GameManager.Instance.playerSpawnpoints[spawnpoint].rotation);
+        Dictionary<int, float> spawnpointSafeDistance = new();
+        for (int spawnpointCount = 0; spawnpointCount < GameManager.Instance.playerSpawnpoints.Length; spawnpointCount++)
+        {
+            spawnpointSafeDistance.Add(spawnpointCount, 0);
+            foreach (Transform player in otherPlayersTransforms)
+            {
+                float safeDistance = Vector3.Distance(GameManager.Instance.playerSpawnpoints[spawnpointCount].position, player.position);
+                if (spawnpointSafeDistance[spawnpointCount] > safeDistance || spawnpointSafeDistance[spawnpointCount] == 0)
+                    spawnpointSafeDistance[spawnpointCount] = safeDistance;
+            }
+        }
+        var mostSafeSpawnpoints = spawnpointSafeDistance.Where(kvp => kvp.Value >= GameManager.Instance.safeZoneSize).ToList();
+        if (mostSafeSpawnpoints.Count > 0)
+        {
+            int randomPoint = Random.Range(0, mostSafeSpawnpoints.Count);
+            transform.SetPositionAndRotation(GameManager.Instance.playerSpawnpoints[mostSafeSpawnpoints[randomPoint].Key].position, GameManager.Instance.playerSpawnpoints[mostSafeSpawnpoints[randomPoint].Key].rotation);
+        }
+        else
+        {
+            int mostSafeSpawnpoint = spawnpointSafeDistance.OrderBy(kvp => kvp.Value).Last().Key;
+            transform.SetPositionAndRotation(GameManager.Instance.playerSpawnpoints[mostSafeSpawnpoint].position, GameManager.Instance.playerSpawnpoints[mostSafeSpawnpoint].rotation);
+        }
     }
     #endregion
 

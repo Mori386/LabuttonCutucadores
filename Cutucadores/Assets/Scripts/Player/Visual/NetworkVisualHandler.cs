@@ -30,7 +30,7 @@ public class NetworkVisualHandler : NetworkBehaviour
         powerUpSpeedLineRenderer.widthMultiplier = 0;
 
     }
-    public void OndDeath()
+    public void OnDeath()
     {
         explosionHandler.Explode();
     }

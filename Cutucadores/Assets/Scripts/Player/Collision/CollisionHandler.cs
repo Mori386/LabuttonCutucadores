@@ -68,7 +68,6 @@ public class CollisionHandler : NetworkBehaviour
             case "Speed":
                 break;
             case "Fall":
-                //HandleFall();
                 break;
         }
     }

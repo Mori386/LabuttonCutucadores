@@ -20,6 +20,7 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
     public AudioClip[] onHitPlayerAudios;
     private int lastPlayedAudio = -1;
     public int killTarget = 10;
+    public float safeZoneSize = 90;
 
     public AudioSource gameplayMusic;
 
