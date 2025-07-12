@@ -6,6 +6,7 @@ using UnityEngine;
 public class CollisionHandler : NetworkBehaviour
 {
     NetworkCharacterDrillController networkCharacterController;
+    private Collision attacker = null;
     private void Awake()
     {
         networkCharacterController = GetComponent<NetworkCharacterDrillController>();
@@ -27,6 +28,7 @@ public class CollisionHandler : NetworkBehaviour
                         {
                             transform.root.GetComponent<HPHandler>().IncreaseScore(1);
                             networkCharacterController.Knockback(collision.GetContact(0).point, true);
+                            StartFallChecker(collision);
                         }
                         //Se for o player que bateu aplica um shake de tela
                         if (Object.HasInputAuthority)
@@ -53,6 +55,7 @@ public class CollisionHandler : NetworkBehaviour
                         if (Object.HasStateAuthority)
                         {                    
                             networkCharacterController.Knockback(collision.GetContact(0).point, true);
+                            StartFallChecker(collision);
                         }
                         GameManager.Instance.PlayOnDrillHitParticle(collision.GetContact(0).point);
                         if (Object.HasInputAuthority)
@@ -65,7 +68,41 @@ public class CollisionHandler : NetworkBehaviour
             case "Speed":
                 break;
             case "Fall":
+                //HandleFall();
                 break;
         }
+    }
+
+    public void HandleFall()
+    {
+        Debug.Log("Fall");
+        if (attacker != null)
+        {
+            attacker.transform.root.GetComponent<HPHandler>().IncreaseScore(1);
+            attacker = null;
+        }
+        else
+        {
+            transform.root.GetComponent<HPHandler>().DecreaseScore(1);
+        }
+    }
+
+    private void StartFallChecker(Collision attacker)
+    {
+        StopAllCoroutines();
+        this.attacker = null;
+        StartCoroutine(FallChecker(attacker));
+    }
+
+    private IEnumerator FallChecker(Collision attacker)
+    {
+        this.attacker = attacker;
+        float count = 0;
+        while (count < 2.4f)
+        {
+            count += Time.deltaTime;
+            yield return null;
+        }
+        this.attacker = null;
     }
 }

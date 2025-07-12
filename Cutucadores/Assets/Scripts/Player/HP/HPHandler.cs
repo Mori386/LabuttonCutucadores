@@ -33,9 +33,8 @@ public class HPHandler : NetworkBehaviour
         HPBarHandler.Instance.LoadPlayerInfos();
         Kills = 0;
         UpdateRankingUI();
-        //isDead = false;
     }
-    public void OnHitTaken() //mudar aqui pra pessoa respawnar em algum outro canto
+    public void OnHitTaken()
     {
         if (!isInvulnerable)
         {
@@ -65,6 +64,12 @@ public class HPHandler : NetworkBehaviour
     public void IncreaseScore(byte amount)
     {
         Kills += amount;
+    }
+
+    public void DecreaseScore(byte amount) 
+    {
+        if (Kills > 0)
+            Kills -= amount;
     }
 
     public void UpdateRankingUI()

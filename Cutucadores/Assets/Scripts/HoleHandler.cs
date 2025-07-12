@@ -13,6 +13,10 @@ public class HoleHandler : NetworkBehaviour
                 drillController.FallInHole(transform.position);
                 PlayFallAudio();
             }
+            if (other.transform.parent.TryGetComponent(out CollisionHandler collisionHandler))
+            {
+                collisionHandler.HandleFall();
+            }
         }
     }
     public virtual void PlayFallAudio()
