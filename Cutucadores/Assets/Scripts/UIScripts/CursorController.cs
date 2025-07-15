@@ -32,6 +32,11 @@ public class CursorController : MonoBehaviour
     public Transform mira;
     public GameObject carimbo;
 
+    [Header("|----- Main Menu Revamp -----|")]
+    public CanvasGroup StartScreen;
+    public CanvasGroup SettingsScreen;
+
+
     [Header("|----- Host Client Menu-----|")]
     [Header("Host and client page")]
     public TMP_InputField nicknameInputField;
@@ -95,9 +100,10 @@ public class CursorController : MonoBehaviour
 
     private float moveDuration; // Tempo de deslocamento
 
-    [Header("VETORES")]
+    /*[Header("VETORES")]
     private Vector3 startPosition;
-    private Vector3 targetPosition;
+    private Vector3 targetPosition*/
+
     private void Awake()
     {
         if (Instance == null)
@@ -121,19 +127,19 @@ public class CursorController : MonoBehaviour
                 return;
             }
         }
-        Cursor.visible = false; // Esconde o cursor do mouse
-        Cursor.lockState = CursorLockMode.Confined; // Mantém o cursor dentro da janela do jogo.
+        Cursor.visible = true; // Esconde o cursor do mouse
+        //Cursor.lockState = CursorLockMode.Confined; // Mantém o cursor dentro da janela do jogo.
 
-        startPosition = mainMenuHand.transform.position; //para retorno da posição inicial
+        //startPosition = mainMenuHand.transform.position; //para retorno da posição inicial
         moveDuration = moveTime - pauseTime; // valor do tempo de deslocamento
         StartCoroutine(MoveBookSmoothly());
     }
-    public void StartHandFollowCursor()
+    /*public void StartHandFollowCursor()
     {
         if (CalculateMousePosInWorldCoroutine == null) CalculateMousePosInWorldCoroutine = StartCoroutine(CalculateMousePosInWorld(2.8f));
         if (HandFollowCursorCoroutine == null) HandFollowCursorCoroutine = StartCoroutine(HandFollowCursor());
         if (AimFollowCursorCoroutine == null) AimFollowCursorCoroutine = StartCoroutine(AimFollowCursor());
-    }
+    }*/
     public void StopHandFollowCursor()
     {
         if (CalculateMousePosInWorldCoroutine != null)
@@ -141,11 +147,11 @@ public class CursorController : MonoBehaviour
             StopCoroutine(CalculateMousePosInWorldCoroutine);
             CalculateMousePosInWorldCoroutine = null;
         }
-        if (HandFollowCursorCoroutine != null)
+       /* if (HandFollowCursorCoroutine != null)
         {
             StopCoroutine(HandFollowCursorCoroutine);
             HandFollowCursorCoroutine = null;
-        }
+        }*/
         if (AimFollowCursorCoroutine != null)
         {
             mira.gameObject.SetActive(false);
@@ -179,7 +185,7 @@ public class CursorController : MonoBehaviour
     }
 
     //Hand follow cursor
-    public Coroutine HandFollowCursorCoroutine;
+    /*public Coroutine HandFollowCursorCoroutine;
     public IEnumerator HandFollowCursor()
     {
         while (true)
@@ -190,7 +196,7 @@ public class CursorController : MonoBehaviour
             }
             yield return new WaitForFixedUpdate();
         }
-    }
+    }*/
 
     //Aim follow cursor
     public Coroutine AimFollowCursorCoroutine;
@@ -262,51 +268,43 @@ public class CursorController : MonoBehaviour
         MoveCursorObjectCoroutine = null;
     }
 
+    #region Botoes
     // todos os voids abaixo são chamados através de botões na cena, de acordo com os seus respectivos nomes
-    public void NextPageGoToConfigs()  // passar pag
+    public void Settings() 
     {
-        // Inicializa a posição de início e destino
-        StopHandFollowCursor();
-        StartMoveCursorObject(mainMenuHand, moveDuration, animHandStartingPoint.position);
-        StartCoroutine(DelayNextPage());
+        Hide(StartScreen);
+        Show(SettingsScreen);
     }
+    public void ReturnMainMenu() 
+    {
+         Hide(SettingsScreen);
+         Show(StartScreen);
+        
+    }
+    public void ReturnMainMenu2()
+    {
+        Hide(clientHostCanvas);
+        Show(StartScreen);
 
-    public void Credits(bool kitten) // menu creditos
-    {
-        StopHandFollowCursor();
-        StartMoveCursorObject(mainMenuHand, moveDuration, animHandStartingPoint.position);
-        StartCoroutine(DelayCredits());
-    }
-    public void Controls()
-    {
-        StopHandFollowCursor();
-        StartMoveCursorObject(mainMenuHand, moveDuration, animHandStartingPoint.position);
-        StartCoroutine(DelayCredits());
-    }
-    public void ReturnCredits(bool kitten) // sair do menu de creditos
-    {
-        StopHandFollowCursor();
-        StartMoveCursorObject(mainMenuHand, moveDuration, animHandStartingPoint.position);
-        StartCoroutine(DelayReturnCredits());
-    }
-
-    //Return to main menu
-    public void ReturnPage(bool kitten) // anim para retorno
-    {
-        StopHandFollowCursor();
-        StartMoveCursorObject(mainMenuHand, moveDuration, animHandStartingPoint.position);
-        StartCoroutine(DelayPreviousPage());
     }
 
     //Quando pressiona o play
-    public void CloseBookOnPlay() // anim para fechar livro
+    public void StartGame() // anim para fechar livro
     {
-        StopHandFollowCursor();
-        StartMoveCursorObject(mainMenuHand, moveDuration, animHandStartingPoint.position);
-        StartCoroutine(DelayCloseBook());
-        StartCoroutine(StartLobbyConnection());
-    }
+       Hide(StartScreen);
+       Show(clientHostCanvas);
 
+       clientHostPaper.gameObject.SetActive(false);
+       returnToMainMenuFromClientHost.gameObject.SetActive(false);
+       clientHostCanvas.blocksRaycasts = false;
+       clientHostCanvas.gameObject.SetActive(true);
+
+       StartCoroutine(DelayCloseBook());
+       StartCoroutine(StartLobbyConnection()); 
+    }
+    #endregion
+
+    #region Network Lobby
     private IEnumerator StartLobbyConnection()
     {
         foreach (Transform child in roomListParent.transform)
@@ -409,6 +407,7 @@ public class CursorController : MonoBehaviour
         currentRoomPassword = null;
         currentRoomName = null;
     }
+    #endregion
 
     //Quando retorna ao menu
     public void OpenBookReturnToPlay() // anim para abrir livro
@@ -416,9 +415,9 @@ public class CursorController : MonoBehaviour
         if (createJoinPaperLoadingGroup.gameObject.activeInHierarchy)
             return;
         NetworkRunnerHandler.Instance.ShutdownNetworkRunner();
-        StopHandFollowCursor();
-        StartMoveCursorObject(mainMenuHand, moveDuration, animHandStartingPoint.position);
-        StartCoroutine(DelayOpenBook());
+        Show(StartScreen);
+        Hide(clientHostCanvas);
+
     }
 
     public void ChangeMapSelected(int idChange)
@@ -483,13 +482,16 @@ public class CursorController : MonoBehaviour
     public void ChangeToCreateJoinPage(bool isHosting)
     {
         returnToMainMenuFromClientHost.gameObject.SetActive(false);
+        Show(createJoinPaper);
         selectedHost = isHosting;
-        StartCoroutine(ChangeToCreateJoinPageAnimation(clientHostPaper, createJoinPaper, isHosting));
+        //StartCoroutine(ChangeToCreateJoinPageAnimation(clientHostPaper, createJoinPaper, isHosting));
     }
     public void ChangeToHostClientPage()
     {
+        
         returnToMainMenuFromClientHost.gameObject.SetActive(true);
-        StartCoroutine(ChangeToCreateJoinPageAnimation(createJoinPaper, clientHostPaper, selectedHost));
+        Hide(createJoinPaper);
+        //StartCoroutine(ChangeToCreateJoinPageAnimation(createJoinPaper, clientHostPaper, selectedHost));
         selectedHost = false;
     }
 
@@ -515,9 +517,12 @@ public class CursorController : MonoBehaviour
             passwordBlankCoroutine = StartCoroutine(SessionNameBlankFeedback(placeholderPasswordText));
             return;
         }
-        //createJoinPaperDefaultGroup.gameObject.SetActive(false);
+
+        Hide(createJoinPaper);
+        createJoinPaperDefaultGroup.gameObject.SetActive(false);
         createJoinPaperLoadingGroup.gameObject.SetActive(true);
         StartHost();
+
     }
     private Coroutine sessionNameBlankCoroutine;
     private Coroutine passwordBlankCoroutine;
@@ -650,6 +655,7 @@ public class CursorController : MonoBehaviour
     public void ReturnBlueprintSelect() // sair do blue de seleção
     {
         NetworkRunnerHandler.Instance.ShutdownNetworkRunner();
+        Show(clientHostCanvas);
     }
     public void ChangeMaterial(Material newMaterial, GameObject Tank, GameObject Drill)
     {
@@ -722,8 +728,43 @@ public class CursorController : MonoBehaviour
         go.SetActive(state);
     }
 
-    // Delay animações
+    #region NewAnimations
 
+    public void Show(CanvasGroup target)
+    {
+        target.gameObject.SetActive(true);
+        StopAllCoroutines();
+        StartCoroutine(FadeCanvas(target, 0.5f, 0f, 1f, true));
+    }
+
+    public void Hide(CanvasGroup target)
+    {
+        target.gameObject.SetActive(false);
+        StopAllCoroutines();
+        StartCoroutine(FadeCanvas(target, 0.5f, 1f, 0f, true));
+    }
+    IEnumerator FadeCanvas(CanvasGroup canvasGroup, float fadeDuration, float start, float end, bool enableOnEnd)
+    {
+        float elapsed = 0f;
+        canvasGroup.interactable = false;
+        canvasGroup.blocksRaycasts = false;
+
+        while (elapsed < fadeDuration)
+        {
+            canvasGroup.alpha = Mathf.Lerp(start, end, elapsed / fadeDuration);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        canvasGroup.alpha = end;
+        canvasGroup.interactable = enableOnEnd;
+        canvasGroup.blocksRaycasts = enableOnEnd;
+    }
+
+
+    #endregion
+
+    #region Old animations
     IEnumerator ChangeToCreateJoinPageAnimation(CanvasGroup pageLeaving, CanvasGroup pageEntering, bool isHost)
     {
         pageLeaving.blocksRaycasts = false;
@@ -852,7 +893,7 @@ public class CursorController : MonoBehaviour
         config[1].SetActive(true);
         StopAccelerateAnimatorSpeedByMouseInput(animHand);
         StopAccelerateAnimatorSpeedByMouseInput(animFolhaDoCaderno);
-        StartHandFollowCursor();
+        //StartHandFollowCursor();
     }
     IEnumerator DelayCredits()
     {
@@ -903,7 +944,7 @@ public class CursorController : MonoBehaviour
 
         StopAccelerateAnimatorSpeedByMouseInput(animHand);
         StopAccelerateAnimatorSpeedByMouseInput(animFolhaDoCaderno);
-        StartHandFollowCursor();
+        //StartHandFollowCursor();
     }
 
     IEnumerator DelayReturnCredits()
@@ -948,7 +989,7 @@ public class CursorController : MonoBehaviour
         config[0].SetActive(true);
         StopAccelerateAnimatorSpeedByMouseInput(animHand);
         StopAccelerateAnimatorSpeedByMouseInput(animFolhaDoCaderno);
-        StartHandFollowCursor();
+        //StartHandFollowCursor();
     }
 
     IEnumerator DelayPreviousPage()
@@ -993,7 +1034,7 @@ public class CursorController : MonoBehaviour
         playCanvasLayer.gameObject.SetActive(true);
         StopAccelerateAnimatorSpeedByMouseInput(animHand);
         StopAccelerateAnimatorSpeedByMouseInput(animFolhaDoCaderno);
-        StartHandFollowCursor();
+        //StartHandFollowCursor();
     }
 
     IEnumerator DelayCloseBook()
@@ -1040,7 +1081,7 @@ public class CursorController : MonoBehaviour
         clientHostCanvas.blocksRaycasts = true;
         StopAccelerateAnimatorSpeedByMouseInput(animHand);
         StopAccelerateAnimatorSpeedByMouseInput(animBook);
-        StartHandFollowCursor();
+        //StartHandFollowCursor();
     }
 
     IEnumerator DelayOpenBook()
@@ -1091,7 +1132,7 @@ public class CursorController : MonoBehaviour
 
         StopAccelerateAnimatorSpeedByMouseInput(animHand);
         StopAccelerateAnimatorSpeedByMouseInput(animBook);
-        StartHandFollowCursor();
+        //StartHandFollowCursor();
     }
 
     IEnumerator MoveBookSmoothly()
@@ -1150,7 +1191,7 @@ public class CursorController : MonoBehaviour
         StopAccelerateAnimatorSpeedByMouseInput(animBook);
         StopAccelerateAnimatorSpeedByMouseInput(animFolhaDoCaderno);
 
-        StartHandFollowCursor();
+        //StartHandFollowCursor();
         //Habilita a interacao com o menu apos a aparicao do menu
         playCanvasLayer.blocksRaycasts = true;
         logoCanvasLayer.blocksRaycasts = true;
@@ -1246,6 +1287,8 @@ public class CursorController : MonoBehaviour
         }
     }
 }
+#endregion 
+
 public struct AnimatorAcceleratorCoroutine
 {
     public Coroutine coroutine;
