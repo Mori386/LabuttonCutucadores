@@ -430,7 +430,7 @@ MonoBehaviour:
   characterData:
     weight: 20
     braking: 1
-    maxSpeed: 175
+    maxSpeed: 262.5
     rotationSpeed: 15
   activeSpeedMultiplier: 1
   _Velocity: {x: 0, y: 0}
@@ -443,6 +443,7 @@ MonoBehaviour:
   visualHandler: {fileID: 0}
   audioHandler: {fileID: 0}
   playerColliders: []
+  otherPlayersTransforms: []
 --- !u!114 &-4411249185986371647
 MonoBehaviour:
   m_ObjectHideFlags: 0
