@@ -3,24 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
 using TMPro;
+
 public class HPHandler : NetworkBehaviour
 {
     //variavel em byte que ao ser mudada chama funcao
     [Networked(OnChanged = nameof(OnScoreChanged))]
     byte Kills { get; set; }
 
-    //variavel em bool que ao ser mudada chama funcao
-    //[Networked(OnChanged = nameof(OnStateChanged))]
-    //public bool isDead { get; set; }
-
-    //bool isInitialized = false;
+    [Networked] public bool HasShield { get; set; }
 
     public TextMeshPro killsText;
 
     public NetworkVisualHandler networkVisualHandler;
     public NetworkCharacterDrillController drillController;
 
-    [Networked] public bool isInvulnerable { get; set; }
+    [Networked] public bool IsInvulnerable { get; set; }
     [Networked] public TickTimer InvulnerabilityTimer { get; set; }
     private void Awake()
     {
@@ -31,34 +28,62 @@ public class HPHandler : NetworkBehaviour
     {
         base.Spawned();
         HPBarHandler.Instance.LoadPlayerInfos();
+        ChangeShieldState(true);
         Kills = 0;
         UpdateRankingUI();
     }
     public void OnHitTaken()
     {
-        if (!isInvulnerable)
+        if (IsInvulnerable)
+            return;
+        if (HasShield)
         {
-            drillController.Die();
-            isInvulnerable = true;
-            StartCoroutine(CheckForInvulnerability());
+            ChangeShieldState(false);
+            StartCoroutine(CheckForInvulnerability(false));
+            return;
         }
+        drillController.Die();
+        StartCoroutine(CheckForInvulnerability(true));
     }
 
-    public IEnumerator CheckForInvulnerability()
+    public bool ChangeShieldState(bool shieldState)
     {
-        InvulnerabilityTimer = TickTimer.CreateFromSeconds(Runner, 0.5f);
-        while (InvulnerabilityTimer.RemainingTime(Runner) >= 0.2f)
+        if (HasShield == shieldState)
+            return false;
+        if (shieldState)
         {
-            yield return null;
+            Debug.LogWarning($"Ganhou escudo");
+            //colocar aqui efeito de ganhar/recuperar shield
         }
-        drillController.Respawn();
+        else
+        {
+            Debug.LogWarning($"Perdeu escudo");
+            //colocar aqui implementação do efeito de perder shield
+        }
+        HasShield = shieldState;
+        return true;
+    }
+
+    public IEnumerator CheckForInvulnerability(bool died)
+    {
+        IsInvulnerable = true;
+        InvulnerabilityTimer = TickTimer.CreateFromSeconds(Runner, died ? 1.5f : .5f);
+        if (died)
+        {
+            while (InvulnerabilityTimer.RemainingTime(Runner) >= .5f)
+            {
+                yield return null;
+            }
+            drillController.Respawn();
+            ChangeShieldState(true);
+        }
         //Cria um timer na rede para check de tempo de invulnerabilidade
         while (!InvulnerabilityTimer.Expired(Runner))
         {
             yield return null;
         }
         InvulnerabilityTimer = TickTimer.None;
-        isInvulnerable = false;
+        IsInvulnerable = false;
     }
 
     public void IncreaseScore(byte amount)

@@ -26,7 +26,8 @@ public class CollisionHandler : NetworkBehaviour
                         //Contact with other player body with this player drill
                         if (Object.HasStateAuthority)
                         {
-                            transform.root.GetComponent<HPHandler>().IncreaseScore(1);
+                            if (!collision.transform.root.GetComponent<HPHandler>().ChangeShieldState(false)) //se o shield do outro já estiver desativado, ganha ponto
+                                transform.root.GetComponent<HPHandler>().IncreaseScore(1);
                             networkCharacterController.Knockback(collision.GetContact(0).point, true);
                             StartFallChecker(collision);
                         }
@@ -44,10 +45,7 @@ public class CollisionHandler : NetworkBehaviour
                 {
                     case "Player":
                         //If other player drill hit this player body
-                        if (Object.HasStateAuthority)
-                        {
-                            transform.root.GetComponent<HPHandler>().OnHitTaken();
-                        }
+                        transform.root.GetComponent<HPHandler>().OnHitTaken();
                         GameManager.Instance.PlayOnBodyHitParticle(collision.GetContact(0).point);
                         break;
                     case "Drill":
