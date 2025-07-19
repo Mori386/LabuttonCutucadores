@@ -127,12 +127,12 @@ public class CursorController : MonoBehaviour
                 return;
             }
         }
-        Cursor.visible = true; // Esconde o cursor do mouse
+        //Cursor.visible = true; // Esconde o cursor do mouse
         //Cursor.lockState = CursorLockMode.Confined; // Mantém o cursor dentro da janela do jogo.
 
         //startPosition = mainMenuHand.transform.position; //para retorno da posição inicial
-        moveDuration = moveTime - pauseTime; // valor do tempo de deslocamento
-        StartCoroutine(MoveBookSmoothly());
+        //moveDuration = moveTime - pauseTime; // valor do tempo de deslocamento
+        //StartCoroutine(MoveBookSmoothly());
     }
     /*public void StartHandFollowCursor()
     {
@@ -140,49 +140,49 @@ public class CursorController : MonoBehaviour
         if (HandFollowCursorCoroutine == null) HandFollowCursorCoroutine = StartCoroutine(HandFollowCursor());
         if (AimFollowCursorCoroutine == null) AimFollowCursorCoroutine = StartCoroutine(AimFollowCursor());
     }*/
-    public void StopHandFollowCursor()
-    {
-        if (CalculateMousePosInWorldCoroutine != null)
-        {
-            StopCoroutine(CalculateMousePosInWorldCoroutine);
-            CalculateMousePosInWorldCoroutine = null;
-        }
-       /* if (HandFollowCursorCoroutine != null)
-        {
-            StopCoroutine(HandFollowCursorCoroutine);
-            HandFollowCursorCoroutine = null;
-        }*/
-        if (AimFollowCursorCoroutine != null)
-        {
-            mira.gameObject.SetActive(false);
-            StopCoroutine(AimFollowCursorCoroutine);
-            AimFollowCursorCoroutine = null;
-        }
-    }
+    /*  public void StopHandFollowCursor()
+      {
+          if (CalculateMousePosInWorldCoroutine != null)
+          {
+              StopCoroutine(CalculateMousePosInWorldCoroutine);
+              CalculateMousePosInWorldCoroutine = null;
+          }
+         /* if (HandFollowCursorCoroutine != null)
+          {
+              StopCoroutine(HandFollowCursorCoroutine);
+              HandFollowCursorCoroutine = null;
+          }
+          if (AimFollowCursorCoroutine != null)
+          {
+              mira.gameObject.SetActive(false);
+              StopCoroutine(AimFollowCursorCoroutine);
+              AimFollowCursorCoroutine = null;
+          }
+      }*/
 
     //Get MousePosition in World Coordinates
-    private Vector3 mousePosInWorld;
-    public Coroutine CalculateMousePosInWorldCoroutine;
-    public IEnumerator CalculateMousePosInWorld(float distance)
-    {
-        Vector3 mousePosition;
-        while (true)
-        {
-            mousePosition = Input.mousePosition;
-            mousePosition.z = distance;
-            mousePosInWorld = mainCamera.ScreenToWorldPoint(mousePosition);
-            yield return null;
-        }
-    }
-    public bool IsMouseOutOffApp()
-    {
-        Vector3 mousePosition = Input.mousePosition;
-        Vector2 mousePosNormalizedByScreenSize = new Vector2(mousePosition.x, mousePosition.y);
-        mousePosNormalizedByScreenSize.x /= Screen.width;
-        mousePosNormalizedByScreenSize.y /= Screen.height;
-        return !(mousePosNormalizedByScreenSize.x >= 0 && mousePosNormalizedByScreenSize.x <= 1 &&
-                mousePosNormalizedByScreenSize.y >= 0 && mousePosNormalizedByScreenSize.y <= 1);
-    }
+    /* private Vector3 mousePosInWorld;
+     public Coroutine CalculateMousePosInWorldCoroutine;
+     public IEnumerator CalculateMousePosInWorld(float distance)
+     {
+         Vector3 mousePosition;
+         while (true)
+         {
+             mousePosition = Input.mousePosition;
+             mousePosition.z = distance;
+             mousePosInWorld = mainCamera.ScreenToWorldPoint(mousePosition);
+             yield return null;
+         }
+     }
+     public bool IsMouseOutOffApp()
+     {
+         Vector3 mousePosition = Input.mousePosition;
+         Vector2 mousePosNormalizedByScreenSize = new Vector2(mousePosition.x, mousePosition.y);
+         mousePosNormalizedByScreenSize.x /= Screen.width;
+         mousePosNormalizedByScreenSize.y /= Screen.height;
+         return !(mousePosNormalizedByScreenSize.x >= 0 && mousePosNormalizedByScreenSize.x <= 1 &&
+                 mousePosNormalizedByScreenSize.y >= 0 && mousePosNormalizedByScreenSize.y <= 1);
+     }*/
 
     //Hand follow cursor
     /*public Coroutine HandFollowCursorCoroutine;
@@ -198,7 +198,7 @@ public class CursorController : MonoBehaviour
         }
     }*/
 
-    //Aim follow cursor
+    /*//Aim follow cursor
     public Coroutine AimFollowCursorCoroutine;
     public IEnumerator AimFollowCursor()
     {
@@ -242,7 +242,9 @@ public class CursorController : MonoBehaviour
             }
             yield return new WaitForFixedUpdate();
         }
-    }
+    }*/
+
+    /*
     //Move objet to target position
     public void StartMoveCursorObject(Transform objectTransform, float duration, Vector3 targetPosition)
     {
@@ -266,7 +268,7 @@ public class CursorController : MonoBehaviour
         }
         objectTransform.position = targetPosition;
         MoveCursorObjectCoroutine = null;
-    }
+    }*/
 
     #region Botoes
     // todos os voids abaixo são chamados através de botões na cena, de acordo com os seus respectivos nomes
@@ -287,19 +289,16 @@ public class CursorController : MonoBehaviour
         Show(StartScreen);
 
     }
-
-    //Quando pressiona o play
-    public void StartGame() // anim para fechar livro
+    public void StartGame() 
     {
        Hide(StartScreen);
        Show(clientHostCanvas);
+       //clientHostCanvas.blocksRaycasts = false;
+       //clientHostPaper.gameObject.SetActive(false);
+       //returnToMainMenuFromClientHost.gameObject.SetActive(false);
+       //clientHostCanvas.gameObject.SetActive(true);
+       //StartCoroutine(DelayCloseBook());
 
-       clientHostPaper.gameObject.SetActive(false);
-       returnToMainMenuFromClientHost.gameObject.SetActive(false);
-       clientHostCanvas.blocksRaycasts = false;
-       clientHostCanvas.gameObject.SetActive(true);
-
-       StartCoroutine(DelayCloseBook());
        StartCoroutine(StartLobbyConnection()); 
     }
     #endregion
@@ -313,9 +312,9 @@ public class CursorController : MonoBehaviour
                 Destroy(child.gameObject);
         }
         createJoinPaperLoadingGroup.gameObject.SetActive(true);
-        createJoinPaperLoadingText.text = "Carregando...";
+        createJoinPaperLoadingText.text = "Loading...";
         lobbyStatusText.gameObject.SetActive(true);
-        lobbyStatusText.text = "Procurando salas...";
+        lobbyStatusText.text = "Search rooms...";
         Task lobbyLoadTask = NetworkRunnerHandler.Instance.StartLobby();
         while (lobbyLoadTask.Status != TaskStatus.RanToCompletion)
         {
@@ -325,7 +324,7 @@ public class CursorController : MonoBehaviour
             }
             yield return null;
         }
-        createJoinPaperLoadingText.text = "Conectado";
+        createJoinPaperLoadingText.text = "Connected";
         yield return new WaitForSeconds(.3f);
         createJoinPaperLoadingGroup.gameObject.SetActive(false);
     }
@@ -341,7 +340,7 @@ public class CursorController : MonoBehaviour
                 Destroy(child.gameObject);
         }
         lobbyStatusText.gameObject.SetActive(true);
-        lobbyStatusText.text = "Nenhuma sala ativa no momento.";
+        lobbyStatusText.text = "No active rooms at the moment.";
         if (sessionList != null || sessionList.Count > 0)
         {
             foreach (SessionInfo session in sessionList)
@@ -368,7 +367,7 @@ public class CursorController : MonoBehaviour
     string currentRoomName;
     public void ToInsertPasswordScreen(string password, string name)
     {
-        clientHostPaper.gameObject.SetActive(false);
+        //clientHostPaper.gameObject.SetActive(false);
         insertPasswordPaper.SetActive(true);
         enterRoomPasswordInputField.placeholder.color = Color.black;
         //enterRoomPasswordInputField.placeholder.GetComponent<Text>().text = "Insira a senha da partida...";
@@ -473,10 +472,10 @@ public class CursorController : MonoBehaviour
     }
     public void BlueprintEnter() // anim para blueprint de seleção
     {
-        StopHandFollowCursor();
+        //StopHandFollowCursor();
         BlueprintLoadInfos();
         Blueprint.SetActive(true);
-        StartCoroutine(MoveBlue());
+        //StartCoroutine(MoveBlue());
     }
 
     public void ChangeToCreateJoinPage(bool isHosting)
@@ -734,14 +733,15 @@ public class CursorController : MonoBehaviour
     {
         target.gameObject.SetActive(true);
         StopAllCoroutines();
-        StartCoroutine(FadeCanvas(target, 0.5f, 0f, 1f, true));
+        StartCoroutine(FadeCanvas(target, 1f, 0f, 1f, true));
     }
 
     public void Hide(CanvasGroup target)
     {
-        target.gameObject.SetActive(false);
+        
         StopAllCoroutines();
-        StartCoroutine(FadeCanvas(target, 0.5f, 1f, 0f, true));
+        StartCoroutine(FadeCanvas(target, 1f, 1f, 0f, true));
+        target.gameObject.SetActive(false);
     }
     IEnumerator FadeCanvas(CanvasGroup canvasGroup, float fadeDuration, float start, float end, bool enableOnEnd)
     {
@@ -1037,7 +1037,7 @@ public class CursorController : MonoBehaviour
         //StartHandFollowCursor();
     }
 
-    IEnumerator DelayCloseBook()
+   /* IEnumerator DelayCloseBook()
     {
         StartAccelerateAnimatorSpeedByMouseInput(animHand, animSpeedUpMultiplier);
         StartAccelerateAnimatorSpeedByMouseInput(animBook, animSpeedUpMultiplier);
@@ -1082,7 +1082,7 @@ public class CursorController : MonoBehaviour
         StopAccelerateAnimatorSpeedByMouseInput(animHand);
         StopAccelerateAnimatorSpeedByMouseInput(animBook);
         //StartHandFollowCursor();
-    }
+    }*/
 
     IEnumerator DelayOpenBook()
     {
@@ -1135,7 +1135,8 @@ public class CursorController : MonoBehaviour
         //StartHandFollowCursor();
     }
 
-    IEnumerator MoveBookSmoothly()
+    
+    /*IEnumerator MoveBookSmoothly()
     {
         Vector3 pontoOrigem = book.position;
         float duration = 0.75f; // Tempo total da transição em segundos
@@ -1195,7 +1196,7 @@ public class CursorController : MonoBehaviour
         //Habilita a interacao com o menu apos a aparicao do menu
         playCanvasLayer.blocksRaycasts = true;
         logoCanvasLayer.blocksRaycasts = true;
-    }
+    }*/
     public void StartAccelerateAnimatorSpeedByMouseInput(Animator animator, float speedMultiplier)
     {
 
@@ -1239,7 +1240,7 @@ public class CursorController : MonoBehaviour
         }
     }
 
-    IEnumerator MoveBlue()
+   /* IEnumerator MoveBlue()
     {
         Vector3 bpCenterPos = new Vector3(0f, blueprintRect.localPosition.y, blueprintRect.localPosition.z);
         float timerDelay = 0f;
@@ -1256,7 +1257,7 @@ public class CursorController : MonoBehaviour
         //carimbo.SetActive(true);
         //StartStampFollowCursor();
         Cursor.visible = true;
-    }
+    }*/
 
     IEnumerator ReturnBlue()
     {
