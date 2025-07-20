@@ -486,10 +486,14 @@ MonoBehaviour:
   WordOffset: 0
   WordCount: 0
   _interpolationDataSource: 0
+  _HasShield: 0
   killsText: {fileID: 528173328059072990}
   networkVisualHandler: {fileID: 0}
   drillController: {fileID: 0}
-  _isInvulnerable: 0
+  colliders:
+  - {fileID: 8784443827530896771}
+  - {fileID: 4914304192137790677}
+  _IsInvulnerable: 0
 --- !u!114 &3553782799364510862
 MonoBehaviour:
   m_ObjectHideFlags: 0

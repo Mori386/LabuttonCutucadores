@@ -260,6 +260,7 @@ public class NetworkCharacterDrillController : NetworkTransform
             int mostSafeSpawnpoint = spawnpointSafeDistance.OrderBy(kvp => kvp.Value).Last().Key;
             transform.SetPositionAndRotation(GameManager.Instance.playerSpawnpoints[mostSafeSpawnpoint].position, GameManager.Instance.playerSpawnpoints[mostSafeSpawnpoint].rotation);
         }
+        visualHandler.HideOrShowVisual(true);
     }
     #endregion
 

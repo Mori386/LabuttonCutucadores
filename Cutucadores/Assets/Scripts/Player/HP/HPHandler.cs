@@ -17,6 +17,8 @@ public class HPHandler : NetworkBehaviour
     public NetworkVisualHandler networkVisualHandler;
     public NetworkCharacterDrillController drillController;
 
+    [SerializeField] private GameObject[] colliders;
+
     [Networked] public bool IsInvulnerable { get; set; }
     [Networked] public TickTimer InvulnerabilityTimer { get; set; }
     private void Awake()
@@ -52,12 +54,10 @@ public class HPHandler : NetworkBehaviour
             return false;
         if (shieldState)
         {
-            Debug.LogWarning($"Ganhou escudo");
             //colocar aqui efeito de ganhar/recuperar shield
         }
         else
         {
-            Debug.LogWarning($"Perdeu escudo");
             //colocar aqui implementação do efeito de perder shield
         }
         HasShield = shieldState;
@@ -70,11 +70,15 @@ public class HPHandler : NetworkBehaviour
         InvulnerabilityTimer = TickTimer.CreateFromSeconds(Runner, died ? 1.5f : .5f);
         if (died)
         {
+            ManageColliders(false);
+            killsText.gameObject.SetActive(false);
             while (InvulnerabilityTimer.RemainingTime(Runner) >= .5f)
             {
                 yield return null;
             }
             drillController.Respawn();
+            ManageColliders(true);
+            killsText.gameObject.SetActive(true);
             ChangeShieldState(true);
         }
         //Cria um timer na rede para check de tempo de invulnerabilidade
@@ -84,6 +88,12 @@ public class HPHandler : NetworkBehaviour
         }
         InvulnerabilityTimer = TickTimer.None;
         IsInvulnerable = false;
+    }
+
+    public void ManageColliders(bool active)
+    {
+        foreach (var collider in colliders) 
+            collider.SetActive(active);
     }
 
     public void IncreaseScore(byte amount)

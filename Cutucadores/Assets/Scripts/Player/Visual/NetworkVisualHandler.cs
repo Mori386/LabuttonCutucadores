@@ -8,6 +8,7 @@ public class NetworkVisualHandler : NetworkBehaviour
     NetworkCharacterDrillController characterDrillController;
     ExplosionHandler explosionHandler;
 
+    public GameObject playerVisual;
     public Transform drillVisual;
 
     [Header("-----Power Up-----"), Space]
@@ -32,6 +33,7 @@ public class NetworkVisualHandler : NetworkBehaviour
     }
     public void OnDeath()
     {
+        HideOrShowVisual(false);
         explosionHandler.Explode();
     }
     public override void Spawned()
@@ -51,12 +53,16 @@ public class NetworkVisualHandler : NetworkBehaviour
         Transform drill = 
         Instantiate(NetworkBetweenScenesManager.Instance.GetDataFromUserID(userID).visualPrefab, characterDrillController.visual).transform;
 
-        drill = drill.GetChild(1).GetChild(0);
-        if (drill != null) drillVisual = drill;
+        playerVisual = drill.gameObject;
+        if (drill.GetChild(1).GetChild(0) != null) drillVisual = drill.GetChild(1).GetChild(0);
         else Debug.LogError("Error in finding drill mesh");
         animator.enabled = true;
         animator.Rebind();
 
+    }
+    public void HideOrShowVisual(bool active)
+    {
+        playerVisual.SetActive(active);
     }
     public void RotateWheel(float direction)
     {
