@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterName: Pai e Filha
   character: 2
-  visualPrefab: {fileID: 7181685900013928869, guid: 891485453721963499ad980e492d335d, type: 3}
+  visualPrefab: {fileID: 6125220460632283248, guid: d04cfdbe515c45647bc425c4ca9d13f1, type: 3}

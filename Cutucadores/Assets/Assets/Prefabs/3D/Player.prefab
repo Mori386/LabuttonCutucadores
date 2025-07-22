@@ -486,14 +486,12 @@ MonoBehaviour:
   WordOffset: 0
   WordCount: 0
   _interpolationDataSource: 0
-  _HasShield: 0
   killsText: {fileID: 528173328059072990}
   networkVisualHandler: {fileID: 0}
   drillController: {fileID: 0}
   colliders:
   - {fileID: 8784443827530896771}
   - {fileID: 4914304192137790677}
-  _IsInvulnerable: 0
 --- !u!114 &3553782799364510862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -556,6 +554,7 @@ MonoBehaviour:
   WordOffset: 0
   WordCount: 0
   _interpolationDataSource: 0
+  playerVisual: {fileID: 0}
   drillVisual: {fileID: 0}
   powerUpSpeedParticleSystem:
   - {fileID: 7773407691132084432}
@@ -10740,8 +10739,8 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3453779471254219492}
   m_Enabled: 0
-  m_Avatar: {fileID: 9000000, guid: 1dd0a4710a6301341b7f4f7383074355, type: 3}
-  m_Controller: {fileID: 9100000, guid: 881b80f1e8afdf14793628544bda762c, type: 2}
+  m_Avatar: {fileID: 9000000, guid: 19fc86f0bd91b7e49a77ec3c9cd3b8bf, type: 3}
+  m_Controller: {fileID: 9100000, guid: 39466496a23ec27428605469b7127622, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 1

@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterName: "Vov\xF3"
   character: 3
-  visualPrefab: {fileID: 6852556854852110867, guid: fd2d6c6bd9fe5694dab13892ba46f7d1, type: 3}
+  visualPrefab: {fileID: 6125220460632283248, guid: d04cfdbe515c45647bc425c4ca9d13f1, type: 3}

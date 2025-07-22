@@ -54,7 +54,7 @@ public class NetworkVisualHandler : NetworkBehaviour
         Instantiate(NetworkBetweenScenesManager.Instance.GetDataFromUserID(userID).visualPrefab, characterDrillController.visual).transform;
 
         playerVisual = drill.gameObject;
-        if (drill.GetChild(1).GetChild(0) != null) drillVisual = drill.GetChild(1).GetChild(0);
+        if (drill.GetChild(0).GetChild(1) != null) drillVisual = drill.GetChild(0).GetChild(1);
         else Debug.LogError("Error in finding drill mesh");
         animator.enabled = true;
         animator.Rebind();

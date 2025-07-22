@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterName: Escavador
   character: 0
-  visualPrefab: {fileID: 828989296237455402, guid: 257e00fb337de7c4a951d6428c759eec, type: 3}
+  visualPrefab: {fileID: 6125220460632283248, guid: d04cfdbe515c45647bc425c4ca9d13f1, type: 3}
