@@ -194,6 +194,8 @@ public class WinScreenHandler : NetworkBehaviour
     }
     public IEnumerator WinScreenAnimations(string textToApper)
     {
+        if (gameEnded)
+            yield break;
         gameEnded = true;
         HPBarHandler.Instance.ManageUIToEndGame();
         PauseUI.Instance.OpenOrCloseUI(false);
