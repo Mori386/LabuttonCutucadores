@@ -617,6 +617,33 @@ public class CursorController : MonoBehaviour
         }
         Debug.Log("Carimbo loaded.");
 
+        while (NetworkBetweenScenesManager.Instance == null)
+        {
+            Debug.Log($"Loading NetworkBetweenScenesManager, time elapsed: {timeoutCount} seconds.");
+            if (timeoutCount > 25f)
+            {
+                createJoinPaperLoadingText.text = "Connected failed.";
+                Task shutdownTask = NetworkRunnerHandler.Instance.ShutdownNetworkRunner();
+                foreach (Transform child in roomListParent.transform)
+                {
+                    if (child.GetComponent<LobbyRoomPrefab>() != null)
+                        Destroy(child.gameObject);
+                }
+                while (shutdownTask.Status != TaskStatus.RanToCompletion)
+                    yield return null;
+                yield return new WaitForSeconds(1);
+                NetworkRunnerHandler.Instance.StartLobby();
+                clientHostPaper.gameObject.SetActive(true);
+                lobbyStatusText.gameObject.SetActive(true);
+                lobbyStatusText.text = "Searching rooms...";
+                createJoinPaperLoadingGroup.gameObject.SetActive(false);
+                createJoinPaper.gameObject.SetActive(false);
+                insertPasswordPaper.SetActive(false);
+                yield break;
+            }
+            yield return null;
+            timeoutCount += Time.deltaTime;
+        }
         while (NetworkBetweenScenesManager.Instance.spawned == false)
         {
             Debug.Log($"Loading NetworkBetweenScenesManager, time elapsed: {timeoutCount} seconds.");
