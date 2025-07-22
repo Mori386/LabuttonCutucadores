@@ -55,13 +55,8 @@ public class ExplosionHandler : NetworkBehaviour
     }
     public void Explode()
     {
-        GameManager.Instance.ShakeCamera(GameManager.Instance.onBodyHitCameraShakeAmplitude * 2f);
-        RPC_BroadcastEffects();
-    }
-
-    [Rpc(RpcSources.All, RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = true)]
-    private void RPC_BroadcastEffects()
-    {
+        if (HasInputAuthority)
+            GameManager.Instance.ShakeCamera(GameManager.Instance.onBodyHitCameraShakeAmplitude * 2f);
         PlayParticle();
         PlayBlastWave();
     }

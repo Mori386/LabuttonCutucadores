@@ -10,7 +10,7 @@ public class HPHandler : NetworkBehaviour
     [Networked(OnChanged = nameof(OnScoreChanged))]
     byte Kills { get; set; }
 
-    [Networked] public bool HasShield { get; set; }
+    public bool HasShield { get; set; }
 
     public TextMeshPro killsText;
 
@@ -19,7 +19,7 @@ public class HPHandler : NetworkBehaviour
 
     [SerializeField] private GameObject[] colliders;
 
-    [Networked] public bool IsInvulnerable { get; set; }
+    public bool IsInvulnerable { get; set; }
     [Networked] public TickTimer InvulnerabilityTimer { get; set; }
     private void Awake()
     {
@@ -34,7 +34,9 @@ public class HPHandler : NetworkBehaviour
         Kills = 0;
         UpdateRankingUI();
     }
-    public void OnHitTaken()
+
+    [Rpc(RpcSources.All, RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = true)]
+    public void RPC_OnHitTaken()
     {
         if (IsInvulnerable)
             return;

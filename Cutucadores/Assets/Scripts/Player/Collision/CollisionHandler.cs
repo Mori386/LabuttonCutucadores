@@ -45,7 +45,7 @@ public class CollisionHandler : NetworkBehaviour
                 {
                     case "Player":
                         //If other player drill hit this player body
-                        transform.root.GetComponent<HPHandler>().OnHitTaken();
+                        transform.root.GetComponent<HPHandler>().RPC_OnHitTaken();
                         GameManager.Instance.PlayOnBodyHitParticle(collision.GetContact(0).point);
                         break;
                     case "Drill":
