@@ -26,7 +26,7 @@ public class CollisionHandler : NetworkBehaviour
                         //Contact with other player body with this player drill
                         if (Object.HasStateAuthority)
                         {
-                            if (!collision.transform.root.GetComponent<HPHandler>().HasShield) //se o shield do outro já estiver desativado, ganha ponto
+                            if (!collision.transform.root.GetComponent<HPHandler>().HasShield && !collision.transform.root.GetComponent<HPHandler>().IsInvulnerable) //se o shield do outro já estiver desativado, ganha ponto
                                 transform.root.GetComponent<HPHandler>().IncreaseScore(1);
                             networkCharacterController.Knockback(collision.GetContact(0).point, true);
                             StartFallChecker(collision);
