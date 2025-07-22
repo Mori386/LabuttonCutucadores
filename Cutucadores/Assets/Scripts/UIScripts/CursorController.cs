@@ -2,6 +2,7 @@ using Fusion;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
@@ -444,20 +445,24 @@ public class CursorController : MonoBehaviour
                         default:
                         case Character.Escavador:
                             characterBpInfos = escavadorCharBP;
+                            Okays[0].SetActive(true);
                             break;
                         case Character.Minerador:
                             characterBpInfos = mineradorCharBP;
+                            Okays[1].SetActive(true);
                             break;
                         case Character.PaiEFilha:
                             characterBpInfos = paiEFilhaCharBP;
+                            Okays[2].SetActive(true);
                             break;
                         case Character.Vovo:
                             characterBpInfos = vovoCharBP;
+                            Okays[3].SetActive(true);
                             break;
                     }
                     characterBpInfos.selectButton.interactable = false;
-                    characterBpInfos.drillBodyMeshRenderer.material = characterBpInfos.defaultMaterial;
-                    characterBpInfos.drillHeadMeshRenderer.material = characterBpInfos.defaultMaterial;
+                    //characterBpInfos.drillBodyMeshRenderer.material = characterBpInfos.defaultMaterial;
+                    //characterBpInfos.drillHeadMeshRenderer.material = characterBpInfos.defaultMaterial;
                     characterBpInfos.usernameText.text = playerData.username.ToString();
                 }
             }
@@ -710,13 +715,11 @@ public class CursorController : MonoBehaviour
         {
             case 0:
                 SelectCharacter(Character.Escavador);
-                Okays[0].SetActive(true);
 
                 break;
 
             case 1:
                 SelectCharacter(Character.Minerador);
-                Okays[1].SetActive(true);
                 //startPosition = carimbo.transform.position;
                 //targetPosition = Okays[1].transform.position;
                 //isMoving = true;
@@ -726,7 +729,6 @@ public class CursorController : MonoBehaviour
 
             case 2:
                 SelectCharacter(Character.PaiEFilha);
-                Okays[2].SetActive(true);
                 //startPosition = carimbo.transform.position;
                 //targetPosition = Okays[2].transform.position;
                 //isMoving = true;
@@ -736,7 +738,6 @@ public class CursorController : MonoBehaviour
 
             case 3:
                 SelectCharacter(Character.Vovo);
-                Okays[3].SetActive(true);
                 //startPosition = carimbo.transform.position;
                 //targetPosition = Okays[3].transform.position;
                 //Polaroids[4].SetActive(false);

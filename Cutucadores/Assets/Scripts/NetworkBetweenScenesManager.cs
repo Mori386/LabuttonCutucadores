@@ -74,15 +74,19 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
             default:
             case Character.Escavador:
                 thisCharacterBP = CursorController.Instance.escavadorCharBP;
+                CursorController.Instance.Okays[0].SetActive(true);
                 break;
             case Character.Minerador:
                 thisCharacterBP = CursorController.Instance.mineradorCharBP;
+                CursorController.Instance.Okays[1].SetActive(true);
                 break;
             case Character.PaiEFilha:
                 thisCharacterBP = CursorController.Instance.paiEFilhaCharBP;
+                CursorController.Instance.Okays[2].SetActive(true);
                 break;
             case Character.Vovo:
                 thisCharacterBP = CursorController.Instance.vovoCharBP;
+                CursorController.Instance.Okays[3].SetActive(true);
                 break;
         }
         if (userIDToPlayerData.TryGet(userID, out PlayerData myPlayerData))
@@ -117,21 +121,29 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
                     default:
                     case Character.Escavador:
                         thisCharacterBP = CursorController.Instance.escavadorCharBP;
+                        if (thisCharacterBP.selectButton != null)
+                            CursorController.Instance.Okays[0].SetActive(false);
                         break;
                     case Character.Minerador:
                         thisCharacterBP = CursorController.Instance.mineradorCharBP;
+                        if (thisCharacterBP.selectButton != null)
+                            CursorController.Instance.Okays[1].SetActive(false);
                         break;
                     case Character.PaiEFilha:
                         thisCharacterBP = CursorController.Instance.paiEFilhaCharBP;
+                        if (thisCharacterBP.selectButton != null)
+                            CursorController.Instance.Okays[2].SetActive(false);
                         break;
                     case Character.Vovo:
                         thisCharacterBP = CursorController.Instance.vovoCharBP;
+                        if (thisCharacterBP.selectButton != null)
+                            CursorController.Instance.Okays[3].SetActive(false);
                         break;
                 }
                 if (thisCharacterBP.selectButton != null)
                 {
                     thisCharacterBP.selectButton.interactable = true;
-                    thisCharacterBP.usernameText.text = "Nome do jogador";
+                    thisCharacterBP.usernameText.text = "";
                     StartCoroutine(ChangeTankMaterial(thisCharacterBP, thisCharacterBP.BpEffectMaterial));
                 }
                 PlayerData player = pair.Value;
