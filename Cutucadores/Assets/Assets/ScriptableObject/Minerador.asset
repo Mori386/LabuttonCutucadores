@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterName: Minerador
   character: 1
-  visualPrefab: {fileID: 6125220460632283248, guid: d04cfdbe515c45647bc425c4ca9d13f1, type: 3}
+  visualPrefab: {fileID: 6125220460632283248, guid: a3590efb6c29a7140b56a17ce1cf52b0, type: 3}
