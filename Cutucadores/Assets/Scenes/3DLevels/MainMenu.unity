@@ -69575,6 +69575,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 798900064}
+  isFullVersion: 1
   mainMenuHand: {fileID: 561543357}
   bookOnTableTransform: {fileID: 2076616837}
   animBook: {fileID: 2076616838}
@@ -81840,7 +81841,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 46.049988, y: 17.549938}
+  m_AnchoredPosition: {x: 46.05005, y: 17.549927}
   m_SizeDelta: {x: 43.89997, y: -35.100124}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2087892180

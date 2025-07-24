@@ -15,14 +15,15 @@ public class LobbyRoomPrefab : MonoBehaviour
 
     private const string isRoomPrivate = "Private"; // 1 = true; 0 = false;
     private const string password = "Password";
+    private const string roomCapacity = "Capacity";
 
     public void Setup(string roomName, int playerCount, Dictionary<string, SessionProperty> properties)
     {
         roomNameText.text = roomName;
-        playerQuantityText.text = $"{playerCount}/4";
         roomProperties = properties;
+        playerQuantityText.text = $"{playerCount}/{(int)roomProperties[roomCapacity]}";
         privateRoomSign.SetActive(roomProperties[isRoomPrivate] == 1);
-        if (playerCount >= 4)
+        if (playerCount >= (int)roomProperties[roomCapacity])
         {
             playerQuantityText.color = Color.red;
             joinButton.gameObject.SetActive(false);

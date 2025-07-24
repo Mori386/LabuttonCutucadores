@@ -15,6 +15,8 @@ public class CursorController : MonoBehaviour
 {
     public static CursorController Instance;
     [HideInInspector] public Camera mainCamera;
+    [Header("|----- Version Type -----|")]
+    public bool isFullVersion;
 
     readonly private float animSpeedUpMultiplier = 2f; // Valor de multiplicacao de velocidade quando o jogador acelerar as animacoes
     [Header("|----- Main Menu -----|")]
@@ -356,7 +358,7 @@ public class CursorController : MonoBehaviour
         }
         foreach (SessionInfo session in sessionList)
         {
-            if (session.Properties[joinable] == 1)
+            if (session.Properties[joinable] == 1 && session.Properties[isFull] == (isFullVersion ? 1 : 0))
             {
                 Debug.Log($"Instantiating room {session.Name}");
                 LobbyRoomPrefab prefab = Instantiate(roomPrefab, roomListParent.transform).GetComponent<LobbyRoomPrefab>();
@@ -402,7 +404,9 @@ public class CursorController : MonoBehaviour
         {
             { isRoomPrivate, 1 },
             { password, currentRoomPassword },
-            { joinable, 1 }
+            { joinable, 1 },
+            { isFull, isFullVersion ? 1 : 0 },
+            { roomCapacity, isFullVersion ? 4 : 2 }
         };
         StartClient(currentRoomName, properties);
         currentRoomPassword = null;
@@ -543,6 +547,8 @@ public class CursorController : MonoBehaviour
         }
     }
     private const string isRoomPrivate = "Private"; // 1 = true; 0 = false;
+    private const string isFull = "FullVersion";
+    private const string roomCapacity = "Capacity";
     private const string password = "Password";
     private const string joinable = "Joinable";
     private void StartHost()
@@ -551,7 +557,9 @@ public class CursorController : MonoBehaviour
         {
             { isRoomPrivate, isRoomPrivateToggle.isOn ? 1 : 0 },
             { password, passwordInputField.text },
-            { joinable, 0 }
+            { joinable, 0 },
+            { isFull, isFullVersion ? 1 : 0 },
+            { roomCapacity, isFullVersion ? 4 : 2 }
         };
         Task task = NetworkRunnerHandler.Instance.StartNetworkRunner(sessionNameInputfield.text, Fusion.GameMode.Host, properties);
         StartCoroutine(WaitForHostToConnectToServer(task));
