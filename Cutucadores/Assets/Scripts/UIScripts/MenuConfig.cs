@@ -8,8 +8,8 @@ public class MenuConfig : MonoBehaviour
     public Slider slider;
     public Image[] images;
 
-    // Variável para armazenar o volume atual
-    private float currentVolume = 1.0f; // 1.0f representa o volume máximo
+
+    private float currentVolume = 1.0f; 
     public void Exit()
     {
         Application.Quit();
@@ -75,12 +75,12 @@ public class MenuConfig : MonoBehaviour
 
     public void Fullscreen(bool kitten)
     {
-        Screen.fullScreen = true;
+        Screen.fullScreen = false;
     }
 
     public void Janela(bool kitten)
     {
-        Screen.SetResolution(1280, 720, false);
+        Screen.SetResolution(1280, 720, true);
         
     }
 }

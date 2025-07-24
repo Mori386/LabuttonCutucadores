@@ -301,7 +301,7 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
             if (mapIndex > 0)
             {
                 canvas.SetActive(true);
-                RPC_UpdateCountdownUI("Carregando...");
+                RPC_UpdateCountdownUI("Loading...");
             }
         }
     }
@@ -323,7 +323,7 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
             if (scene > 0)
             {
                 canvas.SetActive(true);
-                RPC_UpdateCountdownUI("Carregando...");
+                RPC_UpdateCountdownUI("loading...");
             }
         }
     }
@@ -386,7 +386,7 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
             if (i > 0 && i <= 3)
                 RPC_UpdateCountdownUI(i.ToString());
             else if (i == 4)
-                RPC_UpdateCountdownUI("Vai!");
+                RPC_UpdateCountdownUI("Go!");
             else if (i == 5)
             {
                 RPC_UpdateCountdownUI("");

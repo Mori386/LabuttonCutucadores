@@ -46,6 +46,7 @@ public class HPBarHandler : MonoBehaviour
                         p1HPBar.username.text = playerData.username.ToString();
                         playerRefToPlayerHPBars.Add(playerData.playerRef, p1HPBar);
                         p1HPBar.hpBar.SetActive(true);
+                        StartCoroutine(ActivateWithDelay(canvasGroup, 4f));
                     }
                     else
                     {
@@ -68,10 +69,11 @@ public class HPBarHandler : MonoBehaviour
                         playerRefToPlayerHPBars.Add(playerData.playerRef, playerHPBar);
                         playerHPBar.hpBar.SetActive(true);
                         playersPlaced++;
+                        StartCoroutine(ActivateWithDelay(canvasGroup, 4f));
                     }
                 }
             }
-            rankingBackground.sizeDelta = new (358, (float)(40.874 + (playersPlaced * 100)));
+           // rankingBackground.sizeDelta = new (358, (float)(40.874 + (playersPlaced * 100)));
         }
     }
 
@@ -119,7 +121,16 @@ public class HPBarHandler : MonoBehaviour
     {
         canvasGroup.blocksRaycasts = false;
         canvasGroup.interactable = false;
+        canvasGroup.alpha = 0.0f;
     }
+
+    private IEnumerator ActivateWithDelay(CanvasGroup obj, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        obj.alpha = 1f;
+    }
+
+
 }
 [Serializable]
 public struct PlayerHPBar
