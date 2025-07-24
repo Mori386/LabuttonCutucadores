@@ -186,9 +186,9 @@ public class NetworkCharacterDrillController : NetworkTransform
         if (!isFalling)
         {
             isFalling = true;
-            ToggleCharacterInput(false);
+            RPC_ToggleCharacterInput(false);
             rb.velocity = Vector3.zero;
-            ToggleCharacterCollider(false);
+            RPC_ToggleCharacterCollider(false);
             StartCoroutine(FallIntoHole(holePosition));
         }
     }
@@ -217,13 +217,13 @@ public class NetworkCharacterDrillController : NetworkTransform
         Vector3 deltaPos = startPos - holePosition;
         deltaPos.y = 0;
         deltaPos.Normalize();
-        ToggleCharacterVisual(false);
+        RPC_ToggleCharacterVisual(false);
         yield return new WaitForSeconds(0.5f);
         transform.position = startPos + deltaPos * 10f;
         transform.LookAt(startPos + deltaPos * 11f);
-        ToggleCharacterVisual(true);
-        ToggleCharacterInput(true);
-        ToggleCharacterCollider(true);
+        RPC_ToggleCharacterVisual(true);
+        RPC_ToggleCharacterInput(true);
+        RPC_ToggleCharacterCollider(true);
 
         isFalling = false;
     }
@@ -234,9 +234,9 @@ public class NetworkCharacterDrillController : NetworkTransform
     public void Die()
     {
         visualHandler.OnDeath();
-        ToggleCharacterInput(false);
-        ToggleCharacterVisual(false);
-        ToggleCharacterCollider(false);
+        RPC_ToggleCharacterInput(false);
+        RPC_ToggleCharacterVisual(false);
+        RPC_ToggleCharacterCollider(false);
     }
 
     public void Respawn()
@@ -263,25 +263,34 @@ public class NetworkCharacterDrillController : NetworkTransform
             int mostSafeSpawnpoint = spawnpointSafeDistance.OrderBy(kvp => kvp.Value).Last().Key;
             transform.SetPositionAndRotation(GameManager.Instance.playerSpawnpoints[mostSafeSpawnpoint].position, GameManager.Instance.playerSpawnpoints[mostSafeSpawnpoint].rotation);
         }
-        ToggleCharacterInput(true);
-        ToggleCharacterCollider(true);
-        ToggleCharacterVisual(true);
+        StartCoroutine(ToggleCharacterDelay());
+    }
+
+    private IEnumerator ToggleCharacterDelay()
+    {
+        yield return new WaitForSeconds(.5f);
+        RPC_ToggleCharacterInput(true);
+        RPC_ToggleCharacterCollider(true);
+        RPC_ToggleCharacterVisual(true);
     }
     #endregion
 
     #region Toggles
-    public void ToggleCharacterInput(bool state)
+    [Rpc(RpcSources.All, RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = true)]
+    public void RPC_ToggleCharacterInput(bool state)
     {
         characterInputHandler.enabled = state;
     }
-    public void ToggleCharacterCollider(bool state)
+    [Rpc(RpcSources.All, RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = true)]
+    public void RPC_ToggleCharacterCollider(bool state)
     {
         for (int i = 0; i < playerColliders.Length; i++)
         {
             playerColliders[i].enabled = state;
         }
     }
-    public void ToggleCharacterVisual(bool state)
+    [Rpc(RpcSources.All, RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = true)]
+    public void RPC_ToggleCharacterVisual(bool state)
     {
         visual.gameObject.SetActive(state);
     }

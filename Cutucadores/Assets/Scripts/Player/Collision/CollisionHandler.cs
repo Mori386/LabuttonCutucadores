@@ -6,10 +6,12 @@ using UnityEngine;
 public class CollisionHandler : NetworkBehaviour
 {
     NetworkCharacterDrillController networkCharacterController;
-    private Collision attacker = null;
+    private HPHandler attacker = null;
+    private HPHandler thisHPHandler;
     private void Awake()
     {
         networkCharacterController = GetComponent<NetworkCharacterDrillController>();
+        thisHPHandler = transform.root.GetComponent<HPHandler>();
     }
     private void OnCollisionEnter(Collision collision)
     {
@@ -24,16 +26,17 @@ public class CollisionHandler : NetworkBehaviour
                         break;
                     case "Drill":
                         //Contact with other player body with this player drill
+                        HPHandler attackedHPHandler = collision.transform.root.GetComponent<HPHandler>();
                         if (Object.HasStateAuthority)
                         {
-                            if (!collision.transform.root.GetComponent<HPHandler>().hasShield && !collision.transform.root.GetComponent<HPHandler>().isInvulnerable) //se o shield do outro já estiver desativado, ganha ponto
+                            if (!attackedHPHandler.hasShield && !attackedHPHandler.isInvulnerable)
                             {
                                 Debug.Log("CollisionHandler - Aumentando pontuação");
-                                transform.root.GetComponent<HPHandler>().IncreaseScore(1);
+                                thisHPHandler.IncreaseScore(1);
                             }
                             else
-                                Debug.Log($"CollisionHandler - HasShield:{collision.transform.root.GetComponent<HPHandler>().hasShield}, IsInvulnerable:{collision.transform.root.GetComponent<HPHandler>().isInvulnerable}");
-                            StartFallChecker(collision);
+                                Debug.Log($"CollisionHandler - HasShield:{attackedHPHandler.hasShield}, IsInvulnerable:{attackedHPHandler.isInvulnerable}");
+                            StartFallChecker(attackedHPHandler);
                             networkCharacterController.Knockback(collision.GetContact(0).point, true);
                         }
                         //Se for o player que bateu aplica um shake de tela
@@ -41,6 +44,7 @@ public class CollisionHandler : NetworkBehaviour
                         {
                             GameManager.Instance.ShakeCamera(GameManager.Instance.onBodyHitCameraShakeAmplitude);
                         }
+                        attackedHPHandler.RPC_OnHitTaken();
                         break;
                 }
                 break;
@@ -50,7 +54,6 @@ public class CollisionHandler : NetworkBehaviour
                 {
                     case "Player":
                         //If other player drill hit this player body
-                        transform.root.GetComponent<HPHandler>().RPC_OnHitTaken();
                         GameManager.Instance.PlayOnBodyHitParticle(collision.GetContact(0).point);
                         break;
                     case "Drill":
@@ -58,7 +61,7 @@ public class CollisionHandler : NetworkBehaviour
                         if (Object.HasStateAuthority)
                         {                    
                             networkCharacterController.Knockback(collision.GetContact(0).point, true);
-                            StartFallChecker(collision);
+                            StartFallChecker(collision.transform.root.GetComponent<HPHandler>());
                         }
                         GameManager.Instance.PlayOnDrillHitParticle(collision.GetContact(0).point);
                         if (Object.HasInputAuthority)
@@ -80,23 +83,23 @@ public class CollisionHandler : NetworkBehaviour
         Debug.Log("Fall");
         if (attacker != null)
         {
-            attacker.transform.root.GetComponent<HPHandler>().IncreaseScore(1);
+            attacker.IncreaseScore(1);
             attacker = null;
         }
         else
         {
-            transform.root.GetComponent<HPHandler>().DecreaseScore(1);
+            thisHPHandler.DecreaseScore(1);
         }
     }
 
-    private void StartFallChecker(Collision attacker)
+    private void StartFallChecker(HPHandler attacker)
     {
         StopAllCoroutines();
         this.attacker = null;
         StartCoroutine(FallChecker(attacker));
     }
 
-    private IEnumerator FallChecker(Collision attacker)
+    private IEnumerator FallChecker(HPHandler attacker)
     {
         this.attacker = attacker;
         float count = 0;

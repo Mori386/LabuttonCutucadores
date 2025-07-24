@@ -43,8 +43,6 @@ public class HPHandler : NetworkBehaviour
 
     public IEnumerator CheckForInvulnerability()
     {
-        for (int i = 0; i < 4; i++)
-            yield return null;
         if (isInvulnerable)
         {
             Debug.Log($"HPHandler - IsInvulnerable:{isInvulnerable}");
@@ -85,10 +83,10 @@ public class HPHandler : NetworkBehaviour
         isInvulnerable = false;
     }
 
-    public bool ChangeShieldState(bool shieldState)
+    public void ChangeShieldState(bool shieldState)
     {
         if (hasShield == shieldState)
-            return false;
+            return;
         if (shieldState)
         {
             //colocar aqui efeito de ganhar/recuperar shield
@@ -98,7 +96,6 @@ public class HPHandler : NetworkBehaviour
             //colocar aqui implementação do efeito de perder shield
         }
         hasShield = shieldState;
-        return true;
     }
 
     public void IncreaseScore(byte amount)
