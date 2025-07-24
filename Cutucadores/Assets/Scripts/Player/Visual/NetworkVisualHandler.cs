@@ -33,7 +33,6 @@ public class NetworkVisualHandler : NetworkBehaviour
     }
     public void OnDeath()
     {
-        HideOrShowVisual(false);
         explosionHandler.Explode();
     }
     public override void Spawned()
@@ -43,7 +42,7 @@ public class NetworkVisualHandler : NetworkBehaviour
             RPC_RequestLoadVisual(NetworkBetweenScenesManager.Instance.selfUserID);
         StartCoroutine(RotateDrillCoroutine());
     }
-    [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
+    [Rpc(RpcSources.InputAuthority, RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = true)]
     void RPC_RequestLoadVisual(string userID,RpcInfo info = default)
     {
         LoadCharacterVisual(userID);
@@ -59,10 +58,6 @@ public class NetworkVisualHandler : NetworkBehaviour
         animator.enabled = true;
         animator.Rebind();
 
-    }
-    public void HideOrShowVisual(bool active)
-    {
-        playerVisual.SetActive(active);
     }
     public void RotateWheel(float direction)
     {

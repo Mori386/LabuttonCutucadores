@@ -32,27 +32,57 @@ public class HPHandler : NetworkBehaviour
         HPBarHandler.Instance.LoadPlayerInfos();
         ChangeShieldState(true);
         Kills = 0;
-        UpdateRankingUI();
+        RPC_UpdateRankingUI();
     }
 
     [Rpc(RpcSources.All, RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = true)]
     public void RPC_OnHitTaken()
     {
+        StartCoroutine(CheckForInvulnerability());
+    }
+
+    public IEnumerator CheckForInvulnerability()
+    {
+        for (int i = 0; i < 4; i++)
+            yield return null;
         if (isInvulnerable)
         {
-            Debug.LogError($"HPHandler - IsInvulnerable:{isInvulnerable}");
-            return;
+            Debug.Log($"HPHandler - IsInvulnerable:{isInvulnerable}");
+            yield break;
         }
+        bool died = false;
         if (hasShield)
         {
-            Debug.LogError($"HPHandler - HasShield:{hasShield}, deactivating shield");
+            Debug.Log($"HPHandler - HasShield:{hasShield}, deactivating shield");
             ChangeShieldState(false);
-            StartCoroutine(CheckForInvulnerability(false));
-            return;
         }
-        Debug.LogError($"HPHandler - Taking damage");
-        drillController.Die();
-        StartCoroutine(CheckForInvulnerability(true));
+        else
+        {
+            died = true;
+            Debug.Log($"HPHandler - Taking damage");
+            drillController.Die();
+        }
+        isInvulnerable = true;
+        Debug.Log($"HPHandler - Starting InvulnerabilityTimer");
+        InvulnerabilityTimer = TickTimer.CreateFromSeconds(Runner, died ? 2.5f : .5f);
+        if (died)
+        {
+            killsText.gameObject.SetActive(false);
+            while (InvulnerabilityTimer.RemainingTime(Runner) >= .5f)
+            {
+                yield return null;
+            }
+            drillController.Respawn();
+            killsText.gameObject.SetActive(true);
+            ChangeShieldState(true);
+        }
+        //Cria um timer na rede para check de tempo de invulnerabilidade
+        while (!InvulnerabilityTimer.Expired(Runner))
+        {
+            yield return null;
+        }
+        InvulnerabilityTimer = TickTimer.None;
+        isInvulnerable = false;
     }
 
     public bool ChangeShieldState(bool shieldState)
@@ -71,39 +101,6 @@ public class HPHandler : NetworkBehaviour
         return true;
     }
 
-    public IEnumerator CheckForInvulnerability(bool died)
-    {
-        isInvulnerable = true;
-        Debug.LogError($"HPHandler - Starting InvulnerabilityTimer");
-        InvulnerabilityTimer = TickTimer.CreateFromSeconds(Runner, died ? 2.5f : .5f);
-        if (died)
-        {
-            ManageColliders(false);
-            killsText.gameObject.SetActive(false);
-            while (InvulnerabilityTimer.RemainingTime(Runner) >= .5f)
-            {
-                yield return null;
-            }
-            drillController.Respawn();
-            ManageColliders(true);
-            killsText.gameObject.SetActive(true);
-            ChangeShieldState(true);
-        }
-        //Cria um timer na rede para check de tempo de invulnerabilidade
-        while (!InvulnerabilityTimer.Expired(Runner))
-        {
-            yield return null;
-        }
-        InvulnerabilityTimer = TickTimer.None;
-        isInvulnerable = false;
-    }
-
-    public void ManageColliders(bool active)
-    {
-        foreach (var collider in colliders) 
-            collider.SetActive(active);
-    }
-
     public void IncreaseScore(byte amount)
     {
         Kills += amount;
@@ -115,14 +112,15 @@ public class HPHandler : NetworkBehaviour
             Kills -= amount;
     }
 
-    public void UpdateRankingUI()
+    [Rpc(RpcSources.All, RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = true)]
+    public void RPC_UpdateRankingUI()
     {
         HPBarHandler.Instance.UpdateScore(Object.InputAuthority, Kills);
         killsText.text = Kills.ToString();
     }
     static void OnScoreChanged(Changed<HPHandler> changed)
     {
-        changed.Behaviour.UpdateRankingUI();
+        changed.Behaviour.RPC_UpdateRankingUI();
     }
     public void OnHPLower()
     {

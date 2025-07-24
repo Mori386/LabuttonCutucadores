@@ -28,13 +28,13 @@ public class CollisionHandler : NetworkBehaviour
                         {
                             if (!collision.transform.root.GetComponent<HPHandler>().hasShield && !collision.transform.root.GetComponent<HPHandler>().isInvulnerable) //se o shield do outro já estiver desativado, ganha ponto
                             {
-                                Debug.LogError("CollisionHandler - Aumentando pontuação");
+                                Debug.Log("CollisionHandler - Aumentando pontuação");
                                 transform.root.GetComponent<HPHandler>().IncreaseScore(1);
                             }
                             else
-                                Debug.LogError($"CollisionHandler - HasShield:{collision.transform.root.GetComponent<HPHandler>().hasShield}, IsInvulnerable:{collision.transform.root.GetComponent<HPHandler>().isInvulnerable}");
-                            networkCharacterController.Knockback(collision.GetContact(0).point, true);
+                                Debug.Log($"CollisionHandler - HasShield:{collision.transform.root.GetComponent<HPHandler>().hasShield}, IsInvulnerable:{collision.transform.root.GetComponent<HPHandler>().isInvulnerable}");
                             StartFallChecker(collision);
+                            networkCharacterController.Knockback(collision.GetContact(0).point, true);
                         }
                         //Se for o player que bateu aplica um shake de tela
                         if (Object.HasInputAuthority)
