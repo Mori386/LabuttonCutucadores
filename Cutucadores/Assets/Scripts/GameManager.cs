@@ -56,29 +56,12 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
             count++;
         }
         Debug.Log("Spawned GameManager");
-        StartCoroutine(WaitToLoadPlayerInfo(NetworkBetweenScenesManager.Instance.selfUserID));
     }
     void IAfterSpawned.AfterSpawned()
     {
         Debug.Log("AfterSpawned GameManager");
     }
 
-    private IEnumerator WaitToLoadPlayerInfo(string playerId)
-    {
-        yield return new WaitForSeconds(.5f);
-        RPC_LoadPlayerInfo(playerId);
-    }
-
-    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    public void RPC_LoadPlayerInfo(string playerId)
-    {
-        if (NetworkBetweenScenesManager.Instance.userIDToPlayerData.TryGet(playerId, out PlayerData myPlayerData))
-        {
-            if (myPlayerData.loaded) return;
-            Debug.Log($"Loading player {myPlayerData.username} info...");
-            NetworkBetweenScenesManager.Instance.SetPlayerLoaded(playerId);
-        }
-    }
     #region Play Audios
     public virtual void PlayDrillHitAudio(Vector3 position)
     {

@@ -49,7 +49,7 @@ public class PauseUI : MonoBehaviour
     [Rpc(RpcSources.StateAuthority, RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = true)]
     public void RPC_ReturnToCharacterSelection()
     {
-        NetworkBetweenScenesManager.Instance.PostGameReset(true);
+        NetworkBetweenScenesManager.Instance.RPC_PostGameReset(true);
         NetworkBetweenScenesManager.Instance.LoadSceneToHost(0);
     }
 

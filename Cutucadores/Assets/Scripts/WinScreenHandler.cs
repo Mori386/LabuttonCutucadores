@@ -256,14 +256,14 @@ public class WinScreenHandler : NetworkBehaviour
     [Rpc(RpcSources.StateAuthority, RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = true)]
     public void RPC_ReplayMatch()
     {
-        NetworkBetweenScenesManager.Instance.PostGameReset(false);
+        NetworkBetweenScenesManager.Instance.RPC_PostGameReset(false);
         NetworkBetweenScenesManager.Instance.LoadSceneToHost(SceneManager.GetActiveScene().buildIndex);
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = true)]
     public void RPC_ReturnToCharacterSelection()
     {
-        NetworkBetweenScenesManager.Instance.PostGameReset(true);
+        NetworkBetweenScenesManager.Instance.RPC_PostGameReset(true);
         NetworkBetweenScenesManager.Instance.LoadSceneToHost(0);
     }
 

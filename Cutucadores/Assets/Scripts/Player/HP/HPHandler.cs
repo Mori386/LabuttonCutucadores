@@ -10,7 +10,7 @@ public class HPHandler : NetworkBehaviour
     [Networked(OnChanged = nameof(OnScoreChanged))]
     byte Kills { get; set; }
 
-    public bool HasShield { get; set; }
+    public bool hasShield;
 
     public TextMeshPro killsText;
 
@@ -19,7 +19,7 @@ public class HPHandler : NetworkBehaviour
 
     [SerializeField] private GameObject[] colliders;
 
-    public bool IsInvulnerable { get; set; }
+    public bool isInvulnerable;
     [Networked] public TickTimer InvulnerabilityTimer { get; set; }
     private void Awake()
     {
@@ -38,21 +38,26 @@ public class HPHandler : NetworkBehaviour
     [Rpc(RpcSources.All, RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = true)]
     public void RPC_OnHitTaken()
     {
-        if (IsInvulnerable)
-            return;
-        if (HasShield)
+        if (isInvulnerable)
         {
+            Debug.LogError($"HPHandler - IsInvulnerable:{isInvulnerable}");
+            return;
+        }
+        if (hasShield)
+        {
+            Debug.LogError($"HPHandler - HasShield:{hasShield}, deactivating shield");
             ChangeShieldState(false);
             StartCoroutine(CheckForInvulnerability(false));
             return;
         }
+        Debug.LogError($"HPHandler - Taking damage");
         drillController.Die();
         StartCoroutine(CheckForInvulnerability(true));
     }
 
     public bool ChangeShieldState(bool shieldState)
     {
-        if (HasShield == shieldState)
+        if (hasShield == shieldState)
             return false;
         if (shieldState)
         {
@@ -62,14 +67,15 @@ public class HPHandler : NetworkBehaviour
         {
             //colocar aqui implementação do efeito de perder shield
         }
-        HasShield = shieldState;
+        hasShield = shieldState;
         return true;
     }
 
     public IEnumerator CheckForInvulnerability(bool died)
     {
-        IsInvulnerable = true;
-        InvulnerabilityTimer = TickTimer.CreateFromSeconds(Runner, died ? 1.5f : .5f);
+        isInvulnerable = true;
+        Debug.LogError($"HPHandler - Starting InvulnerabilityTimer");
+        InvulnerabilityTimer = TickTimer.CreateFromSeconds(Runner, died ? 2.5f : .5f);
         if (died)
         {
             ManageColliders(false);
@@ -89,7 +95,7 @@ public class HPHandler : NetworkBehaviour
             yield return null;
         }
         InvulnerabilityTimer = TickTimer.None;
-        IsInvulnerable = false;
+        isInvulnerable = false;
     }
 
     public void ManageColliders(bool active)

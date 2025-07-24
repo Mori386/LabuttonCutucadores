@@ -1,6 +1,7 @@
 using Fusion;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -47,7 +48,9 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
         base.Despawned(runner, hasState);
         spawned = false;
     }
-    public void PostGameReset(bool deselectCharacters)
+
+    [Rpc(RpcSources.All, RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = true)]
+    public void RPC_PostGameReset(bool deselectCharacters)
     {
         isInGameplay = false;
         GameManagerSpawned = false;
@@ -294,7 +297,7 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
         {
             NetworkRunnerHandler.Instance.ManageRoomVisibility(mapIndex > 0 ? 0 : 1);
             var sceneManager = Runner.SceneManager as NetworkSceneManagerDefault;
-            sceneManager.LoadSceneAsync(mapIndex, new LoadSceneParameters(LoadSceneMode.Single), (_) => RPC_LoadSceneToClients(mapIndex));
+            sceneManager.LoadSceneAsync(mapIndex, new LoadSceneParameters(LoadSceneMode.Single), (_) => SetHostLoaded(mapIndex));
             if (mapIndex > 0)
             {
                 canvas.SetActive(true);
@@ -303,13 +306,20 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
         }
     }
 
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = false)]
+    private void SetHostLoaded(int mapIndex)
+    {
+        if (mapIndex > 0)
+            RPC_SetPlayerLoaded(selfUserID);
+        RPC_LoadSceneToClients(mapIndex);
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = true)]
     private void RPC_LoadSceneToClients(SceneRef scene)
     {
         if (!Runner.IsServer)
         {
             var sceneManager = Runner.SceneManager as NetworkSceneManagerDefault;
-            sceneManager.LoadSceneAsync(scene, new LoadSceneParameters(LoadSceneMode.Single), null);
+            sceneManager.LoadSceneAsync(scene, new LoadSceneParameters(LoadSceneMode.Single), (_) => StartCoroutine(CheckIfHostIsLoaded(selfUserID, scene)));
             if (scene > 0)
             {
                 canvas.SetActive(true);
@@ -317,8 +327,22 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
             }
         }
     }
-    
-    public void SetPlayerLoaded(string userID)
+
+    private IEnumerator CheckIfHostIsLoaded(string userID, int mapIndex)
+    {
+        if (mapIndex > 0)
+        {
+            while (userIDToPlayerData.Where(kvp => kvp.Value.loaded).Count() <= 0)
+            {
+                Debug.LogError("Waiting for host to fully load");
+                yield return null;
+            }
+            RPC_SetPlayerLoaded(userID);
+        }
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = true)]
+    public void RPC_SetPlayerLoaded(string userID)
     {
         if (!Runner.IsServer || PlayersGOSpawned) return;
         if (userIDToPlayerData.TryGet(userID, out PlayerData myPlayerData))
