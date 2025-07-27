@@ -29,22 +29,16 @@ public class CollisionHandler : NetworkBehaviour
                         HPHandler attackedHPHandler = collision.transform.root.GetComponent<HPHandler>();
                         if (Object.HasStateAuthority)
                         {
-                            if (!attackedHPHandler.hasShield && !attackedHPHandler.isInvulnerable)
-                            {
-                                Debug.Log("CollisionHandler - Aumentando pontuação");
-                                thisHPHandler.IncreaseScore(1);
-                            }
-                            else
-                                Debug.Log($"CollisionHandler - HasShield:{attackedHPHandler.hasShield}, IsInvulnerable:{attackedHPHandler.isInvulnerable}");
-                            StartFallChecker(attackedHPHandler);
+                            //Debug.Log("Host detectou um ataque");
                             networkCharacterController.Knockback(collision.GetContact(0).point, true);
                         }
+                        StartFallChecker(attackedHPHandler);
+                        attackedHPHandler.RPC_OnHitTaken(thisHPHandler);
                         //Se for o player que bateu aplica um shake de tela
                         if (Object.HasInputAuthority)
                         {
                             GameManager.Instance.ShakeCamera(GameManager.Instance.onBodyHitCameraShakeAmplitude);
                         }
-                        attackedHPHandler.RPC_OnHitTaken();
                         break;
                 }
                 break;

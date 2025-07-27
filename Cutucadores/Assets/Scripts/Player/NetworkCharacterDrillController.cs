@@ -268,7 +268,7 @@ public class NetworkCharacterDrillController : NetworkTransform
 
     private IEnumerator ToggleCharacterDelay()
     {
-        yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(1f);
         RPC_ToggleCharacterInput(true);
         RPC_ToggleCharacterCollider(true);
         RPC_ToggleCharacterVisual(true);

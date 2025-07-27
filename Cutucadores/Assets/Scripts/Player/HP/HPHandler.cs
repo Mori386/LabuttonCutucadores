@@ -36,12 +36,12 @@ public class HPHandler : NetworkBehaviour
     }
 
     [Rpc(RpcSources.All, RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = true)]
-    public void RPC_OnHitTaken()
+    public void RPC_OnHitTaken(HPHandler attacker)
     {
-        StartCoroutine(CheckForInvulnerability());
+        StartCoroutine(CheckForInvulnerability(attacker));
     }
 
-    public IEnumerator CheckForInvulnerability()
+    public IEnumerator CheckForInvulnerability(HPHandler attacker)
     {
         if (isInvulnerable)
         {
@@ -58,6 +58,7 @@ public class HPHandler : NetworkBehaviour
         {
             died = true;
             Debug.Log($"HPHandler - Taking damage");
+            attacker.IncreaseScore(1);
             drillController.Die();
         }
         isInvulnerable = true;
