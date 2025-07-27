@@ -29,7 +29,6 @@ public class CollisionHandler : NetworkBehaviour
                         HPHandler attackedHPHandler = collision.transform.root.GetComponent<HPHandler>();
                         if (Object.HasStateAuthority)
                         {
-                            //Debug.Log("Host detectou um ataque");
                             networkCharacterController.Knockback(collision.GetContact(0).point, true);
                         }
                         StartFallChecker(attackedHPHandler);
@@ -55,7 +54,6 @@ public class CollisionHandler : NetworkBehaviour
                         if (Object.HasStateAuthority)
                         {                    
                             networkCharacterController.Knockback(collision.GetContact(0).point, true);
-                            StartFallChecker(collision.transform.root.GetComponent<HPHandler>());
                         }
                         GameManager.Instance.PlayOnDrillHitParticle(collision.GetContact(0).point);
                         if (Object.HasInputAuthority)
@@ -86,7 +84,7 @@ public class CollisionHandler : NetworkBehaviour
         }
     }
 
-    private void StartFallChecker(HPHandler attacker)
+    public void StartFallChecker(HPHandler attacker)
     {
         StopAllCoroutines();
         this.attacker = null;

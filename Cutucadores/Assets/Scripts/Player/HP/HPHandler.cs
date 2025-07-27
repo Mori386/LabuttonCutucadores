@@ -43,6 +43,8 @@ public class HPHandler : NetworkBehaviour
 
     public IEnumerator CheckForInvulnerability(HPHandler attacker)
     {
+        transform.root.GetComponent<CollisionHandler>().StartFallChecker(attacker);
+        attacker.transform.root.GetComponent<CollisionHandler>().StartFallChecker(transform.root.GetComponent<HPHandler>());
         if (isInvulnerable)
         {
             Debug.Log($"HPHandler - IsInvulnerable:{isInvulnerable}");
