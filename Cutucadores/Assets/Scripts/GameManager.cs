@@ -19,8 +19,12 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
     public AudioSource onHitAudioSource;
     public AudioClip[] onHitPlayerAudios;
     private int lastPlayedAudio = -1;
-    public int killTarget = 10;
+    //public int killTarget = 10;
     public float safeZoneSize = 90;
+
+    [SerializeField] private float matchDuration = 60f;
+    public float matchTimer;
+    public bool matchEnded = false;
 
     public AudioSource gameplayMusic;
 
@@ -43,6 +47,18 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
     private void Start()
     {
         Debug.Log("Started GameManager");
+        matchTimer = Time.timeSinceLevelLoad + 60f;
+
+    }
+
+    public override void FixedUpdateNetwork()
+    {
+        if (!matchEnded && Time.timeSinceLevelLoad >= matchTimer)
+        {
+            matchEnded = true;
+            Debug.Log("Match Ended by Time");
+            RPC_CheckForEndOfMatch(); // ou seu método para encerrar a partida
+        }
     }
     public override void Spawned()
     {
@@ -56,6 +72,12 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
             count++;
         }
         Debug.Log("Spawned GameManager");
+
+        if (Runner.IsServer)
+        {
+            matchTimer = matchDuration;
+            matchEnded = false;
+        }
     }
     void IAfterSpawned.AfterSpawned()
     {
@@ -116,53 +138,71 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
 
     [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
     public void RPC_CheckForEndOfMatch()
+
     {
-        if(Runner.ActivePlayers.Count() <= 1)
+        if (Runner.ActivePlayers.Count() <= 1)
         {
-            DefineWinner(1, Runner.ActivePlayers.First());
+            RPC_AnnounceWinner(Runner.ActivePlayers.First());
             return;
         }
-        int playersWithTargetedKills = 0;
-        NetworkObject playerAlive = null;
-        foreach (KeyValuePair<NetworkString<_256>, PlayerData> pair in NetworkBetweenScenesManager.Instance.userIDToPlayerData)
+
+        /*  if(Runner.ActivePlayers.Count() <= 1)
+          {
+              DefineWinner(1, Runner.ActivePlayers.First());
+              return;
+          }
+          int playersWithTargetedKills = 0;
+          NetworkObject playerAlive = null;
+          foreach (KeyValuePair<NetworkString<_256>, PlayerData> pair in NetworkBetweenScenesManager.Instance.userIDToPlayerData)
+          {
+              if (HPBarHandler.Instance.playerRefToPlayerHPBars.TryGetValue(pair.Value.playerRef, out PlayerHPBar player) && Convert.ToInt32(player.kills.text) >= killTarget)
+              {
+                  Debug.Log($"{pair.Value.username} {pair.Value.playerRef} is elegible to win, searching for their networkObject.");
+                  if (Runner.TryGetPlayerObject(pair.Value.playerRef, out playerAlive))
+                  {
+                      playersWithTargetedKills++;
+                      Debug.Log($"Found network object: {playerAlive.Runner.UserId}");
+                  }
+                  else
+                  {
+                      Debug.Log($"Could not find network object.");
+                  }
+              }
+          }*/
+        var sortedPlayers = HPBarHandler.Instance.playerRefToPlayerHPBars
+      .OrderByDescending(pair => Convert.ToInt16(pair.Value.kills))
+      .ToList();
+
+        if (sortedPlayers.Count > 0)
         {
-            if (HPBarHandler.Instance.playerRefToPlayerHPBars.TryGetValue(pair.Value.playerRef, out PlayerHPBar player) && Convert.ToInt32(player.kills.text) >= killTarget)
-            {
-                Debug.Log($"{pair.Value.username} {pair.Value.playerRef} is elegible to win, searching for their networkObject.");
-                if (Runner.TryGetPlayerObject(pair.Value.playerRef, out playerAlive))
-                {
-                    playersWithTargetedKills++;
-                    Debug.Log($"Found network object: {playerAlive.Runner.UserId}");
-                }
-                else
-                {
-                    Debug.Log($"Could not find network object.");
-                }
-            }
+            PlayerRef winnerRef = HPBarHandler.Instance.GetPlayerWithMostKills();
+            RPC_AnnounceWinner(winnerRef);
         }
-        Debug.Log($"{playersWithTargetedKills} players with {killTarget} kills or more.");
-        //Define winner based on players alive
-        if (playersWithTargetedKills <= 1)
-        {
-            PlayerRef playerRef;
-            if (playersWithTargetedKills > 0)
-            {
-                playerRef = playerAlive.InputAuthority;
-                Debug.Log($"Winner: {playerAlive.InputAuthority}");
-            }
-            else
-            {
-                playerRef = PlayerRef.None;
-                Debug.Log($"Players eligible: {playersWithTargetedKills}");
-            }
-            playerAlive.RemoveInputAuthority();
-            DefineWinner(playersWithTargetedKills,playerRef);
-        }
+
+        /* Debug.Log($"{playersWithTargetedKills} players with {killTarget} kills or more.");
+         //Define winner based on players alive
+         if (playersWithTargetedKills <= 1)
+         {
+             PlayerRef playerRef;
+             if (playersWithTargetedKills > 0)
+             {
+                 playerRef = playerAlive.InputAuthority;
+                 Debug.Log($"Winner: {playerAlive.InputAuthority}");
+             }
+             else
+             {
+                 playerRef = PlayerRef.None;
+                 Debug.Log($"Players eligible: {playersWithTargetedKills}");
+             }
+             playerAlive.RemoveInputAuthority();
+             DefineWinner(playersWithTargetedKills,playerRef);
+         }*/
+
     }
     #endregion
 
     #region Define Winner
-    public void DefineWinner(int totalPlayersAlive,PlayerRef playerAlive)
+   /* public void DefineWinner(int totalPlayersAlive,PlayerRef playerAlive)
     {
         if (totalPlayersAlive <= 0)
         {
@@ -188,6 +228,35 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
             }
             WinScreenHandler.Instance.RPC_StartWinScreen(playerName+" Venceu!!!");
         }
+    }*/
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    public void RPC_AnnounceWinner(PlayerRef winner)
+    {
+        string playerName = "Unfound";
+
+        // winner
+        foreach (var pair in NetworkBetweenScenesManager.Instance.userIDToPlayerData)
+        {
+            if (pair.Value.playerRef == winner)
+            {
+                playerName = pair.Value.username.ToString();
+                WinScreenHandler.Instance.RPC_DefineWinner(pair.Value.character);
+                break;
+            }
+        }
+
+        // loser
+        foreach (var pair in NetworkBetweenScenesManager.Instance.userIDToPlayerData)
+        {
+            if (pair.Value.playerRef != winner)
+            {
+                WinScreenHandler.Instance.RPC_DefineLoser(pair.Value.character);
+            }
+        }
+
+        WinScreenHandler.Instance.RPC_StartWinScreen($"{playerName}");
+        HPBarHandler.Instance.ManageUIToEndGame();
     }
+
     #endregion
 }

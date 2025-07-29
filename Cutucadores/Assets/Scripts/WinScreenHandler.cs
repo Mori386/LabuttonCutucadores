@@ -18,6 +18,7 @@ public class WinScreenHandler : NetworkBehaviour
     [SerializeField] private Animator mineradorAnim, escavadoraAnim, paiAnim, filhaAnim, vovoAnim;
     //Ui Components
     [SerializeField] private GameObject winScreenParent;
+    [SerializeField] private GameObject CanvasWin;
     [SerializeField] private CanvasGroup fadeInEffect;
     [SerializeField] private TextMeshProUGUI winnerText;
     [SerializeField] private CanvasGroup winnerTextCanvasGroup;
@@ -88,7 +89,7 @@ public class WinScreenHandler : NetworkBehaviour
                 vovoWin = -1;
                 break;
         }
-        GetCharacterLight(character).colorTemperature = loserLightTemperature;
+        //GetCharacterLight(character).colorTemperature = loserLightTemperature;
     }
     #endregion
 
@@ -114,25 +115,42 @@ public class WinScreenHandler : NetworkBehaviour
         if (mineradorWin == 0)
         {
             mineradorAnim.gameObject.SetActive(false);
-            mineradorLight.gameObject.SetActive(false);
+            //mineradorLight.gameObject.SetActive(false);
         }
         if (escavadoraWin == 0)
         {
             escavadoraAnim.gameObject.SetActive(false);
-            escavadoraLight.gameObject.SetActive(false);
+            //escavadoraLight.gameObject.SetActive(false);
         }
         if (paiEFilhaWin == 0)
         {
             paiAnim.gameObject.SetActive(false);
             filhaAnim.gameObject.SetActive(false);
 
-            paiEFilhaLight.gameObject.SetActive(false);
+            //paiEFilhaLight.gameObject.SetActive(false);
         }
         if (vovoWin == 0)
         {
             vovoAnim.gameObject.SetActive(false);
-            vovoLight.gameObject.SetActive(false);
+            //vovoLight.gameObject.SetActive(false);
         }
+
+    }
+
+    public void MostrarSomenteVencedor()
+    {
+        // Minerador
+        mineradorAnim.gameObject.SetActive(mineradorWin == 1);
+
+        // Escavadora
+        escavadoraAnim.gameObject.SetActive(escavadoraWin == 1);
+
+        // Pai e Filha
+        paiAnim.gameObject.SetActive(paiEFilhaWin == 1);
+        filhaAnim.gameObject.SetActive(paiEFilhaWin == 1);
+
+        // Vovô
+        vovoAnim.gameObject.SetActive(vovoWin == 1);
     }
     #endregion
 
@@ -217,8 +235,9 @@ public class WinScreenHandler : NetworkBehaviour
         winnerTextCanvasGroup.alpha = 1;
         winnerText.text = textToApper;
         music.Play();
-        EnableCharacter();
+        MostrarSomenteVencedor();
         winScreenParent.SetActive(true);
+        CanvasWin.SetActive(true);
         mainCamera.gameObject.SetActive(false);
 
         //Fade out timer
@@ -233,7 +252,7 @@ public class WinScreenHandler : NetworkBehaviour
 
         //Play animations wait and fade out
         PlayCharacterAnimations();
-        yield return new WaitForSeconds(4f);
+       /* yield return new WaitForSeconds(4f);
         timer = 0f;
         duration = 1f;
         while (timer < duration)
@@ -242,7 +261,7 @@ public class WinScreenHandler : NetworkBehaviour
             timer += Time.deltaTime;
             yield return null;
         }
-        fadeInEffect.alpha = 1f;
+        fadeInEffect.alpha = 1f;*/
 
         if (shouldGoToCharacterSelection)
             RPC_ReturnToCharacterSelection();
@@ -258,6 +277,8 @@ public class WinScreenHandler : NetworkBehaviour
     {
         NetworkBetweenScenesManager.Instance.RPC_PostGameReset(false);
         NetworkBetweenScenesManager.Instance.LoadSceneToHost(SceneManager.GetActiveScene().buildIndex);
+        winScreenParent.SetActive(false);
+        CanvasWin.SetActive(false);
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = true)]
@@ -265,6 +286,8 @@ public class WinScreenHandler : NetworkBehaviour
     {
         NetworkBetweenScenesManager.Instance.RPC_PostGameReset(true);
         NetworkBetweenScenesManager.Instance.LoadSceneToHost(0);
+        winScreenParent.SetActive(false);
+        CanvasWin.SetActive(false);
     }
 
     public void ShouldGoToCharacterSelection()

@@ -5203,7 +5203,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManagerPrefab: {fileID: 1096194526856973586, guid: 49d3033f38780004592a616a8996d9e9, type: 3}
-  winScreenPrefab: {fileID: 3965428639880604715, guid: c5a69bba0c11e1d45b0ebdd9be13ab8c, type: 3}
+  winScreenPrefab: {fileID: 1593153412845937055, guid: 41db5a12329b55d478915f5f7851b982, type: 3}
   boostsArray:
   - {fileID: 3803423641763957521, guid: ce452eadc266506448f0906dc43180fe, type: 3}
   - {fileID: 9165671791620544802, guid: c5e28b9950742184c8db777fc4753457, type: 3}
@@ -18548,6 +18548,10 @@ PrefabInstance:
     - target: {fileID: 9204315150059028815, guid: 2538fb0a6ea8b2447bcbed259c14087f, type: 3}
       propertyPath: m_Name
       value: VidaPlayerCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 9204315150059028815, guid: 2538fb0a6ea8b2447bcbed259c14087f, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2538fb0a6ea8b2447bcbed259c14087f, type: 3}

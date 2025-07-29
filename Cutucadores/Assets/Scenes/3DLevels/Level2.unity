@@ -25127,7 +25127,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManagerPrefab: {fileID: 1096194526856973586, guid: 49d3033f38780004592a616a8996d9e9, type: 3}
-  winScreenPrefab: {fileID: 3965428639880604715, guid: c5a69bba0c11e1d45b0ebdd9be13ab8c, type: 3}
+  winScreenPrefab: {fileID: 1593153412845937055, guid: 41db5a12329b55d478915f5f7851b982, type: 3}
   boostsArray:
   - {fileID: 2753417260860695602, guid: e638bf7c75bc70a4ca5674e9ea59888f, type: 3}
 --- !u!4 &1575171903
