@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
 using TMPro;
+using UnityEngine.VFX;
 
 public class HPHandler : NetworkBehaviour
 {
@@ -11,6 +12,9 @@ public class HPHandler : NetworkBehaviour
     byte Kills { get; set; }
 
     public bool hasShield;
+    //public GameObject shieldVisual;
+    public ParticleSystem shieldVisualEffect;
+    //public ParticleSystem nudgeVisualEffect;
 
     public TextMeshPro killsText;
 
@@ -61,6 +65,7 @@ public class HPHandler : NetworkBehaviour
             died = true;
             Debug.Log($"HPHandler - Taking damage");
             attacker.IncreaseScore(1);
+            //nudgeVisualEffect.Play();
             drillController.Die();
         }
         isInvulnerable = true;
@@ -93,10 +98,13 @@ public class HPHandler : NetworkBehaviour
         if (shieldState)
         {
             //colocar aqui efeito de ganhar/recuperar shield
+            //shieldVisual.SetActive(true);
         }
         else
         {
             //colocar aqui implementação do efeito de perder shield
+            //shieldVisual.SetActive(false);
+            shieldVisualEffect.Play();
         }
         hasShield = shieldState;
     }
