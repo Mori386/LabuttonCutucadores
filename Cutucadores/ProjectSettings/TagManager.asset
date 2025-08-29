@@ -8,6 +8,8 @@ TagManager:
   - Fall
   - Speed
   - Spawnpoint
+  - TunnelBarricade
+  - TunnelEntrance
   layers:
   - Default
   - TransparentFX

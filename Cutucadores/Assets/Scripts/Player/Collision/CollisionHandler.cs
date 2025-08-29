@@ -67,6 +67,25 @@ public class CollisionHandler : NetworkBehaviour
                 break;
             case "Fall":
                 break;
+            case "TunnelBarricade":
+                if (selfCollider.CompareTag("Drill"))
+                    collision.gameObject.SetActive(false);
+                    if (Object.HasStateAuthority)
+                    {                    
+                        networkCharacterController.Knockback(collision.GetContact(0).point, true);
+                    }
+                    GameManager.Instance.PlayOnDrillHitParticle(collision.GetContact(0).point);
+                    if (Object.HasInputAuthority)
+                    {
+                        GameManager.Instance.ShakeCamera(GameManager.Instance.onDrillHitCameraShakeAmplitude);
+                    }
+                break;
+            case "TunnelEntrance":
+                if (Object.HasStateAuthority)
+                {
+                    networkCharacterController.EnterTunnel(collision.transform, collision.gameObject.GetComponent<TunnelHandler>().destination);
+                }
+                break;
         }
     }
 

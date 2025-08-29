@@ -34,7 +34,7 @@ public class NetworkCharacterDrillController : NetworkTransform
     [HideInInspector] public HPHandler hpHandler;
     [HideInInspector] public NetworkVisualHandler visualHandler;
     [HideInInspector] public AudioPlayerHandler audioHandler;
-
+    [SerializeField] private bool readyToEnterTunnel = true;
     [HideInInspector] public Collider[] playerColliders;
     [SerializeField] private List<Transform> otherPlayersTransforms = new();
     protected override void Awake()
@@ -227,7 +227,52 @@ public class NetworkCharacterDrillController : NetworkTransform
 
         isFalling = false;
     }
+    #endregion
 
+    #region Enter tunnel
+    public void EnterTunnel(Transform entrance, Transform destination)
+    {
+        if (!readyToEnterTunnel)
+            return;
+        readyToEnterTunnel = false;
+        RPC_ToggleCharacterInput(false);
+        rb.velocity = Vector3.zero;
+        RPC_ToggleCharacterCollider(false);
+        transform.SetLocalPositionAndRotation(new(entrance.position.x, 0, entrance.position.z), entrance.rotation);
+        StartCoroutine(NavigateTunnel(destination));
+    }
+
+    private IEnumerator NavigateTunnel(Transform destination)
+    {
+        Vector3 destinationPosition = new(destination.position.x, 0, destination.position.z);
+        transform.LookAt(destinationPosition);
+        while (true)
+        {
+            Vector3 moveForce = transform.forward * (50 * characterData.maxSpeed * Runner.DeltaTime * activeSpeedMultiplier)/2;
+            rb.AddForce(moveForce, ForceMode.Acceleration);
+            if (Vector3.Distance(transform.position, destinationPosition) < 0.5f)
+                break;
+            yield return new WaitForFixedUpdate();
+        }
+        RPC_DeactivateBarricade();
+        RPC_ToggleCharacterInput(true);
+        RPC_ToggleCharacterCollider(true);
+        transform.position = destinationPosition;
+        readyToEnterTunnel = true;
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = true)]
+    private void RPC_DeactivateBarricade()
+    {
+        RaycastHit[] hits = Physics.SphereCastAll(transform.position, 3f, transform.forward);
+        foreach (RaycastHit hit in hits)
+        {
+            if (hit.collider.CompareTag("TunnelBarricade"))
+            {
+                hit.collider.gameObject.SetActive(false);
+            }
+        }
+    }
     #endregion
 
     #region Death/Damage
