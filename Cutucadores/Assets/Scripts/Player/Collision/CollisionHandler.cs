@@ -69,12 +69,13 @@ public class CollisionHandler : NetworkBehaviour
                 break;
             case "TunnelBarricade":
                 if (selfCollider.CompareTag("Drill"))
+                    collision.transform.parent.GetComponent<ParticleSystem>().Play();
+                    GameManager.Instance.PlayOnDrillHitParticle(collision.GetContact(0).point);
                     collision.gameObject.SetActive(false);
                     if (Object.HasStateAuthority)
                     {                    
                         networkCharacterController.Knockback(collision.GetContact(0).point, true);
                     }
-                    GameManager.Instance.PlayOnDrillHitParticle(collision.GetContact(0).point);
                     if (Object.HasInputAuthority)
                     {
                         GameManager.Instance.ShakeCamera(GameManager.Instance.onDrillHitCameraShakeAmplitude);

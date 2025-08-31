@@ -269,7 +269,10 @@ public class NetworkCharacterDrillController : NetworkTransform
         {
             if (hit.collider.CompareTag("TunnelBarricade"))
             {
+                hit.collider.transform.parent.GetComponent<ParticleSystem>().Play();
+                GameManager.Instance.PlayOnDrillHitParticle(hit.collider.transform.position);
                 hit.collider.gameObject.SetActive(false);
+                return;
             }
         }
     }
