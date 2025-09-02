@@ -25,6 +25,7 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
     [SerializeField] private float matchDuration = 60f;
     public float matchTimer;
     public bool matchEnded = false;
+    public bool matchInitialized = false;
 
     public AudioSource gameplayMusic;
 
@@ -47,12 +48,14 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
     private void Start()
     {
         Debug.Log("Started GameManager");
-        matchTimer = Time.timeSinceLevelLoad + 60f;
-
+        matchTimer = Time.timeSinceLevelLoad + matchDuration;
+        matchInitialized = true;
     }
 
     public override void FixedUpdateNetwork()
     {
+        if (!matchInitialized)
+            return;
         if (!matchEnded && Time.timeSinceLevelLoad >= matchTimer)
         {
             matchEnded = true;
@@ -77,6 +80,7 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
         {
             matchTimer = matchDuration;
             matchEnded = false;
+            matchInitialized = true;
         }
     }
     void IAfterSpawned.AfterSpawned()
