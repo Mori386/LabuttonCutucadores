@@ -66,8 +66,11 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e473ead7d66bf9744a223d81d200fd62, type: 3}
   - {fileID: 8300000, guid: 7af198226e2afad49a5f6273857136b2, type: 3}
   - {fileID: 8300000, guid: efb12c1c45f01b84a881498a9024a8f6, type: 3}
-  killTarget: 1
   safeZoneSize: 90
+  matchDuration: 120
+  matchTimer: 0
+  matchEnded: 0
+  matchInitialized: 0
   gameplayMusic: {fileID: 999918413317481006}
   playersControllers: []
 --- !u!114 &7828795293188821932
