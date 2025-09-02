@@ -564,7 +564,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 9
+      scalar: 6
       minScalar: 4
       maxCurve:
         serializedVersion: 2
@@ -1146,7 +1146,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 15
+      scalar: 60
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -1252,7 +1252,7 @@ ParticleSystem:
     m_BurstCount: 0
     m_Bursts: []
   SizeModule:
-    enabled: 1
+    enabled: 0
     curve:
       serializedVersion: 2
       minMaxState: 1
@@ -1584,8 +1584,8 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 0, g: 0, b: 0, a: 0.64705884}
-        key1: {r: 0, g: 0, b: 0, a: 0.627451}
+        key0: {r: 0.1792453, g: 0.101214856, b: 0.038047355, a: 1}
+        key1: {r: 0.1792453, g: 0.09414221, b: 0.032974374, a: 1}
         key2: {r: 0, g: 0, b: 0, a: 0}
         key3: {r: 0, g: 0, b: 0, a: 0}
         key4: {r: 0, g: 0, b: 0, a: 0}
@@ -5417,7 +5417,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 9
+      scalar: 6
       minScalar: 4
       maxCurve:
         serializedVersion: 2
@@ -5999,7 +5999,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 15
+      scalar: 60
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -6105,7 +6105,7 @@ ParticleSystem:
     m_BurstCount: 0
     m_Bursts: []
   SizeModule:
-    enabled: 1
+    enabled: 0
     curve:
       serializedVersion: 2
       minMaxState: 1
@@ -6437,8 +6437,8 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 0, g: 0, b: 0, a: 0.64705884}
-        key1: {r: 0, g: 0, b: 0, a: 0.627451}
+        key0: {r: 0.1792453, g: 0.101214856, b: 0.038047355, a: 1}
+        key1: {r: 0.1792453, g: 0.09414221, b: 0.032974374, a: 1}
         key2: {r: 0, g: 0, b: 0, a: 0}
         key3: {r: 0, g: 0, b: 0, a: 0}
         key4: {r: 0, g: 0, b: 0, a: 0}
