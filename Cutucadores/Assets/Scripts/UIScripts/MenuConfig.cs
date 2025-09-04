@@ -16,6 +16,8 @@ public class MenuConfig : MonoBehaviour
     }
     private void Start()
     {
+        Screen.SetResolution(1280, 720, true);
+
         // Carregar o valor do volume salvo (se existir)
         if (PlayerPrefs.HasKey("Volume"))
         {
@@ -73,10 +75,10 @@ public class MenuConfig : MonoBehaviour
         Debug.Log("O volume atual é:" + PlayerPrefs.GetFloat("Volume"));
     }
 
-    public void Fullscreen(bool kitten)
+    /*public void Fullscreen(bool kitten)
     {
         Screen.fullScreen = false;
-    }
+    }*/
 
     public void Janela(bool kitten)
     {
