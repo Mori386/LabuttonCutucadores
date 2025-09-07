@@ -909,8 +909,8 @@ Transform:
   - {fileID: 1334741911}
   - {fileID: 254135538}
   - {fileID: 1802865064}
-  - {fileID: 1647842681}
   - {fileID: 329978597}
+  - {fileID: 1647842681}
   - {fileID: 664548367}
   - {fileID: 379634714}
   - {fileID: 1474357907}
@@ -73829,18 +73829,18 @@ Transform:
   - {fileID: 1227891739}
   - {fileID: 25222757}
   - {fileID: 1342665429}
-  - {fileID: 1485447700}
+  - {fileID: 521442753}
   - {fileID: 1783554959}
   - {fileID: 1467799354}
-  - {fileID: 521442753}
+  - {fileID: 1588966587}
   - {fileID: 1895018425}
   - {fileID: 1351822155}
-  - {fileID: 1588966587}
+  - {fileID: 1485447700}
   - {fileID: 1203943377}
-  - {fileID: 1353756274}
+  - {fileID: 921055422}
   - {fileID: 1093382954}
   - {fileID: 135470337}
-  - {fileID: 921055422}
+  - {fileID: 1353756274}
   - {fileID: 1321995574}
   - {fileID: 2129320441}
   - {fileID: 674905697}
@@ -73852,21 +73852,21 @@ Transform:
   - {fileID: 748243290}
   - {fileID: 976674774}
   - {fileID: 1040346551}
-  - {fileID: 2059705134}
-  - {fileID: 191963115}
-  - {fileID: 1277674670}
   - {fileID: 587609655}
-  - {fileID: 1284387710}
+  - {fileID: 191963115}
   - {fileID: 1101672105}
+  - {fileID: 1277674670}
+  - {fileID: 1284387710}
+  - {fileID: 2059705134}
+  - {fileID: 2022688336}
   - {fileID: 759588037}
   - {fileID: 2049289661}
   - {fileID: 720141369}
   - {fileID: 606396087}
-  - {fileID: 2022688336}
+  - {fileID: 291234666}
   - {fileID: 414735913}
   - {fileID: 545230955}
   - {fileID: 19077727}
-  - {fileID: 291234666}
   - {fileID: 1361171750}
   - {fileID: 213222082}
   - {fileID: 40862942}
@@ -74289,6 +74289,54 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 18234396575058439, guid: 92e5f4632da02e74d870448745faa70c, type: 3}
   m_PrefabInstance: {fileID: 2060254901}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2060915626
+GameObject:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2060915628}
+  - component: {fileID: 2060915627}
+  m_Layer: 0
+  m_Name: StaticLightingSky
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2060915627
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2060915626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 441482e8936e35048a1dffac814e3ef8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Profile: {fileID: 0}
+  m_StaticLightingSkyUniqueID: 0
+  m_StaticLightingCloudsUniqueID: 0
+  m_StaticLightingVolumetricClouds: 0
+--- !u!4 &2060915628
+Transform:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2060915626}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 17
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2062687811
 PrefabInstance:
   m_ObjectHideFlags: 0
