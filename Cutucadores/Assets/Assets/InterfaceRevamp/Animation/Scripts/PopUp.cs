@@ -4,7 +4,12 @@ using UnityEngine;
 
 public class PopUp : MonoBehaviour
 {
-    public RectTransform Asset;
+    [SerializeField] private RectTransform Asset;
+
+    void Start()
+    {
+        Pop(Asset, 0.15f);
+    }
 
     void OnEnable()
     {

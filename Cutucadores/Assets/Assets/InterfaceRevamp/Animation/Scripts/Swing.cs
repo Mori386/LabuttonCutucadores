@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Swing : MonoBehaviour
 {
-    public RectTransform Asset;
+    [SerializeField] private RectTransform Asset;
     public float strength = 10f;
     public float speed = 1.2f;
 

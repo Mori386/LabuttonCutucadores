@@ -5,18 +5,16 @@ using UnityEngine.EventSystems;
 
 public class Pulse : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    private RectTransform Asset;
+    [SerializeField] private RectTransform Asset;
+    public float stregth = 1.1f;
+    public float time = 0.4f;
     private LTDescr tween;
 
-    void Awake()
-    {
-        Asset = GetComponent<RectTransform>();
-    }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (tween != null) LeanTween.cancel(Asset);
-        tween = LeanTween.scale(Asset, Vector3.one * 1.1f, 0.4f)
+        tween = LeanTween.scale(Asset, Vector3.one * stregth, time)
             .setEase(LeanTweenType.easeInOutSine)
             .setLoopPingPong();
     }
