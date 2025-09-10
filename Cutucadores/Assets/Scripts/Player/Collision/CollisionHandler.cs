@@ -32,7 +32,7 @@ public class CollisionHandler : NetworkBehaviour
                             networkCharacterController.Knockback(collision.GetContact(0).point, true);
                         }
                         StartFallChecker(attackedHPHandler);
-                        attackedHPHandler.RPC_OnHitTaken(thisHPHandler);
+                        attackedHPHandler.RPC_OnHitTaken(thisHPHandler, collision.GetContact(0).point);
                         //Se for o player que bateu aplica um shake de tela
                         if (Object.HasInputAuthority)
                         {

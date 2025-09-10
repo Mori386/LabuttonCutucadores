@@ -15,13 +15,14 @@ public class HPHandler : NetworkBehaviour
     //public GameObject shieldVisual;
     public ParticleSystem shieldVisualEffect;
     //public ParticleSystem nudgeVisualEffect;
+    [SerializeField] private GameObject shieldGO;
+    private Material shieldMat;
+    [SerializeField] private ParticleSystem shieldBreakParticle;
 
     public TextMeshPro killsText;
 
     public NetworkVisualHandler networkVisualHandler;
     public NetworkCharacterDrillController drillController;
-
-    [SerializeField] private GameObject[] colliders;
 
     public bool isInvulnerable;
     [Networked] public TickTimer InvulnerabilityTimer { get; set; }
@@ -29,6 +30,7 @@ public class HPHandler : NetworkBehaviour
     {
         networkVisualHandler = GetComponent<NetworkVisualHandler>();
         drillController = GetComponent<NetworkCharacterDrillController>();
+        shieldMat = shieldGO.GetComponent<MeshRenderer>().material;
     }
     public override void Spawned()
     {
@@ -40,12 +42,12 @@ public class HPHandler : NetworkBehaviour
     }
 
     [Rpc(RpcSources.All, RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = true)]
-    public void RPC_OnHitTaken(HPHandler attacker)
+    public void RPC_OnHitTaken(HPHandler attacker, Vector3 hitPosition)
     {
-        StartCoroutine(CheckForInvulnerability(attacker));
+        StartCoroutine(CheckForInvulnerability(attacker, hitPosition));
     }
 
-    public IEnumerator CheckForInvulnerability(HPHandler attacker)
+    public IEnumerator CheckForInvulnerability(HPHandler attacker, Vector3 hitPosition)
     {
         transform.root.GetComponent<CollisionHandler>().StartFallChecker(attacker);
         attacker.transform.root.GetComponent<CollisionHandler>().StartFallChecker(transform.root.GetComponent<HPHandler>());
@@ -58,7 +60,7 @@ public class HPHandler : NetworkBehaviour
         if (hasShield)
         {
             Debug.Log($"HPHandler - HasShield:{hasShield}, deactivating shield");
-            ChangeShieldState(false);
+            ChangeShieldState(false, hitPosition);
         }
         else
         {
@@ -91,7 +93,7 @@ public class HPHandler : NetworkBehaviour
         isInvulnerable = false;
     }
 
-    public void ChangeShieldState(bool shieldState)
+    public void ChangeShieldState(bool shieldState, Vector3 hitPosition = default)
     {
         if (hasShield == shieldState)
             return;
@@ -104,9 +106,25 @@ public class HPHandler : NetworkBehaviour
         {
             //colocar aqui implementação do efeito de perder shield
             //shieldVisual.SetActive(false);
+            StartCoroutine(ShieldVisual(hitPosition));
             shieldVisualEffect.Play();
         }
         hasShield = shieldState;
+    }
+
+    private IEnumerator ShieldVisual(Vector3 hitPosition)
+    {
+        shieldGO.SetActive(true);
+        shieldMat.SetFloat("_Lifetime", 0);
+        shieldGO.transform.LookAt(hitPosition);
+        shieldBreakParticle.transform.LookAt(hitPosition);
+        for (float elapsedTime = 0; elapsedTime <= 1; elapsedTime += Time.deltaTime)
+        {
+            shieldMat.SetFloat("_Lifetime", elapsedTime);
+            yield return null;
+        }
+        shieldGO.SetActive(false);
+        shieldBreakParticle.Play();
     }
 
     public void IncreaseScore(byte amount)

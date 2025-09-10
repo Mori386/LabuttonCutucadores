@@ -250,7 +250,7 @@ public class NetworkCharacterDrillController : NetworkTransform
         {
             Vector3 moveForce = transform.forward * (50 * characterData.maxSpeed * Runner.DeltaTime * activeSpeedMultiplier)/2;
             rb.AddForce(moveForce, ForceMode.Acceleration);
-            if (Vector3.Distance(transform.position, destinationPosition) < 0.5f)
+            if (Vector3.Distance(transform.position, destinationPosition) < 0.8f)
                 break;
             yield return new WaitForFixedUpdate();
         }
