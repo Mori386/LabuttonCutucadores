@@ -1,30 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static TweenManager;
 
 public class PopUp : MonoBehaviour
 {
     [SerializeField] private RectTransform Asset;
+    public float duration = 0.6f;
 
-    void Start()
+    private void Start()
     {
-        Pop(Asset, 0.15f);
+       // Instance.PlayPopUp(Asset,duration);
     }
 
     void OnEnable()
     {
-        Pop(Asset, 0.15f);
+        Instance.PlayPopUp(Asset);
     }
-    void Pop(RectTransform botao, float delay)
+
+    void OnDisable()
     {
-        botao.localScale = Vector3.zero;
-
-        LeanTween.scale(botao, Vector3.one, 0.6f)
-            .setDelay(delay)
-            .setEase(LeanTweenType.easeOutBack)
-
-            .setOnComplete(() => LeanTween.scale(botao, Vector3.one * 1.1f, 0.2f)
-    .setLoopPingPong(1));
-
+        Instance.StopTween(Asset);
     }
 }

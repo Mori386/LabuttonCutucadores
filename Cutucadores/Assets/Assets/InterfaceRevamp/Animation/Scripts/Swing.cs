@@ -1,23 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static TweenManager;
+
 
 public class Swing : MonoBehaviour
 {
     [SerializeField] private RectTransform Asset;
-    public float strength = 10f;
-    public float speed = 1.2f;
+    public float angle = 10f;
+    public float duration = 1.2f;
 
-    void Start()
+    private void Start()
     {
-      SwingAsset();
+        Instance.PlaySwing(Asset,angle,duration);
+
     }
-    void SwingAsset()
+    void OnDisable()
     {
-       Asset.localRotation = Quaternion.identity;
-
-        LeanTween.rotateZ(Asset.gameObject, strength, speed)
-            .setEaseInOutSine()
-            .setLoopPingPong(-1); 
+        Instance.StopTween(Asset);
     }
 }

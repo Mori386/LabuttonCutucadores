@@ -9,14 +9,20 @@ public class MenuConfig : MonoBehaviour
     public Image[] images;
 
 
-    private float currentVolume = 1.0f; 
+    private float currentVolume = 1.0f;
+
+    private void Awake()
+    {
+        Screen.fullScreen = false;
+        Screen.SetResolution(1280, 720, false); 
+    }
+
     public void Exit()
     {
         Application.Quit();
     }
     private void Start()
     {
-        Screen.SetResolution(1280, 720, true);
 
         // Carregar o valor do volume salvo (se existir)
         if (PlayerPrefs.HasKey("Volume"))

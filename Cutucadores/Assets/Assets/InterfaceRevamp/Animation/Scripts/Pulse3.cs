@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-
-public class Pulse : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class Pulse3 : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] private RectTransform Asset;
     public float strength = 1.1f;
@@ -12,15 +11,10 @@ public class Pulse : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        TweenManager.Instance.PlayPulse(Asset,strength,duration);
+        TweenManager.Instance.PlayStretchY(Asset, strength, duration);
     }
     public void OnPointerExit(PointerEventData eventData)
     {
         TweenManager.Instance.StopTween(Asset);
     }
-
-
-   
-
-
 }

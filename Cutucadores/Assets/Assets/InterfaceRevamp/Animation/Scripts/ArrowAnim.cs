@@ -3,24 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-
-public class Pulse : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class ArrowAnim : MonoBehaviour
 {
     [SerializeField] private RectTransform Asset;
     public float strength = 1.1f;
     public float duration = 0.6f;
 
-    public void OnPointerEnter(PointerEventData eventData)
+    private void OnEnable()
     {
-        TweenManager.Instance.PlayPulse(Asset,strength,duration);
+        TweenManager.Instance.PlayArrowNudge(Asset, strength, duration);
+    
     }
-    public void OnPointerExit(PointerEventData eventData)
+
+    private void OnDisable()
     {
         TweenManager.Instance.StopTween(Asset);
     }
-
-
-   
-
-
 }

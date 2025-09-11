@@ -1,4 +1,4 @@
-using Fusion;
+Ôªøusing Fusion;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -20,7 +20,7 @@ public class CursorController : MonoBehaviour
 
     readonly private float animSpeedUpMultiplier = 2f; // Valor de multiplicacao de velocidade quando o jogador acelerar as animacoes
     [Header("|----- Main Menu -----|")]
-    [Header("M„o")]
+    [Header("M√£o")]
     public Transform mainMenuHand;
     [Header("Livro")]
     public Transform bookOnTableTransform;
@@ -80,8 +80,8 @@ public class CursorController : MonoBehaviour
     [Header("OBJETOS DO LIVRO")]
     public GameObject[] config;
     public GameObject[] credits;
-    public Transform animHandStartingPoint, targetObject2, book; // O objeto 3D para onde o cursor 3D ser· movido
-    public Animator animHand; // animaÁıes da m„o e caderno
+    public Transform animHandStartingPoint, targetObject2, book; // O objeto 3D para onde o cursor 3D ser√° movido
+    public Animator animHand; // anima√ß√µes da m√£o e caderno
 
     [Header("OBJETOS DO BLUEPRINT")]
     public GameObject[] Okays;
@@ -90,14 +90,14 @@ public class CursorController : MonoBehaviour
     public GameObject[] tankMesh; // acessar o renderer corretamente e trocar o material
     public GameObject[] tankDrill; // acessar o renderer corretamente e trocar o material
     public Material Bluematerial;
-    public GameObject tanques; // desativas todos, verificar se j· n„o h· a declaraÁ„o no game manager
+    public GameObject tanques; // desativas todos, verificar se j√° n√£o h√° a declara√ß√£o no game manager
     public GameObject Lampada;
     public GameObject Luz;
 
 
-    [Header("PARA ANIMA«√O")]
-    public float moveTime = 2f; // Tempo total (tempo que o cursor fica na posiÁ„o de destino + tempo de deslocamento)
-    public float pauseTime = 1.5f; // Tempo que o cursor fica na posiÁ„o de destino
+    [Header("PARA ANIMA√á√ÉO")]
+    public float moveTime = 2f; // Tempo total (tempo que o cursor fica na posi√ß√£o de destino + tempo de deslocamento)
+    public float pauseTime = 1.5f; // Tempo que o cursor fica na posi√ß√£o de destino
     public float smoothTime = 0.5f;
 
     public RectTransform canvasRect;
@@ -133,9 +133,9 @@ public class CursorController : MonoBehaviour
             }
         }
         //Cursor.visible = true; // Esconde o cursor do mouse
-        //Cursor.lockState = CursorLockMode.Confined; // MantÈm o cursor dentro da janela do jogo.
+        //Cursor.lockState = CursorLockMode.Confined; // Mant√©m o cursor dentro da janela do jogo.
 
-        //startPosition = mainMenuHand.transform.position; //para retorno da posiÁ„o inicial
+        //startPosition = mainMenuHand.transform.position; //para retorno da posi√ß√£o inicial
         //moveDuration = moveTime - pauseTime; // valor do tempo de deslocamento
         //StartCoroutine(MoveBookSmoothly());
     }
@@ -276,34 +276,42 @@ public class CursorController : MonoBehaviour
     }*/
 
     #region Botoes
-    // todos os voids abaixo s„o chamados atravÈs de botıes na cena, de acordo com os seus respectivos nomes
+    // todos os voids abaixo s√£o chamados atrav√©s de bot√µes na cena, de acordo com os seus respectivos nomes
     public void Settings() 
     {
-        Hide(StartScreen);
-        Show(SettingsScreen);
+        //Hide(StartScreen);
+        //Show(SettingsScreen);
+        TweenManager.Instance.SwitchScreens(StartScreen, SettingsScreen, ScreenTransitionType.ZoomInOut);
+        TweenManager.Instance.StopCutucadaLoop();
     }
     public void ReturnMainMenu() 
     {
-         Hide(SettingsScreen);
-         Show(StartScreen);
-        
+        // Hide(SettingsScreen);
+        // Show(StartScreen);
+        TweenManager.Instance.SwitchScreens(SettingsScreen, StartScreen, ScreenTransitionType.ZoomInOut);
+        TweenManager.Instance.PlayCutucadaLoop();
+
     }
     public void ReturnMainMenu2()
     {
-        Hide(clientHostCanvas);
-        Show(StartScreen);
+        //Hide(clientHostCanvas);
+        //Show(StartScreen);
+        TweenManager.Instance.SwitchScreens(clientHostCanvas, StartScreen, ScreenTransitionType.ZoomInOut);
+        TweenManager.Instance.PlayCutucadaLoop();
     }
     public void StartGame() 
     {
-       Hide(StartScreen);
-       Show(clientHostCanvas);
-       //clientHostCanvas.blocksRaycasts = false;
-       //clientHostPaper.gameObject.SetActive(false);
-       //returnToMainMenuFromClientHost.gameObject.SetActive(false);
-       //clientHostCanvas.gameObject.SetActive(true);
-       //StartCoroutine(DelayCloseBook());
+        TweenManager.Instance.SwitchScreens(StartScreen, clientHostCanvas, ScreenTransitionType.ZoomInOut);
+        TweenManager.Instance.StopCutucadaLoop();
+        //Hide(StartScreen);
+        //Show(clientHostCanvas);
+        //clientHostCanvas.blocksRaycasts = false;
+        //clientHostPaper.gameObject.SetActive(false);
+        //returnToMainMenuFromClientHost.gameObject.SetActive(false);
+        //clientHostCanvas.gameObject.SetActive(true);
+        //StartCoroutine(DelayCloseBook());
 
-       StartCoroutine(StartLobbyConnection()); 
+        StartCoroutine(StartLobbyConnection()); 
     }
     #endregion
 
@@ -420,8 +428,10 @@ public class CursorController : MonoBehaviour
         if (createJoinPaperLoadingGroup.gameObject.activeInHierarchy)
             return;
         NetworkRunnerHandler.Instance.ShutdownNetworkRunner();
-        Show(StartScreen);
-        Hide(clientHostCanvas);
+        //Show(StartScreen);
+       // Hide(clientHostCanvas);
+        TweenManager.Instance.SwitchScreens(StartScreen, clientHostCanvas, ScreenTransitionType.ZoomInOut);
+
 
     }
 
@@ -480,11 +490,13 @@ public class CursorController : MonoBehaviour
         paiEFilhaCharBP.selectButton.interactable = false;
         vovoCharBP.selectButton.interactable = false;
     }
-    public void BlueprintEnter() // anim para blueprint de seleÁ„o
+    public void BlueprintEnter() // anim para blueprint de sele√ß√£o
     {
         //StopHandFollowCursor();
         BlueprintLoadInfos();
-        Show(Blueprint);
+        //how(Blueprint);
+        TweenManager.Instance.SwitchScreens(clientHostCanvas, Blueprint, ScreenTransitionType.ZoomInOut);
+
         //Hide(clientHostCanvas);
         //StartCoroutine(MoveBlue());
     }
@@ -695,10 +707,12 @@ public class CursorController : MonoBehaviour
     {
         NetworkBetweenScenesManager.Instance.LoadSceneToHost(mapInPreviewID+1);
     }
-    public void ReturnBlueprintSelect() // sair do blue de seleÁ„o
+    public void ReturnBlueprintSelect() // sair do blue de sele√ß√£o
     {
         NetworkRunnerHandler.Instance.ShutdownNetworkRunner();
-        Show(clientHostCanvas);
+        //Show(clientHostCanvas);
+        //witchScreens(Blueprint,StartScreen);
+        TweenManager.Instance.SwitchScreens(Blueprint, StartScreen, ScreenTransitionType.ZoomInOut);
     }
     public void ChangeMaterial(Material newMaterial, GameObject Tank, GameObject Drill)
     {
@@ -712,11 +726,11 @@ public class CursorController : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("O objeto n„o possui um componente Renderer.");
+            Debug.LogWarning("O objeto n√£o possui um componente Renderer.");
         }
     }
 
-    public void OkPlayers(int playerNumber) // confirmaÁ„o dos players
+    public void OkPlayers(int playerNumber) // confirma√ß√£o dos players
     {
 
         switch (playerNumber) // vinculado a cada highligthed em cena
@@ -755,8 +769,8 @@ public class CursorController : MonoBehaviour
                 break;
 
             default:
-                // Caso nenhum jogador v·lido seja selecionado
-                Debug.LogError("Jogador inv·lido: " + playerNumber);
+                // Caso nenhum jogador v√°lido seja selecionado
+                Debug.LogError("Jogador inv√°lido: " + playerNumber);
                 break;
         }
 
@@ -771,9 +785,7 @@ public class CursorController : MonoBehaviour
         yield return new WaitForSeconds(delay);
         go.SetActive(state);
     }
-
-    #region NewAnimations
-
+    #region animations
     public void Show(CanvasGroup target)
     {
         target.gameObject.SetActive(true);
@@ -783,11 +795,31 @@ public class CursorController : MonoBehaviour
 
     public void Hide(CanvasGroup target)
     {
-        
         StopAllCoroutines();
-        StartCoroutine(FadeCanvas(target, 1f, 1f, 0f, true));
-        target.gameObject.SetActive(false);
+        StartCoroutine(FadeCanvas(target, 1f, 1f, 0f, false));
     }
+
+    public void SwitchScreens(CanvasGroup from, CanvasGroup to)
+    {
+        StopAllCoroutines();
+        StartCoroutine(SwitchRoutine(from, to));
+    }
+
+    private IEnumerator SwitchRoutine(CanvasGroup from, CanvasGroup to)
+    {
+        
+        if (from != null)
+        {
+            yield return StartCoroutine(FadeCanvas(from, 0.5f, 1f, 0f, false));
+            from.gameObject.SetActive(false);
+        }
+        if (to != null)
+        {
+            to.gameObject.SetActive(true);
+            yield return StartCoroutine(FadeCanvas(to, 0.6f, 0f, 1f, true));
+        }
+    }
+
     IEnumerator FadeCanvas(CanvasGroup canvasGroup, float fadeDuration, float start, float end, bool enableOnEnd)
     {
         float elapsed = 0f;
@@ -805,9 +837,7 @@ public class CursorController : MonoBehaviour
         canvasGroup.interactable = enableOnEnd;
         canvasGroup.blocksRaycasts = enableOnEnd;
     }
-
-
-    #endregion
+#endregion
 
     #region Old animations
     IEnumerator ChangeToCreateJoinPageAnimation(CanvasGroup pageLeaving, CanvasGroup pageEntering, bool isHost)
@@ -1184,7 +1214,7 @@ public class CursorController : MonoBehaviour
     /*IEnumerator MoveBookSmoothly()
     {
         Vector3 pontoOrigem = book.position;
-        float duration = 0.75f; // Tempo total da transiÁ„o em segundos
+        float duration = 0.75f; // Tempo total da transi√ß√£o em segundos
 
         Vector3 pontoAtual;
         for (float t = 0; t < duration;)
@@ -1199,7 +1229,7 @@ public class CursorController : MonoBehaviour
             {
                 t += Time.deltaTime * (animSpeedUpMultiplier - 1);
             }
-            yield return null; // Aguarda atÈ o prÛximo quadro
+            yield return null; // Aguarda at√© o pr√≥ximo quadro
         }
         book.position = bookOnTableTransform.position;
         //Cria uma corotina q checa se o mouse esta pressionado caso tal esteja aumenta a velocidade do animator
@@ -1310,7 +1340,7 @@ public class CursorController : MonoBehaviour
 
         while (Vector2.Distance(blueprintRect.localPosition, new Vector2(posicaoCentroCanvas.x, posicaoCentroCanvas.y)) > 0.1f)
         {
-            // Move suavemente o objeto em direÁ„o ao centro do canvas usando a interpolaÁ„o linear
+            // Move suavemente o objeto em dire√ß√£o ao centro do canvas usando a interpola√ß√£o linear
             blueprintRect.localPosition = Vector3.Lerp(blueprintRect.localPosition, posicaoCentroCanvas, Time.deltaTime * 10);
 
             yield return null;
@@ -1319,7 +1349,7 @@ public class CursorController : MonoBehaviour
         blueprintRect.localPosition = posicaoCentroCanvas;
     }
 
-    IEnumerator LockMousePosition(Transform armPosition, float duration) // retornar o mouse suavimente para a posiÁ„o
+    IEnumerator LockMousePosition(Transform armPosition, float duration) // retornar o mouse suavimente para a posi√ß√£o
     {
         float timer = 0;
         Vector2 armScreenPosition;
