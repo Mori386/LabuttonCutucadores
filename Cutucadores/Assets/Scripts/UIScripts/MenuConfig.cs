@@ -81,14 +81,14 @@ public class MenuConfig : MonoBehaviour
         Debug.Log("O volume atual é:" + PlayerPrefs.GetFloat("Volume"));
     }
 
-    /*public void Fullscreen(bool kitten)
+    public void Fullscreen(bool kitten)
     {
-        Screen.fullScreen = false;
-    }*/
+        Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
+        Screen.fullScreen = true;
+    }
 
     public void Janela(bool kitten)
     {
-        Screen.SetResolution(1280, 720, true);
-        
+        Screen.SetResolution(1280, 720, FullScreenMode.Windowed);
     }
 }
