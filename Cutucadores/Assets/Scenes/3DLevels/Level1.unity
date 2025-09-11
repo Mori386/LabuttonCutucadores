@@ -97,7 +97,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 112000000, guid: 3ea94cee5dab9f5439bba2e8245a3475, type: 2}
+  m_LightingDataAsset: {fileID: 112000000, guid: 24514a839090f7440ac62921753a174c, type: 2}
   m_LightingSettings: {fileID: 4890085278179872738, guid: ac1a38c5349371442896b0fbb6a7cdac, type: 2}
 --- !u!196 &4
 NavMeshSettings:
@@ -18423,6 +18423,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1203901197}
     m_Modifications:
+    - target: {fileID: 4321341655453176367, guid: 311f4bc849e11bb43be014f5fce80578, type: 3}
+      propertyPath: m_Intensity
+      value: 2454.5278
+      objectReference: {fileID: 0}
     - target: {fileID: 4887732180223201103, guid: 311f4bc849e11bb43be014f5fce80578, type: 3}
       propertyPath: m_LocalPosition.x
       value: 5.852047
@@ -36245,6 +36249,10 @@ PrefabInstance:
     - target: {fileID: 4320666695550377269, guid: 311f4bc849e11bb43be014f5fce80578, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 4321341655453176367, guid: 311f4bc849e11bb43be014f5fce80578, type: 3}
+      propertyPath: m_Intensity
+      value: 2454.5278
       objectReference: {fileID: 0}
     - target: {fileID: 4652684499428561032, guid: 311f4bc849e11bb43be014f5fce80578, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -77246,6 +77254,10 @@ PrefabInstance:
     - target: {fileID: 4320666695550377269, guid: 311f4bc849e11bb43be014f5fce80578, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 4321341655453176367, guid: 311f4bc849e11bb43be014f5fce80578, type: 3}
+      propertyPath: m_Intensity
+      value: 2454.5278
       objectReference: {fileID: 0}
     - target: {fileID: 4652684499428561032, guid: 311f4bc849e11bb43be014f5fce80578, type: 3}
       propertyPath: m_StaticEditorFlags
