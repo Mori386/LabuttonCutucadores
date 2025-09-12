@@ -218,12 +218,7 @@ public class NetworkCharacterDrillController : NetworkTransform
         deltaPos.y = 0;
         deltaPos.Normalize();
         RPC_ToggleCharacterVisual(false);
-        yield return new WaitForSeconds(0.5f);
-        transform.position = startPos + deltaPos * 10f;
-        transform.LookAt(startPos + deltaPos * 11f);
-        RPC_ToggleCharacterVisual(true);
-        RPC_ToggleCharacterInput(true);
-        RPC_ToggleCharacterCollider(true);
+        Respawn();
 
         isFalling = false;
     }
@@ -316,10 +311,14 @@ public class NetworkCharacterDrillController : NetworkTransform
 
     private IEnumerator ToggleCharacterDelay()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(.5f);
+        for (int i = 0; i < 9; i++)
+        {
+            RPC_ToggleCharacterVisual(i % 2 == 0);
+            yield return new WaitForSeconds(.2f);
+        }
         RPC_ToggleCharacterInput(true);
         RPC_ToggleCharacterCollider(true);
-        RPC_ToggleCharacterVisual(true);
     }
     #endregion
 
