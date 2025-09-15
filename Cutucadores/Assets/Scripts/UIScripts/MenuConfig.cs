@@ -83,12 +83,12 @@ public class MenuConfig : MonoBehaviour
 
     public void Fullscreen(bool kitten)
     {
-        Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
-        Screen.fullScreen = true;
-    }
-
-    public void Janela(bool kitten)
-    {
-        Screen.SetResolution(1280, 720, FullScreenMode.Windowed);
+        if (kitten)
+        {
+            Screen.fullScreen = true;
+            Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
+        }
+        else
+            Screen.SetResolution(1280, 720, FullScreenMode.Windowed);
     }
 }
