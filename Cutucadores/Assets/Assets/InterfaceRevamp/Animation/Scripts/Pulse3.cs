@@ -9,6 +9,10 @@ public class Pulse3 : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public float strength = 1.1f;
     public float duration = 0.6f;
 
+    public void Start()
+    {
+        TweenManager.Instance.PlayStretchY(Asset, strength, duration);
+    }
     public void OnPointerEnter(PointerEventData eventData)
     {
         TweenManager.Instance.PlayStretchY(Asset, strength, duration);

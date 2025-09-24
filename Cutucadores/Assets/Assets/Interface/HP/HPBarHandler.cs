@@ -88,16 +88,12 @@ public class HPBarHandler : MonoBehaviour
         }
     }
 
-    public void UpdateScore(PlayerRef playerRef,int newScore)
+    public void UpdateScore(PlayerRef playerRef, int newScore)
     {
-        if(playerRefToPlayerHPBars.TryGetValue(playerRef, out PlayerHPBar playerHPBar))
+        if (playerRefToPlayerHPBars.TryGetValue(playerRef, out PlayerHPBar playerHPBar))
         {
-            playerHPBar.ChangeScore(newScore);
+            playerHPBar.ChangeScore(newScore, this);
             SortRanking();
-            /*if (newScore >= GameManager.Instance.killTarget)
-            {
-                GameManager.Instance.RPC_CheckForEndOfMatch();
-            }*/
         }
     }
 
@@ -145,7 +141,7 @@ public class HPBarHandler : MonoBehaviour
 
                 // Posicao
                 bar.position.fontSize = 30;
-                bar.position.color = Color.gray;
+                bar.position.color = Color.white;
 
             }
             else // Demais jogadores
@@ -157,7 +153,8 @@ public class HPBarHandler : MonoBehaviour
                 if (avatarRect != null)
                     avatarRect.sizeDelta = new Vector2(50, 50);
 
-                bar.username.fontSize = 18;
+                bar.username.fontSize = 20;
+                bar.username.fontSize = 20;
                 bar.username.color = Color.gray;
 
                 bar.kills.fontSize = 45;
@@ -223,8 +220,40 @@ public struct PlayerHPBar
     [Header("Kills")]
     public TextMeshProUGUI kills;
 
-    public void ChangeScore(int newScore)
+    public void ChangeScore(int newScore, MonoBehaviour runner)
     {
         kills.text = newScore.ToString();
+
+        if (runner != null)
+            runner.StartCoroutine(AnimateProfilePicture());
+    }
+
+    private IEnumerator AnimateProfilePicture()
+    {
+        if (profilePicture == null) yield break;
+
+        RectTransform rect = profilePicture.rectTransform;
+        Vector3 originalScale = Vector3.one; 
+        Quaternion originalRot = Quaternion.identity;
+
+    
+        for (int i = 0; i < 3; i++)
+        {
+            float t = 0f;
+            while (t < 0.15f)
+            {
+                t += Time.deltaTime;
+                float scale = 1f + Mathf.Sin(t * Mathf.PI *3f) * 0.3f; // pulso
+                float angle = Mathf.Sin(t * Mathf.PI * 4f) * 15f;       // chacoalhada
+                rect.localScale = originalScale * scale;
+                rect.localRotation = Quaternion.Euler(0, 0, angle);
+                yield return null;
+            }
+        }
+
+
+        rect.localScale = originalScale;
+        rect.localRotation = originalRot;
     }
 }
+

@@ -1,267 +1,172 @@
-using Fusion;
 using System.Collections;
-using TMPro;
 using UnityEngine;
+using TMPro;
+using Fusion;
 using UnityEngine.SceneManagement;
 using static CharacterData;
 
 public class WinScreenHandler : NetworkBehaviour
 {
-    //Singleton
     public static WinScreenHandler Instance;
 
-    //Components
-    Camera mainCamera;
-    [SerializeField] private AudioSource music;
-    [SerializeField] private Light mineradorLight, escavadoraLight, paiEFilhaLight, vovoLight;
-    [SerializeField] private Camera winScreenCamera;
-    [SerializeField] private Animator mineradorAnim, escavadoraAnim, paiAnim, filhaAnim, vovoAnim;
-    //Ui Components
+    [Header("Thumbs")]
+    [SerializeField] private GameObject MineradorThumb;
+    [SerializeField] private GameObject EscavadorThumb;
+    [SerializeField] private GameObject PaiEFilhaThumb;
+    [SerializeField] private GameObject VovoThumb;
+
+    [Header("UI")]
     [SerializeField] private GameObject winScreenParent;
     [SerializeField] private GameObject CanvasWin;
     [SerializeField] private CanvasGroup fadeInEffect;
     [SerializeField] private TextMeshProUGUI winnerText;
     [SerializeField] private CanvasGroup winnerTextCanvasGroup;
+    [SerializeField] private AudioSource music;
     [SerializeField] private GameObject hostButtonsGO;
     [SerializeField] private GameObject waitingForHostText;
 
-    private int mineradorWin, escavadoraWin, paiEFilhaWin, vovoWin; // 1 = win/ 0 = not present/ -1 = lose
-
-    private readonly float winnerLightTemperature = 4000;
-    private readonly float loserLightTemperature = 20000;
+    private int mineradorWin, escavadoraWin, paiEFilhaWin, vovoWin; // 1 = win / 0 = nao jogou / -1 = perdeu
     private bool shouldGoToCharacterSelection = false;
     public bool gameEnded = false;
+
     private void Awake()
     {
-        if (Instance == null)
-            Instance = this;
-        else 
-            Destroy(this);
-        winScreenParent.SetActive(false);
-        if (mainCamera == null) mainCamera = Camera.main;
-    }
-    public override void Spawned()
-    {
-        base.Spawned();
-        if (mainCamera == null) mainCamera = Camera.main;
-    }
-    #region Define Winner and Loser
+        if (Instance == null) Instance = this;
+        else Destroy(this);
 
+        winScreenParent.SetActive(false);
+    }
+
+    #region RPCs Winner/Loser
     [Rpc(RpcSources.StateAuthority, RpcTargets.All, Channel = RpcChannel.Reliable)]
     public void RPC_DefineWinner(Character character)
     {
         switch (character)
         {
-            default:
-            case Character.Escavador:
-                escavadoraWin = 1;
-                break;
-            case Character.Minerador:
-                mineradorWin = 1;
-                break;
-            case Character.PaiEFilha:
-                paiEFilhaWin = 1;
-                break;
-            case Character.Vovo:
-                vovoWin = 1;
-                break;
+            case Character.Minerador: mineradorWin = 1; break;
+            case Character.Escavador: escavadoraWin = 1; break;
+            case Character.PaiEFilha: paiEFilhaWin = 1; break;
+            case Character.Vovo: vovoWin = 1; break;
         }
-        GetCharacterLight(character).colorTemperature = winnerLightTemperature;
     }
-
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All, Channel = RpcChannel.Reliable)]
     public void RPC_DefineLoser(Character character)
     {
         switch (character)
         {
-            default:
-            case Character.Escavador:
-                escavadoraWin = -1;
-                break;
-            case Character.Minerador:
-                mineradorWin = -1;
-                break;
-            case Character.PaiEFilha:
-                paiEFilhaWin = -1;
-                break;
-            case Character.Vovo:
-                vovoWin = -1;
-                break;
+            case Character.Minerador: mineradorWin = -1; break;
+            case Character.Escavador: escavadoraWin = -1; break;
+            case Character.PaiEFilha: paiEFilhaWin = -1; break;
+            case Character.Vovo: vovoWin = -1; break;
         }
-        //GetCharacterLight(character).colorTemperature = loserLightTemperature;
     }
     #endregion
 
-    #region Set Characters and Lights
-    public Light GetCharacterLight(Character character)
+    #region Mostrar vencedor
+    private void MostrarThumb(int status, GameObject thumb)
     {
-        switch (character)
+        if (status == 1) 
         {
-            default:
-            case Character.Escavador:
-                return escavadoraLight;
-            case Character.Minerador:
-                return mineradorLight;
-            case Character.PaiEFilha:
-                return paiEFilhaLight;
-            case Character.Vovo:
-                return vovoLight;
+            thumb.SetActive(true);
+            StartThumbDance(thumb);
         }
-    }
-    public void EnableCharacter()
-    {
-        //All characters start enabled and whover isnt in the match are set active false
-        if (mineradorWin == 0)
+        else 
         {
-            mineradorAnim.gameObject.SetActive(false);
-            //mineradorLight.gameObject.SetActive(false);
+            thumb.SetActive(false);
+            StopThumbDance(thumb);
         }
-        if (escavadoraWin == 0)
-        {
-            escavadoraAnim.gameObject.SetActive(false);
-            //escavadoraLight.gameObject.SetActive(false);
-        }
-        if (paiEFilhaWin == 0)
-        {
-            paiAnim.gameObject.SetActive(false);
-            filhaAnim.gameObject.SetActive(false);
-
-            //paiEFilhaLight.gameObject.SetActive(false);
-        }
-        if (vovoWin == 0)
-        {
-            vovoAnim.gameObject.SetActive(false);
-            //vovoLight.gameObject.SetActive(false);
-        }
-
     }
 
     public void MostrarSomenteVencedor()
     {
-        // Minerador
-        mineradorAnim.gameObject.SetActive(mineradorWin == 1);
-
-        // Escavadora
-        escavadoraAnim.gameObject.SetActive(escavadoraWin == 1);
-
-        // Pai e Filha
-        paiAnim.gameObject.SetActive(paiEFilhaWin == 1);
-        filhaAnim.gameObject.SetActive(paiEFilhaWin == 1);
-
-        // Vovô
-        vovoAnim.gameObject.SetActive(vovoWin == 1);
+        MostrarThumb(mineradorWin, MineradorThumb);
+        MostrarThumb(escavadoraWin, EscavadorThumb);
+        MostrarThumb(paiEFilhaWin, PaiEFilhaThumb);
+        MostrarThumb(vovoWin, VovoThumb);
     }
     #endregion
 
-    #region Set Animations
-    public void PlayCharacterAnimations()
+    #region Thumb Animation
+    private void StartThumbDance(GameObject thumb)
     {
-        #region Minerador
-        if (mineradorWin >= 1)
-        {
-            mineradorAnim.SetTrigger("isWin");
-        }
-        else
-        {
-            mineradorAnim.SetTrigger("isLose");
-        }
-        #endregion
+        StopThumbDance(thumb);
+        StartCoroutine(ThumbDance(thumb.transform));
+    }
 
-        #region Escavadora
-        if (escavadoraWin >= 1)
-        {
-            escavadoraAnim.SetTrigger("isWin");
-        }
-        else
-        {
-            escavadoraAnim.SetTrigger("isLose");
-        }
-        #endregion
+    private void StopThumbDance(GameObject thumb)
+    {
+        thumb.transform.localScale = Vector3.one;
+        thumb.transform.rotation = Quaternion.identity; 
+        StopAllCoroutines();
+    }
 
-        #region Pai e filha
-        if (paiEFilhaWin >= 1)
-        {
-            paiAnim.SetTrigger("isWin");
-            filhaAnim.SetTrigger("isWin");
-        }
-        else
-        {
-            paiAnim.SetTrigger("isLose");
-            filhaAnim.SetTrigger("isLose");
-        }
-        #endregion
+    private IEnumerator ThumbDance(Transform t)
+    {
+        Vector3 baseScale = Vector3.one;
+        float bounceSpeed = 4f;
+        float bounceAmount = 0.15f;
 
-        #region Vovo
-        if (vovoWin >= 1)
+        float rotSpeed = 3f;
+        float rotAmount = 15f;
+
+        while (true)
         {
-            vovoAnim.SetTrigger("isWin");
+            
+            float scale = 1 + Mathf.Sin(Time.time * bounceSpeed) * bounceAmount;
+            float rot = Mathf.Sin(Time.time * rotSpeed) * rotAmount;
+
+            t.localScale = baseScale * scale;
+            t.rotation = Quaternion.Euler(0, 0, rot);
+
+            yield return null;
         }
-        else
-        {
-            vovoAnim.SetTrigger("isLose");
-        }
-        #endregion
     }
     #endregion
 
+    #region WinScreen Flow
     [Rpc(RpcSources.StateAuthority, RpcTargets.All, Channel = RpcChannel.Reliable)]
     public void RPC_StartWinScreen(string textToApper)
     {
         StartCoroutine(WinScreenAnimations(textToApper));
     }
+
     public IEnumerator WinScreenAnimations(string textToApper)
     {
-        if (gameEnded)
-            yield break;
+        if (gameEnded) yield break;
         gameEnded = true;
-        HPBarHandler.Instance.ManageUIToEndGame();
-        PauseUI.Instance.OpenOrCloseUI(false);
+
         float timer = 0f;
-        float duration = 1;
-        float gameplayVolumeStartValue = GameManager.Instance.gameplayMusic.volume;
-        //Fade out music and fade in winscreen
-        while (timer<duration)
-        {
-            GameManager.Instance.gameplayMusic.volume = Mathf.Lerp(gameplayVolumeStartValue,0,timer/duration);
-            fadeInEffect.alpha = timer/duration;
-            timer += Time.deltaTime;
-            yield return null;
-        }
-        GameManager.Instance.gameplayMusic.volume = 0;
-        fadeInEffect.alpha = 1;
+        float duration = 1f;
 
-        //Setup components ready for fade out
-        winnerTextCanvasGroup.alpha = 1;
-        winnerText.text = textToApper;
-        music.Play();
-        MostrarSomenteVencedor();
-        winScreenParent.SetActive(true);
-        CanvasWin.SetActive(true);
-        mainCamera.gameObject.SetActive(false);
-
-        //Fade out timer
-        timer = 0f;
-        duration = 0.5f;
-        while (timer < duration)
-        {
-            fadeInEffect.alpha = 1-(timer / duration);
-            timer += Time.deltaTime;
-            yield return null;
-        }
-
-        //Play animations wait and fade out
-        PlayCharacterAnimations();
-       /* yield return new WaitForSeconds(4f);
-        timer = 0f;
-        duration = 1f;
+        // fade
         while (timer < duration)
         {
             fadeInEffect.alpha = timer / duration;
             timer += Time.deltaTime;
             yield return null;
         }
-        fadeInEffect.alpha = 1f;*/
+        fadeInEffect.alpha = 1;
+
+        winnerTextCanvasGroup.alpha = 1;
+        winnerText.text = textToApper;
+        music.Play();
+
+        MostrarSomenteVencedor();
+
+        winScreenParent.SetActive(true);
+        CanvasWin.SetActive(true);
+
+        // fade out
+        timer = 0f;
+        duration = 0.5f;
+        while (timer < duration)
+        {
+            fadeInEffect.alpha = 1 - (timer / duration);
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        fadeInEffect.alpha = 0;
 
         if (shouldGoToCharacterSelection)
             RPC_ReturnToCharacterSelection();
@@ -271,6 +176,7 @@ public class WinScreenHandler : NetworkBehaviour
         else
             waitingForHostText.SetActive(true);
     }
+    #endregion
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = true)]
     public void RPC_ReplayMatch()

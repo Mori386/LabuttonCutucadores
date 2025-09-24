@@ -577,6 +577,7 @@ MonoBehaviour:
   _interpolationDataSource: 0
   hasShield: 0
   shieldVisualEffect: {fileID: 4871955501559918634}
+  nudgeVisualEffect: {fileID: 3876744100705623750}
   shieldGO: {fileID: 997322345374387745}
   shieldBreakParticle: {fileID: 3384356567038801214}
   killsText: {fileID: 528173328059072990}
@@ -21699,6 +21700,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a5fa415e8b15b8b498a67599f325b7ac, type: 3}
+--- !u!198 &3876744100705623750 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 8875039996257084694, guid: a5fa415e8b15b8b498a67599f325b7ac, type: 3}
+  m_PrefabInstance: {fileID: 5685389784586910672}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4837280292918302890 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 993034023381721978, guid: a5fa415e8b15b8b498a67599f325b7ac, type: 3}

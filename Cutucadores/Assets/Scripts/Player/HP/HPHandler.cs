@@ -14,7 +14,7 @@ public class HPHandler : NetworkBehaviour
     public bool hasShield;
     //public GameObject shieldVisual;
     public ParticleSystem shieldVisualEffect;
-    //public ParticleSystem nudgeVisualEffect;
+    public ParticleSystem nudgeVisualEffect;
     [SerializeField] private GameObject shieldGO;
     private Material shieldMat;
     [SerializeField] private ParticleSystem shieldBreakParticle;
@@ -67,7 +67,7 @@ public class HPHandler : NetworkBehaviour
             died = true;
             Debug.Log($"HPHandler - Taking damage");
             attacker.IncreaseScore(1);
-            //nudgeVisualEffect.Play();
+            
             drillController.Die();
         }
         isInvulnerable = true;
@@ -75,6 +75,7 @@ public class HPHandler : NetworkBehaviour
         InvulnerabilityTimer = TickTimer.CreateFromSeconds(Runner, died ? 2.5f : .5f);
         if (died)
         {
+           
             killsText.gameObject.SetActive(false);
             while (InvulnerabilityTimer.RemainingTime(Runner) >= .5f)
             {
@@ -130,6 +131,7 @@ public class HPHandler : NetworkBehaviour
     public void IncreaseScore(byte amount)
     {
         Kills += amount;
+        nudgeVisualEffect.Play();
     }
 
     public void DecreaseScore(byte amount) 

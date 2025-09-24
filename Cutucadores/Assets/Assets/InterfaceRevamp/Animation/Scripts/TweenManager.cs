@@ -20,7 +20,6 @@ public class TweenManager : MonoBehaviour
 
     private void Awake()
     {
-        PlayCutucadaLoop();
 
         if (Instance == null)
         {
@@ -31,8 +30,7 @@ public class TweenManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
- 
-        Screen.fullScreen = false;
+        PlayCutucadaLoop();
         Screen.SetResolution(1280, 720, false);
     }
 
@@ -361,6 +359,29 @@ public class TweenManager : MonoBehaviour
     }
     #endregion
 
+    #region === SHAKE ===
+    public void PlayShake(RectTransform asset, float intensity = 5f, float speed = 50f)
+    {
+        if (asset == null) return;
+        StartCoroutine(ShakeRoutine(asset, intensity, speed));
+    }
+
+    private IEnumerator ShakeRoutine(RectTransform asset, float intensity, float speed)
+    {
+        Vector3 originalPos = asset.localPosition;
+
+        while (true)
+        {
+            float offsetX = Mathf.Sin(Time.time * speed) * intensity;
+            float offsetY = Mathf.Cos(Time.time * speed * 1.2f) * intensity * 0.5f;
+
+            asset.localPosition = originalPos + new Vector3(offsetX, offsetY, 0);
+
+            yield return null;
+        }
+    }
+    #endregion
+
     #region === HELPERS ===
     private IEnumerator ScaleRoutine(RectTransform target, Vector3 from, Vector3 to, float duration)
     {
@@ -436,7 +457,7 @@ public class TweenManager : MonoBehaviour
             cutucadaLoop = null;
         }
 
-        // 🔹 Resetar os elementos nas posições originais
+        
         if (tankLeft != null) tankLeft.anchoredPosition = tankLeftStart;
         if (tankRight != null) tankRight.anchoredPosition = tankRightStart;
         if (thumbLeft != null) thumbLeft.anchoredPosition = thumbLeftStart;
@@ -467,7 +488,7 @@ public class TweenManager : MonoBehaviour
     private IEnumerator CutucadaSingle(RectTransform tank, Vector3 tankStart, RectTransform thumb, Vector2 thumbStart, int dir)
     {
 
-        yield return PositionRoutine(tank, tankStart, tankStart + Vector3.right * (tankDistance * dir), tankDuration);
+//yield return PositionRoutine(tank, tankStart, tankStart + Vector3.right * (tankDistance * dir), tankDuration);
 
         yield return PositionRoutine(thumb, thumbStart, thumbStart + Vector2.up * thumbUpDistance, thumbUpDuration);
         yield return new WaitForSeconds(thumbStayUpDuration);
@@ -476,7 +497,7 @@ public class TweenManager : MonoBehaviour
         yield return new WaitForSeconds(thumbStayDownDuration);
 
 
-        yield return PositionRoutine(tank, tankStart + Vector3.right * (tankDistance * dir), tankStart, tankReturnDuration);
+        //yield return PositionRoutine(tank, tankStart + Vector3.right * (tankDistance * dir), tankStart, tankReturnDuration);
 
         thumb.anchoredPosition = thumbStart;
     }
