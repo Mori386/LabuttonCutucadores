@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter))]
-public class MarchingCubes : MonoBehaviour
+public class ProceduralTerrain : MonoBehaviour
 {
     [Header("Test")]
     [SerializeField] private Transform player;
@@ -26,6 +26,7 @@ public class MarchingCubes : MonoBehaviour
     private List<Vector3> vertices = new();
     private List<int> triangles = new();
 
+    [Button("Generate mesh")]
     private void Start()
     {
         grid = new float[resolution + 1, verticalResolution + 1, resolution + 1];
@@ -44,29 +45,15 @@ public class MarchingCubes : MonoBehaviour
         }
         MarchCubes();
         SetMesh();
+        SetCollider();
     }
 
-    private void Update()
+    public void BreakTerrain(Vector3 impactPoint, float radius)
     {
-        List<Vector2Int> affectedCubes = GetAffectedCubes(player);
-        if (affectedCubes.Count > 0)
-        {
-            foreach (Vector2Int coord in affectedCubes)
-            {
-                for (int y = 0; y < verticalResolution; y++)
-                    grid[coord.x, y, coord.y] = 0;
-            }
-            MarchCubes();
-            SetMesh();
-            SetCollider();
-        }
-    }
-
-    private List<Vector2Int> GetAffectedCubes(Transform target)
-    {
-        List<Vector2Int> affectedCubes = new();
-        Vector3Int targetCenter = WorldToGridPosition(target.position);
-        int targetRadius = Mathf.CeilToInt(target.localScale.x / CellSize);
+        bool hasGridChanged = false;
+        impactPoint.y = 0;
+        Vector3Int targetCenter = WorldToGridPosition(impactPoint);
+        int targetRadius = Mathf.CeilToInt(radius / CellSize);
 
         for (int x = targetCenter.x - targetRadius; x <= targetCenter.x + targetRadius; x++)
         {
@@ -80,14 +67,28 @@ public class MarchingCubes : MonoBehaviour
                     continue;
 
                 Vector3 voxelPosition = GridToWorldPosition(x, 0, z);
-                Vector3 delta = voxelPosition - target.position;
-                if (delta.sqrMagnitude <= target.localScale.x * target.localScale.x)
+                Vector3 delta = voxelPosition - impactPoint;
+                if (delta.sqrMagnitude <= radius * radius)
                 {
-                    affectedCubes.Add(new(x, z));
+                    hasGridChanged = true;
+                    for (int y = 0; y < verticalResolution; y++)
+                        grid[x, y, z] = 0;
                 }
             }
         }
-        return affectedCubes;
+        if (hasGridChanged)
+        {
+            MarchCubes();
+            SetMesh();
+            SetCollider();
+        }
+    }
+    public void BreakTerrain(Vector3[] impactPoints, float radius)
+    {
+        foreach (Vector3 impactPoint in impactPoints)
+        {
+            BreakTerrain(impactPoint, radius);
+        }
     }
 
     private int GetConfigIndex(float[] cubeCorners)
@@ -190,6 +191,7 @@ public class MarchingCubes : MonoBehaviour
 
     private void SetCollider()
     {
+        meshCollider.sharedMesh = null;
         meshCollider.sharedMesh = meshFilter.mesh;
     }
 

@@ -87,6 +87,12 @@ public class CollisionHandler : NetworkBehaviour
                     networkCharacterController.EnterTunnel(collision.transform, collision.gameObject.GetComponent<TunnelHandler>().destination);
                 }
                 break;
+            case "BreakableTerrain":
+                if (selfCollider.CompareTag("Drill"))
+                {
+                    collision.gameObject.GetComponent<ProceduralTerrain>().BreakTerrain(collision.GetContact(0).point, 6);
+                }
+                break;
         }
     }
 
