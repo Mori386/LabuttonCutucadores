@@ -14026,6 +14026,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: ProceduralTerrain
       objectReference: {fileID: 0}
+    - target: {fileID: 3503485149298516654, guid: 8bae5b7a2284578439b7187ec083427a, type: 3}
+      propertyPath: height
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 3503485149298516654, guid: 8bae5b7a2284578439b7187ec083427a, type: 3}
+      propertyPath: mapSize
+      value: 250
+      objectReference: {fileID: 0}
+    - target: {fileID: 3503485149298516654, guid: 8bae5b7a2284578439b7187ec083427a, type: 3}
+      propertyPath: resolution
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 3503485149298516654, guid: 8bae5b7a2284578439b7187ec083427a, type: 3}
+      propertyPath: terrainShape
+      value: 
+      objectReference: {fileID: 2800000, guid: 48d1b9942eb2c61458c553a7636f50fb, type: 3}
+    - target: {fileID: 3503485149298516654, guid: 8bae5b7a2284578439b7187ec083427a, type: 3}
+      propertyPath: verticalResolution
+      value: 15
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8bae5b7a2284578439b7187ec083427a, type: 3}
 --- !u!1001 &1193927453

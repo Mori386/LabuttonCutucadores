@@ -19397,6 +19397,34 @@ PrefabInstance:
       propertyPath: m_Name
       value: ProceduralTerrain
       objectReference: {fileID: 0}
+    - target: {fileID: 3503485149298516654, guid: 8bae5b7a2284578439b7187ec083427a, type: 3}
+      propertyPath: height
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 3503485149298516654, guid: 8bae5b7a2284578439b7187ec083427a, type: 3}
+      propertyPath: mapSize
+      value: 250
+      objectReference: {fileID: 0}
+    - target: {fileID: 3503485149298516654, guid: 8bae5b7a2284578439b7187ec083427a, type: 3}
+      propertyPath: meshFilter
+      value: 
+      objectReference: {fileID: 2052423404}
+    - target: {fileID: 3503485149298516654, guid: 8bae5b7a2284578439b7187ec083427a, type: 3}
+      propertyPath: resolution
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 3503485149298516654, guid: 8bae5b7a2284578439b7187ec083427a, type: 3}
+      propertyPath: meshCollider
+      value: 
+      objectReference: {fileID: 2052423402}
+    - target: {fileID: 3503485149298516654, guid: 8bae5b7a2284578439b7187ec083427a, type: 3}
+      propertyPath: terrainShape
+      value: 
+      objectReference: {fileID: 2800000, guid: 48d1b9942eb2c61458c553a7636f50fb, type: 3}
+    - target: {fileID: 3503485149298516654, guid: 8bae5b7a2284578439b7187ec083427a, type: 3}
+      propertyPath: verticalResolution
+      value: 15
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8bae5b7a2284578439b7187ec083427a, type: 3}
 --- !u!1001 &1559115401
@@ -24666,6 +24694,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0413fd07b7ac6c643b65b95ec0dfec88, type: 3}
+--- !u!64 &2052423402 stripped
+MeshCollider:
+  m_CorrespondingSourceObject: {fileID: 3503485149298516650, guid: 8bae5b7a2284578439b7187ec083427a, type: 3}
+  m_PrefabInstance: {fileID: 1557431547}
+  m_PrefabAsset: {fileID: 0}
+--- !u!33 &2052423404 stripped
+MeshFilter:
+  m_CorrespondingSourceObject: {fileID: 3503485149298516648, guid: 8bae5b7a2284578439b7187ec083427a, type: 3}
+  m_PrefabInstance: {fileID: 1557431547}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2053798511
 PrefabInstance:
   m_ObjectHideFlags: 0

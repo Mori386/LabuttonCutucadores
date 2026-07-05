@@ -7,10 +7,10 @@ using UnityEngine;
 public class ProceduralTerrain : MonoBehaviour
 {
     [Header("Test")]
-    [SerializeField] private Transform player;
     [SerializeField] private bool drawGizmos = false;
 
     [Header("Grid Config")]
+    [SerializeField] private Texture2D terrainShape;
     [SerializeField] private int resolution = 30;
     [SerializeField] private float mapSize = 140;
     private float CellSize => mapSize / resolution;
@@ -26,7 +26,6 @@ public class ProceduralTerrain : MonoBehaviour
     private List<Vector3> vertices = new();
     private List<int> triangles = new();
 
-    [Button("Generate mesh")]
     private void Start()
     {
         grid = new float[resolution + 1, verticalResolution + 1, resolution + 1];
@@ -34,12 +33,15 @@ public class ProceduralTerrain : MonoBehaviour
         {
             for (int z = 0; z < resolution + 1; z++)
             {
+                float currentPixel = terrainShape.GetPixelBilinear((float)x / (resolution + 1), (float)z / (resolution + 1)).r;
                 for (int y = 0; y < verticalResolution + 1; y++)
                 {
                     if (x == resolution || x == 0 || z == resolution || z == 0 || y == verticalResolution || y == 0)
                         grid[x, y, z] = 0;
                     else
-                        grid[x, y, z] = 1;
+                    {
+                        grid[x, y, z] = currentPixel - ((float)y / verticalResolution);
+                    }
                 }
             }
         }
@@ -184,6 +186,7 @@ public class ProceduralTerrain : MonoBehaviour
     private void SetMesh()
     {
         meshFilter.mesh.Clear();
+        meshFilter.mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
         meshFilter.mesh.vertices = vertices.ToArray();
         meshFilter.mesh.triangles = triangles.ToArray();
         meshFilter.mesh.RecalculateNormals();

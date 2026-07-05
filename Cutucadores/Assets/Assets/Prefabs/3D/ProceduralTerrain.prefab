@@ -63,7 +63,7 @@ MeshRenderer:
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2d01bbd08fb07d54281c96b29cc97c9d, type: 2}
+  - {fileID: 2100000, guid: e887e430a85cae643b1a7a3a07295222, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -111,8 +111,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19213ac59e9526148b90a57bb99edb0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
   drawGizmos: 0
+  terrainShape: {fileID: 0}
   resolution: 50
   mapSize: 140
   verticalResolution: 10
