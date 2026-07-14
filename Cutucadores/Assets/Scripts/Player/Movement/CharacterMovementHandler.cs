@@ -10,12 +10,11 @@ public class CharacterMovementHandler : NetworkBehaviour
     {
         networkCharacterDrillController = GetComponent<NetworkCharacterDrillController>();
     }
-    void Start()
-    {
-        
-    }
+
     public override void FixedUpdateNetwork()
     {
+        if (!Runner.IsServer)
+            return;
         networkCharacterDrillController.CalculateVelocity();
         if (GetInput(out NetworkInputData networkInputData))
         {

@@ -111,7 +111,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19213ac59e9526148b90a57bb99edb0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  drawGizmos: 0
   terrainShape: {fileID: 0}
   resolution: 50
   mapSize: 140
@@ -119,3 +118,10 @@ MonoBehaviour:
   height: 17
   meshFilter: {fileID: 3503485149298516648}
   meshCollider: {fileID: 3503485149298516650}
+  fxPoolSize: 10
+  breakFXPrefab: {fileID: 3209616183125748670, guid: b185eb135bfcc9741b8685c4d8d986fa, type: 3}
+  breakSFX:
+  - {fileID: 8300000, guid: 671d25e2ce7edd044a0afa1e77b578c6, type: 3}
+  - {fileID: 8300000, guid: 20ff61b67b727e84d832b832cac550e6, type: 3}
+  - {fileID: 8300000, guid: 144b61f1e9dec2e46aa0487f3870e2af, type: 3}
+  - {fileID: 8300000, guid: 5b40031edb1956043880f38734ef6e49, type: 3}

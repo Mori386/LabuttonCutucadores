@@ -6,9 +6,6 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter))]
 public class ProceduralTerrain : MonoBehaviour
 {
-    [Header("Test")]
-    [SerializeField] private bool drawGizmos = false;
-
     [Header("Grid Config")]
     [SerializeField] private Texture2D terrainShape;
     [SerializeField] private int resolution = 30;
@@ -22,12 +19,22 @@ public class ProceduralTerrain : MonoBehaviour
     [Header("Components")]
     [SerializeField] private MeshFilter meshFilter;
     [SerializeField] private MeshCollider meshCollider;
+    [SerializeField] private int fxPoolSize;
+    [SerializeField] private GameObject breakFXPrefab;
+    private List<GameObject> fxList = new();
+    private int currentGO = 0;
+    [SerializeField] private List<AudioClip> breakSFX = new();
 
     private List<Vector3> vertices = new();
     private List<int> triangles = new();
 
     private void Start()
     {
+        for (int i = 0; i < fxPoolSize; i++)
+        {
+            fxList.Add(Instantiate(breakFXPrefab, transform));
+        }
+
         grid = new float[resolution + 1, verticalResolution + 1, resolution + 1];
         for (int x = 0; x < resolution + 1; x++)
         {
@@ -50,7 +57,7 @@ public class ProceduralTerrain : MonoBehaviour
         SetCollider();
     }
 
-    public void BreakTerrain(Vector3 impactPoint, float radius)
+    public void BreakTerrain(Vector3 impactPoint, float radius, float strength)
     {
         bool hasGridChanged = false;
         impactPoint.y = 0;
@@ -74,23 +81,36 @@ public class ProceduralTerrain : MonoBehaviour
                 {
                     hasGridChanged = true;
                     for (int y = 0; y < verticalResolution; y++)
-                        grid[x, y, z] = 0;
+                        grid[x, y, z] -= (radius - delta.magnitude) / radius * strength;
                 }
             }
         }
         if (hasGridChanged)
         {
+            TriggerFX(impactPoint);
             MarchCubes();
             SetMesh();
             SetCollider();
         }
     }
-    public void BreakTerrain(Vector3[] impactPoints, float radius)
+    public void BreakTerrain(Vector3[] impactPoints, float radius, float strength)
     {
         foreach (Vector3 impactPoint in impactPoints)
         {
-            BreakTerrain(impactPoint, radius);
+            BreakTerrain(impactPoint, radius, strength);
         }
+    }
+
+    public void TriggerFX(Vector3 position)
+    {
+        fxList[currentGO].transform.position = position;
+        fxList[currentGO].GetComponent<AudioSource>().clip = breakSFX[Random.Range(0, breakSFX.Count)];
+        fxList[currentGO].GetComponent<AudioSource>().Play();
+        fxList[currentGO].GetComponent<ParticleSystem>().Play();
+        if (currentGO == fxList.Count - 1)
+            currentGO = 0;
+        else
+            currentGO++;
     }
 
     private int GetConfigIndex(float[] cubeCorners)
@@ -217,24 +237,5 @@ public class ProceduralTerrain : MonoBehaviour
             Mathf.Clamp(Mathf.FloorToInt(localPosition.y / CellHeight), 0, verticalResolution),
             Mathf.Clamp(Mathf.FloorToInt(localPosition.z / CellSize), 0, resolution)
             );
-    }
-
-    private void OnDrawGizmos()
-    {
-        if (grid == null || !drawGizmos)
-            return;
-        for (int x = 0; x < grid.GetLength(0); x++)
-        {
-            for (int z = 0; z < grid.GetLength(2); z++)
-            {
-                for (int y = 0; y < grid.GetLength(1); y++)
-                {
-                    Color color = Color.white * grid[x, y, z];
-                    color.a = .3f;
-                    Gizmos.color = color;
-                    Gizmos.DrawSphere(GridToWorldPosition(x, y, z), 1f);
-                }
-            }
-        }
     }
 }

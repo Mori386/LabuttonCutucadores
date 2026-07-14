@@ -430,9 +430,9 @@ public class TweenManager : MonoBehaviour
     [SerializeField] private RectTransform thumbLeft;
     [SerializeField] private RectTransform thumbRight;
 
-    [SerializeField] private float tankDistance = 50f;
-    [SerializeField] private float tankDuration = 0.5f;
-    [SerializeField] private float tankReturnDuration = 0.5f;
+    //[SerializeField] private float tankDistance = 50f;
+    //[SerializeField] private float tankDuration = 0.5f;
+    //[SerializeField] private float tankReturnDuration = 0.5f;
 
     [SerializeField] private float thumbUpDistance = 100f;
     [SerializeField] private float thumbUpDuration = 0.5f;

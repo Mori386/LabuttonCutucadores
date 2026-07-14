@@ -377,6 +377,7 @@ GameObject:
   - component: {fileID: 6326549632976205690}
   - component: {fileID: 4880860095109254421}
   - component: {fileID: 6737788527968781165}
+  - component: {fileID: 4428053800874989401}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -484,7 +485,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WordOffset: 0
   WordCount: 0
-  _interpolationDataSource: 0
+  _interpolationDataSource: 2
 --- !u!114 &8816218858713393912
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -499,10 +500,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WordOffset: 0
   WordCount: 0
-  _interpolationDataSource: 0
+  _interpolationDataSource: 2
   InterpolationSpace: 0
   InterpolationTarget: {fileID: 2640686690361192542}
-  InterpolateErrorCorrection: 1
+  InterpolateErrorCorrection: 0
   InterpolatedErrorCorrectionSettings:
     MinRate: 3.3
     MaxRate: 10
@@ -547,7 +548,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WordOffset: 0
   WordCount: 0
-  _interpolationDataSource: 0
+  _interpolationDataSource: 2
 --- !u!114 &-6570711661302196768
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -574,13 +575,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WordOffset: 0
   WordCount: 0
-  _interpolationDataSource: 0
+  _interpolationDataSource: 2
   hasShield: 0
   shieldVisualEffect: {fileID: 4871955501559918634}
   nudgeVisualEffect: {fileID: 3876744100705623750}
   shieldGO: {fileID: 997322345374387745}
   shieldBreakParticle: {fileID: 3384356567038801214}
-  killsText: {fileID: 528173328059072990}
   networkVisualHandler: {fileID: 0}
   drillController: {fileID: 0}
   isInvulnerable: 0
@@ -598,7 +598,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WordOffset: 0
   WordCount: 0
-  _interpolationDataSource: 0
+  _interpolationDataSource: 2
+  breakLoop: {fileID: 4428053800874989401}
+  breakSFXLoopDuration: 2
 --- !u!114 &3416211568884003776
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -613,7 +615,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WordOffset: 0
   WordCount: 0
-  _interpolationDataSource: 0
+  _interpolationDataSource: 2
   Animator: {fileID: 8234187988350364196}
   TotalWords: 3
   SyncSettings: 79
@@ -645,7 +647,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WordOffset: 0
   WordCount: 0
-  _interpolationDataSource: 0
+  _interpolationDataSource: 2
   playerVisual: {fileID: 0}
   drillVisual: {fileID: 0}
   powerUpSpeedParticleSystem:
@@ -672,7 +674,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WordOffset: 0
   WordCount: 0
-  _interpolationDataSource: 0
+  _interpolationDataSource: 2
   motorAudioSource: {fileID: 4880860095109254421}
   wheelAudioSource: {fileID: 6737788527968781165}
   _wheelVolume: 0
@@ -830,6 +832,102 @@ AudioSource:
     - serializedVersion: 3
       time: 0
       value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!82 &4428053800874989401
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1877149326463046058}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 44d6efff82117384986c496ac547bd5f, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -15712,6 +15810,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &4914304192137790677
 GameObject:
   m_ObjectHideFlags: 0

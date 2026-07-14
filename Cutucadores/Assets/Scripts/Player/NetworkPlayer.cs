@@ -6,10 +6,6 @@ using Fusion;
 public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
 {
     public static NetworkPlayer Local {  get;  set; }
-    private void Start()
-    {
-        
-    }
 
     public override void Spawned()
     {

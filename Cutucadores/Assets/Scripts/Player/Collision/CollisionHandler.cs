@@ -8,11 +8,19 @@ public class CollisionHandler : NetworkBehaviour
     NetworkCharacterDrillController networkCharacterController;
     private HPHandler attacker = null;
     private HPHandler thisHPHandler;
+    [SerializeField] private AudioSource breakLoop;
+    private float breakLoopVolume;
+    [SerializeField] private float breakSFXLoopDuration = 1f;
+    private float timeSinceTerrainCollision = 0;
+    private Coroutine breakSFXCoroutine;
+
     private void Awake()
     {
+        breakLoopVolume = breakLoop.volume;
         networkCharacterController = GetComponent<NetworkCharacterDrillController>();
         thisHPHandler = transform.root.GetComponent<HPHandler>();
     }
+
     private void OnCollisionEnter(Collision collision)
     {
         Collider selfCollider = collision.GetContact(0).thisCollider;
@@ -90,10 +98,46 @@ public class CollisionHandler : NetworkBehaviour
             case "BreakableTerrain":
                 if (selfCollider.CompareTag("Drill"))
                 {
-                    collision.gameObject.GetComponent<ProceduralTerrain>().BreakTerrain(collision.GetContact(0).point, 6);
+                    if (breakSFXCoroutine != null)
+                        StopCoroutine(breakSFXCoroutine);
+                    breakLoop.volume = breakLoopVolume;
+                    breakLoop.Play();
+                    breakSFXCoroutine = StartCoroutine(SFXLoop());
+                    Debug.LogWarning("breakLoop Play");
                 }
                 break;
         }
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        Collider selfCollider = collision.GetContact(0).thisCollider;
+        switch (collision.collider.tag)
+        {
+            case "BreakableTerrain":
+                if (selfCollider.CompareTag("Drill"))
+                {
+                    collision.gameObject.GetComponent<ProceduralTerrain>().BreakTerrain(collision.GetContact(0).point, 12, .3f);
+                    if (breakSFXCoroutine != null)
+                        StopCoroutine(breakSFXCoroutine);
+                    breakLoop.volume = breakLoopVolume;
+                    breakSFXCoroutine = StartCoroutine(SFXLoop());
+                }
+                break;
+        }
+    }
+
+    private IEnumerator SFXLoop()
+    {
+        for (timeSinceTerrainCollision = 0; timeSinceTerrainCollision < breakSFXLoopDuration; timeSinceTerrainCollision += Time.deltaTime)
+        {
+            yield return null;
+        }
+        for (float elapsedTime = 0; elapsedTime < .5f; elapsedTime += Time.deltaTime)
+        {
+            breakLoop.volume = Mathf.Lerp(1, 0, elapsedTime / .5f);
+        }
+        breakLoop.Stop();
     }
 
     public void HandleFall()

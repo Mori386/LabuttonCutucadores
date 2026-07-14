@@ -19,8 +19,6 @@ public class HPHandler : NetworkBehaviour
     private Material shieldMat;
     [SerializeField] private ParticleSystem shieldBreakParticle;
 
-    public TextMeshPro killsText;
-
     public NetworkVisualHandler networkVisualHandler;
     public NetworkCharacterDrillController drillController;
 
@@ -76,13 +74,11 @@ public class HPHandler : NetworkBehaviour
         if (died)
         {
            
-            killsText.gameObject.SetActive(false);
             while (InvulnerabilityTimer.RemainingTime(Runner) >= .5f)
             {
                 yield return null;
             }
             drillController.Respawn();
-            killsText.gameObject.SetActive(true);
             ChangeShieldState(true);
         }
         //Cria um timer na rede para check de tempo de invulnerabilidade
@@ -144,7 +140,6 @@ public class HPHandler : NetworkBehaviour
     public void RPC_UpdateRankingUI()
     {
         HPBarHandler.Instance.UpdateScore(Object.InputAuthority, Kills);
-        killsText.text = Kills.ToString();
     }
     static void OnScoreChanged(Changed<HPHandler> changed)
     {
