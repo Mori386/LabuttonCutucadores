@@ -46,6 +46,7 @@ public class NetworkVisualHandler : NetworkBehaviour
     void RPC_RequestLoadVisual(string userID,RpcInfo info = default)
     {
         LoadCharacterVisual(userID);
+        DistantPlayersIndicator.Instance.SetupIndicator(NetworkBetweenScenesManager.Instance.GetDataFromUserID(userID).character, transform);
     }
     public void LoadCharacterVisual(string userID)
     {

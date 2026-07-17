@@ -236,6 +236,8 @@ public class GameManager : NetworkBehaviour, IAfterSpawned
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     public void RPC_AnnounceWinner(PlayerRef winner)
     {
+        DistantPlayersIndicator.Instance.StopIndicators();
+        gameplayMusic.Stop();
         string playerName = "Unfound";
 
         // winner

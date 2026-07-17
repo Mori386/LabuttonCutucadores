@@ -391,6 +391,7 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
             {
                 RPC_UpdateCountdownUI("");
                 RPC_ManageCanvas(false);
+                RPC_StartPlayersIndicators();
                 isInGameplay = true;
             }
             yield return new WaitForSeconds(1);
@@ -407,6 +408,12 @@ public class NetworkBetweenScenesManager : NetworkBehaviour, IAfterSpawned
     private void RPC_UpdateCountdownUI(string text)
     {
         countdownText.text = text;
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All, InvokeLocal = true)]
+    private void RPC_StartPlayersIndicators()
+    {
+        DistantPlayersIndicator.Instance.StartIndicators();
     }
     #endregion
 }

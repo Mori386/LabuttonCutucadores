@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -6602,6 +6601,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: -1
   m_SortingLayerID: 0
   m_SortingOrder: -1
@@ -14091,6 +14091,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &192680510
 GameObject:
   m_ObjectHideFlags: 0
@@ -15528,6 +15529,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &271890249
 GameObject:
   m_ObjectHideFlags: 0
@@ -17326,6 +17328,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!222 &340808383
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -32990,6 +32993,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &619715094
 GameObject:
   m_ObjectHideFlags: 0
@@ -33050,6 +33054,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &619715097
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34681,6 +34686,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &691133576
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36019,6 +36025,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -43863,6 +43870,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &911279588
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -49063,7 +49071,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -6.999878, y: 0}
+  m_AnchoredPosition: {x: -6.999756, y: 0}
   m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1152496928
@@ -49654,6 +49662,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &1163976523
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -54726,6 +54735,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &1171641389
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -55771,6 +55781,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1205255211
 GameObject:
   m_ObjectHideFlags: 0
@@ -59694,6 +59705,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &1453694828
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63959,6 +63971,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1625920920
 GameObject:
   m_ObjectHideFlags: 0
@@ -64785,9 +64798,6 @@ MonoBehaviour:
   tankRight: {fileID: 1173619381}
   thumbLeft: {fileID: 670790484}
   thumbRight: {fileID: 63224110}
-  tankDistance: 200
-  tankDuration: 0.3
-  tankReturnDuration: 0.3
   thumbUpDistance: 150
   thumbUpDuration: 0.3
   thumbStayUpDuration: 1
@@ -70776,9 +70786,7 @@ MonoBehaviour:
   mapSelection: {fileID: 746629152}
   mapPreview: {fileID: 495745953}
   mapPreviewImages:
-  - {fileID: 21300000, guid: 196df879ab04c68469527ead51740784, type: 3}
   - {fileID: 21300000, guid: 6eef71b88c68ecd4b876a336b4fa271d, type: 3}
-  - {fileID: 21300000, guid: a34cd1b3e767fe742851d3b887053f5d, type: 3}
   createJoinPaper: {fileID: 2084006154}
   createJoinPaperDefaultGroup: {fileID: 1378774676}
   createJoinPaperLoadingGroup: {fileID: 1631708815}
@@ -74286,6 +74294,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &1921571856
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -76137,6 +76146,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!222 &1972230630
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -83272,6 +83282,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2082601900
 GameObject:
   m_ObjectHideFlags: 0
@@ -83332,6 +83343,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!222 &2082601903
 CanvasRenderer:
   m_ObjectHideFlags: 0
