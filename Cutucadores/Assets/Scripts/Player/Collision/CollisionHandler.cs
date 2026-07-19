@@ -103,7 +103,6 @@ public class CollisionHandler : NetworkBehaviour
                     breakLoop.volume = breakLoopVolume;
                     breakLoop.Play();
                     breakSFXCoroutine = StartCoroutine(SFXLoop());
-                    Debug.LogWarning("breakLoop Play");
                 }
                 break;
         }

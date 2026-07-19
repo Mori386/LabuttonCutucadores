@@ -81,7 +81,12 @@ public class ProceduralTerrain : MonoBehaviour
                 {
                     hasGridChanged = true;
                     for (int y = 0; y < verticalResolution; y++)
-                        grid[x, y, z] -= (radius - delta.magnitude) / radius * strength;
+                    {
+                        if (y < targetCenter.y && grid[x, y, z] <= 0)
+                            grid[x, y, z] = 0;
+                        else
+                            grid[x, y, z] -= (radius - delta.magnitude) / radius * strength;
+                    }
                 }
             }
         }
